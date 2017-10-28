@@ -1,5 +1,7 @@
 package com.apps.darkstorm.cdr.dice
 
+import java.util.*
+
 class Die{
     private var sides = mutableListOf<Any>()
     fun size() = sides.size
@@ -12,4 +14,6 @@ class Die{
     fun add(a: Any){
         sides.add(a)
     }
+
+    fun roll() = Random().nextInt(size())
 }
