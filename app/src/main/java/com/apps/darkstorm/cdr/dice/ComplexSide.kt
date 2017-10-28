@@ -2,7 +2,7 @@ package com.apps.darkstorm.cdr.dice
 
 class ComplexSide {
     class ComplexSidePart(var name: String, var value: Int)
-    private var parts = ArrayList<ComplexSidePart>()
+    private var parts= mutableListOf<ComplexSidePart>()
     fun addPart(side: ComplexSidePart){
         parts.add(side)
     }
@@ -10,5 +10,8 @@ class ComplexSide {
     fun get(i: Int) = parts[i]
     fun set(i: Int, side: ComplexSidePart){
         parts[i] = side
+    }
+    fun add(side: ComplexSidePart){
+        parts.add(side)
     }
 }
