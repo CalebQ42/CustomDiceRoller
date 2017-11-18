@@ -1,13 +1,15 @@
 package com.apps.darkstorm.cdr
 
+import android.app.Fragment
 import android.content.Context
 import android.os.Bundle
-import android.app.Fragment
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageButton
 import com.apps.darkstorm.cdr.dice.DiceFormula
 import org.jetbrains.anko.find
 
@@ -20,6 +22,11 @@ class FormulaFragment : Fragment() {
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
         val disp = v.find<EditText>(R.id.display)
+        disp.isEnabled = false
+        v.find<ImageButton>(R.id.back).setOnClickListener {
+            if(disp.text.isNotEmpty())
+                disp.text = Editable.Factory.getInstance().newEditable(disp.text.substring(0,disp.text.length-1))
+        }
         v.find<Button>(R.id.one).setOnClickListener { disp.text.append('1') }
         v.find<Button>(R.id.two).setOnClickListener { disp.text.append('2') }
         v.find<Button>(R.id.three).setOnClickListener { disp.text.append('3') }

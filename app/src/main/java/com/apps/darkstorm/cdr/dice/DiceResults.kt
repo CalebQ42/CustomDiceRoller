@@ -6,20 +6,32 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import com.apps.darkstorm.cdr.R
+import org.jetbrains.anko.find
 
 class DiceResults {
     var number = 0
     private var reses = mutableListOf<Result>()
-    class Result(var name:String, var value: Int)
+    var resList = mutableListOf<Any>()
+    class Result(var name:String, var value: Int){
+        override fun toString() = value.toString() + " " + name
+    }
     fun add(res: Result){
-        reses.add(res)
+        resList.add(res)
+        val ind = indexOf(res.name)
+        when(ind){
+            -1 -> reses.add(res)
+            else-> reses[ind].value += res.value
+        }
+    }
+    fun addNum(i: Int){
+        println("In: "+i.toString())
+        number += i
+        resList.add(i)
     }
     fun size() = reses.size
-    fun set(i: Int, res: Result){
-        reses.set(i,res)
-    }
     fun set(name: String, i: Int){
         for(r in reses){
             if(r.name == name) {
@@ -29,33 +41,26 @@ class DiceResults {
         }
         add(Result(name,i))
     }
-    fun has(name:String): Boolean{
-        for(r in reses){
-            if(r.name == name)
-                return true
-        }
-        return false
-    }
+    fun has(name:String): Boolean = reses.any { it.name == name }
     fun get(name: String): Int{
-        for(r in reses){
-            if(r.name == name)
-                return r.value
-        }
-        return 0
+        return reses
+                .firstOrNull { it.name == name }
+                ?.value
+                ?: 0
     }
     fun indexOf(name:String):Int{
-        for(r in reses.indices){
-            if(reses[r].name == name)
-                return r
-        }
-        return 0
+        return reses.indices.firstOrNull { reses[it].name == name }
+                ?: 0
     }
     fun combineWith(dr: DiceResults){
-        number += dr.number
-        dr.reses.filter { has(it.name) }
-                .forEach { reses[indexOf(it.name)].value += it.value }
+        dr.resList.forEach {
+            when(it){
+                is Int-> addNum(it)
+                is Result-> add(it)
+            }
+        }
     }
-    fun isNumOnly() = reses.size == 0
+    fun isNumOnly() = resList.size == 0
     fun showDialog(a: Activity){
         val build = AlertDialog.Builder(a)
         val v = a.layoutInflater.inflate(R.layout.results_dialog,null)
@@ -68,7 +73,20 @@ class DiceResults {
         val lm = LinearLayoutManager(a)
         lm.orientation = LinearLayoutManager.VERTICAL
         r.layoutManager = lm
-        build.show()
+        val ad = build.create()
+        v.find<Button>(R.id.results).setOnClickListener {
+            val b = AlertDialog.Builder(a)
+            val view = a.layoutInflater.inflate(R.layout.results_ind_dialog,null)
+            b.setView(view)
+            val rec = view.find<RecyclerView>(R.id.recycler)
+            rec.adapter = resultsListAdap(this,a)
+            val l = LinearLayoutManager(a)
+            l.orientation = LinearLayoutManager.VERTICAL
+            rec.layoutManager = l
+            b.show()
+            ad.cancel()
+        }
+        ad.show()
     }
 
     private class resultsAdap(val dr: DiceResults, val a: Activity): RecyclerView.Adapter<resultsAdap.ViewHolder>(){
@@ -78,11 +96,18 @@ class DiceResults {
                 holder.v.findViewById<TextView>(R.id.number).text = dr.reses[position].value.toString()
             }
         }
-
         override fun getItemCount() = dr.reses.size
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_part,parent,false))
+        class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
+    }
 
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_part,parent))
-
+    private class resultsListAdap(val dr: DiceResults, val a: Activity): RecyclerView.Adapter<resultsListAdap.ViewHolder>(){
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_ind_simple,parent,false))
+        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+            if (holder != null)
+                holder.v.findViewById<TextView>(R.id.text).text =dr.resList[position].toString()
+        }
+        override fun getItemCount() = dr.resList.size
         class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
     }
 }

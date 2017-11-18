@@ -26,17 +26,18 @@ class Dice(private var dice: MutableList<Die> = mutableListOf()){
                     val s = d.getComplex(i)
                     for (p in s!!.parts)
                         dr.add(DiceResults.Result(p.name, p.value))
-                    dr.number += s.number
+                    dr.addNum(s.number)
                 }
                 else -> {
                     val s = d.getSimple(i)
                     if(s!!.isInt())
-                        dr.number+=s.intSide()
+                        dr.addNum(s.intSide())
                     else
-                        dr.set(s.stringSide(),dr.get(s.stringSide())+1)
+                        dr.add(DiceResults.Result(s.stringSide(),1))
                 }
             }
         }
+        println("Num: "+dr.number.toString())
         return dr
     }
 }

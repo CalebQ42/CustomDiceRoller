@@ -16,7 +16,6 @@ class DiceFormula {
             return dr
         }
         private fun parse(str: String, dr: DiceResults){
-            println("thing:" + str)
             when{
                 str.contains("d")->{
                     val sub = str.startsWith("-")
@@ -28,16 +27,16 @@ class DiceFormula {
                     if(dInd==str.length-1)
                         return
                     pre = if(dInd==0)
-                        0
+                        1
                     else
                         str.substring(0,dInd).toInt()
                     post = str.substring(dInd+1).toInt()
-                    dr.number += if(sub)
-                            -1*Dice.numberDice(pre,post).roll().number
-                        else
-                            Dice.numberDice(pre,post).roll().number
-                    println("Pre: "+pre.toString())
-                    println("Post: "+post.toString())
+                    val out = Dice.numberDice(pre,post).roll()
+                    if(sub)
+                        out.number *=-1
+                    println("Hello: "+out.number)
+                    println("gobble: "+dr.number)
+                    dr.combineWith(out)
                 }
                 str.contains("{") && str.contains("}")->{
                     val sub = str.startsWith("-")
