@@ -15,4 +15,10 @@ class ComplexSide {
     fun add(side: ComplexSidePart){
         parts.add(side)
     }
+
+    override fun toString(): String {
+        var out = number.toString() + ", "
+        out += parts.toString()
+        return out
+    }
 }
