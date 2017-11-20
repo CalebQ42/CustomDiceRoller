@@ -25,6 +25,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:support-v4:27.0.1'
+    implementation 'com.google.firebase:firebase-crash:11.6.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.0.1'
     implementation 'com.google.firebase:firebase-ads:11.6.0'
