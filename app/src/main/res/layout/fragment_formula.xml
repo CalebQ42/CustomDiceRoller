@@ -63,10 +63,9 @@
         android:id="@+id/plus"
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
+        android:layout_height="0dp"
         android:text="+"
-        app:layout_constraintBottom_toTopOf="@+id/minus"
+        app:layout_constraintBottom_toBottomOf="@+id/six"
         app:layout_constraintEnd_toEndOf="@+id/minus"
         app:layout_constraintTop_toTopOf="@+id/three" />
 
@@ -132,25 +131,15 @@
         app:layout_constraintStart_toStartOf="@+id/middle" />
 
     <Button
-        android:id="@+id/enter"
+        android:id="@+id/minus"
         style="@style/Widget.AppCompat.Button.Small"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
-        android:text="↲"
+        android:text="-"
         app:layout_constraintBottom_toBottomOf="@+id/dee"
         app:layout_constraintStart_toEndOf="@+id/nine"
         app:layout_constraintTop_toTopOf="@+id/nine" />
-
-    <Button
-        android:id="@+id/minus"
-        style="@style/Widget.AppCompat.Button.Small"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:text="-"
-        app:layout_constraintBottom_toBottomOf="@+id/six"
-        app:layout_constraintStart_toEndOf="@+id/nine" />
 
     <Button
         android:id="@+id/zero"

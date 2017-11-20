@@ -2,11 +2,11 @@ package com.apps.darkstorm.cdr.dice
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.content.DialogInterface
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
@@ -73,8 +73,7 @@ class DiceResults {
         val lm = LinearLayoutManager(a)
         lm.orientation = LinearLayoutManager.VERTICAL
         r.layoutManager = lm
-        val ad = build.create()
-        v.find<Button>(R.id.results).setOnClickListener {
+        build.setPositiveButton(R.string.individual, { dialogInterface: DialogInterface, _: Int ->
             val b = AlertDialog.Builder(a)
             val view = a.layoutInflater.inflate(R.layout.results_ind_dialog,null)
             b.setView(view)
@@ -83,10 +82,16 @@ class DiceResults {
             val l = LinearLayoutManager(a)
             l.orientation = LinearLayoutManager.VERTICAL
             rec.layoutManager = l
-            b.show()
-            ad.cancel()
-        }
-        ad.show()
+            b.setPositiveButton(R.string.combined,{dialogInt: DialogInterface, _: Int ->
+                showDialog(a)
+                dialogInt.cancel()
+            }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
+                dialog.cancel()
+            }).show()
+            dialogInterface.cancel()
+        }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
+            dialog.cancel()
+        }).show()
     }
 
     private class resultsAdap(val dr: DiceResults, val a: Activity): RecyclerView.Adapter<resultsAdap.ViewHolder>(){

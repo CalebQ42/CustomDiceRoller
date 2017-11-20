@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
-        fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment.newInstance()).commit()
     }
 
     override fun onBackPressed() {
@@ -46,7 +45,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
+        val cur = fragmentManager.findFragmentById(R.id.content_main)
         when (item.itemId) {
+            R.id.formula ->{
+                if(cur is FormulaFragment)
+                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment.newInstance())
+                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                else
+                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment.newInstance())
+                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("formula").commit()
+            }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true
