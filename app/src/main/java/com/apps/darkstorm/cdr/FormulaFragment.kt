@@ -1,7 +1,6 @@
 package com.apps.darkstorm.cdr
 
 import android.app.Fragment
-import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.text.Editable
@@ -12,12 +11,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import com.apps.darkstorm.cdr.dice.DiceFormula
-import org.jetbrains.anko.act
 import org.jetbrains.anko.find
 import org.jetbrains.anko.imageResource
 
 class FormulaFragment : Fragment() {
-    private var mListenerFormula: OnFormulaFragmentInteractionListener? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -45,25 +42,5 @@ class FormulaFragment : Fragment() {
         v.find<Button>(R.id.dee).setOnClickListener { disp.text.append('d') }
         activity.find<FloatingActionButton>(R.id.fab).setOnClickListener { DiceFormula.solve(disp.text.toString()).showDialog(activity) }
         activity.find<FloatingActionButton>(R.id.fab).imageResource = R.drawable.die_roll
-    }
-
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFormulaFragmentInteractionListener) {
-            mListenerFormula = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFormulaFragmentInteractionListener")
-        }
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        mListenerFormula = null
-    }
-
-    interface OnFormulaFragmentInteractionListener
-
-    companion object {
-        fun newInstance(): FormulaFragment = FormulaFragment()
     }
 }

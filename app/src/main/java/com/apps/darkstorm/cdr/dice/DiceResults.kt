@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.apps.darkstorm.cdr.CDR
 import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
 
@@ -61,7 +62,12 @@ class DiceResults {
         }
     }
     fun isNumOnly() = resList.size == 0
-    fun showDialog(a: Activity){
+    fun showDialog(a: Activity) =
+        if((a.application as CDR).prefs.getBoolean(a.getString(R.string.individual_first_key),false))
+            showCombinedDialog(a)
+        else
+            showIndividualDialog(a)
+    fun showCombinedDialog(a: Activity){
         val build = AlertDialog.Builder(a)
         val v = a.layoutInflater.inflate(R.layout.results_dialog,null)
         if(isNumOnly())
@@ -69,50 +75,53 @@ class DiceResults {
         build.setView(v)
         v.findViewById<TextView>(R.id.number).text = number.toString()
         val r = v.findViewById<RecyclerView>(R.id.recycler)
-        r.adapter = resultsAdap(this,a)
+        r.adapter = ResultsAdap(a)
         val lm = LinearLayoutManager(a)
         lm.orientation = LinearLayoutManager.VERTICAL
         r.layoutManager = lm
         build.setPositiveButton(R.string.individual, { dialogInterface: DialogInterface, _: Int ->
-            val b = AlertDialog.Builder(a)
-            val view = a.layoutInflater.inflate(R.layout.results_ind_dialog,null)
-            b.setView(view)
-            val rec = view.find<RecyclerView>(R.id.recycler)
-            rec.adapter = resultsListAdap(this,a)
-            val l = LinearLayoutManager(a)
-            l.orientation = LinearLayoutManager.VERTICAL
-            rec.layoutManager = l
-            b.setPositiveButton(R.string.combined,{dialogInt: DialogInterface, _: Int ->
-                showDialog(a)
-                dialogInt.cancel()
-            }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
-                dialog.cancel()
-            }).show()
+            showIndividualDialog(a)
             dialogInterface.cancel()
         }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
             dialog.cancel()
         }).show()
     }
-
-    private class resultsAdap(val dr: DiceResults, val a: Activity): RecyclerView.Adapter<resultsAdap.ViewHolder>(){
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            if (holder != null) {
-                holder.v.findViewById<TextView>(R.id.label).text = dr.reses[position].name
-                holder.v.findViewById<TextView>(R.id.number).text = dr.reses[position].value.toString()
-            }
-        }
-        override fun getItemCount() = dr.reses.size
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_part,parent,false))
-        class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
+    fun showIndividualDialog(a: Activity){
+        val b = AlertDialog.Builder(a)
+        val view = a.layoutInflater.inflate(R.layout.results_ind_dialog,null)
+        b.setView(view)
+        val rec = view.find<RecyclerView>(R.id.recycler)
+        rec.adapter = ResultsListAdap(a)
+        val l = LinearLayoutManager(a)
+        l.orientation = LinearLayoutManager.VERTICAL
+        rec.layoutManager = l
+        b.setPositiveButton(R.string.combined,{dialogInt: DialogInterface, _: Int ->
+            showCombinedDialog(a)
+            dialogInt.cancel()
+        }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
+            dialog.cancel()
+        }).show()
     }
 
-    private class resultsListAdap(val dr: DiceResults, val a: Activity): RecyclerView.Adapter<resultsListAdap.ViewHolder>(){
+    inner class ResultsAdap(private val a: Activity): RecyclerView.Adapter<ResultsAdap.ViewHolder>(){
+        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+            if (holder != null) {
+                holder.v.findViewById<TextView>(R.id.label).text = reses[position].name
+                holder.v.findViewById<TextView>(R.id.number).text = reses[position].value.toString()
+            }
+        }
+        override fun getItemCount() = reses.size
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_part,parent,false))
+        inner class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
+    }
+
+    inner class ResultsListAdap(private val a: Activity): RecyclerView.Adapter<ResultsListAdap.ViewHolder>(){
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_ind_simple,parent,false))
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
             if (holder != null)
-                holder.v.findViewById<TextView>(R.id.text).text =dr.resList[position].toString()
+                holder.v.findViewById<TextView>(R.id.text).text = resList[position].toString()
         }
-        override fun getItemCount() = dr.resList.size
-        class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
+        override fun getItemCount() = resList.size
+        inner class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
     }
 }

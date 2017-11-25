@@ -9,8 +9,9 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
+import org.jetbrains.anko.browse
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, FormulaFragment.OnFormulaFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,12 +37,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-//        return when (item.itemId) {
-//            R.id.action_settings -> true
-//            else -> super.onOptionsItemSelected(item)
-//        }
-        return super.onOptionsItemSelected(item)
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
+        R.id.g_plus ->{
+            browse("https://plus.google.com/communities/117741233533206107778")
+            true
+        }
+        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -49,11 +50,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (item.itemId) {
             R.id.formula ->{
                 if(cur is FormulaFragment)
-                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment.newInstance())
+                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
                 else
-                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment.newInstance())
+                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("formula").commit()
+            }
+            R.id.settings->{
+                if(cur is SettingsFragment)
+                    fragmentManager.beginTransaction().replace(R.id.content_main,SettingsFragment())
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                else
+                    fragmentManager.beginTransaction().replace(R.id.content_main,SettingsFragment())
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("formula").commit()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

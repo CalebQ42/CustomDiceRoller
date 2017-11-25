@@ -6,4 +6,11 @@
         android:id="@+id/formula"
         android:icon="@drawable/function"
         android:title="@string/formula_nav_drawer" />
+    <item android:title="">
+        <menu>
+            <item android:id="@+id/settings"
+                android:icon="@drawable/gear"
+                android:title="@string/settings_nav_drawer"/>
+        </menu>
+    </item>
 </menu>

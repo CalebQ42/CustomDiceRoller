@@ -6,6 +6,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="formula_nav_drawer">Dice Formula</string>
+    <string name="settings_nav_drawer">Settings</string>
+
+    <string name="individual_first_text">Show individual results first</string>
+
     <string name="individual">Individual</string>
     <string name="combined">Combined</string>
+
+    <string name="g_plus_option">G+ Community</string>
 </resources>

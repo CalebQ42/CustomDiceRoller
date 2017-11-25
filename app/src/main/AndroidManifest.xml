@@ -3,12 +3,14 @@
     package="com.apps.darkstorm.cdr">
 
     <application
+        android:name=".CDR"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:fullBackupContent="true">
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
