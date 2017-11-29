@@ -64,9 +64,9 @@ class DiceResults {
     fun isNumOnly() = resList.size == 0
     fun showDialog(a: Activity) =
         if((a.application as CDR).prefs.getBoolean(a.getString(R.string.individual_first_key),false))
-            showCombinedDialog(a)
-        else
             showIndividualDialog(a)
+        else
+            showCombinedDialog(a)
     fun showCombinedDialog(a: Activity){
         val build = AlertDialog.Builder(a)
         val v = a.layoutInflater.inflate(R.layout.results_dialog,null)

@@ -15,7 +15,7 @@ import org.jetbrains.anko.find
 
 class SettingsFragment: Fragment(){
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
-            inflater.inflate(R.layout.settings_fragment,container,false)
+            inflater.inflate(R.layout.recycle,container,false)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         act.find<FloatingActionButton>(R.id.fab).hide()
         val r = view.find<RecyclerView>(R.id.recycler)
@@ -23,6 +23,13 @@ class SettingsFragment: Fragment(){
         val lm = LinearLayoutManager(view.context)
         lm.orientation = LinearLayoutManager.VERTICAL
         r.layoutManager = lm
+    }
+    fun simpleSwitch(resIDText: Int,resIDKey: Int,sw: Switch){
+        sw.text = getString(resIDText)
+        sw.isChecked = (act.application as CDR).prefs.getBoolean(getString(resIDKey),false)
+        sw.setOnCheckedChangeListener{ _: CompoundButton, b: Boolean ->
+            (act.application as CDR).prefs.edit().putBoolean(getString(resIDKey),b).apply()
+        }
     }
     inner class SettingsAdap: RecyclerView.Adapter<SettingsAdap.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder? = when(viewType){
@@ -32,14 +39,8 @@ class SettingsFragment: Fragment(){
         }
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             when(position){
-                0->{
-                    val sw = holder.v.find<Switch>(R.id.sw)
-                    sw.text = getString(R.string.individual_first_text)
-                    sw.isChecked = (act.application as CDR).prefs.getBoolean(getString(R.string.individual_first_key),false)
-                    sw.setOnCheckedChangeListener{ _: CompoundButton, b: Boolean ->
-                        (act.application as CDR).prefs.edit().putBoolean(getString(R.string.individual_first_key),b).apply()
-                    }
-                }
+                0-> simpleSwitch(R.string.individual_first_text,R.string.individual_first_key,holder.v.find(R.id.sw))
+                2-> simpleSwitch(R.string.google_drive_text,R.string.google_drive_key,holder.v.find(R.id.sw))
             }
         }
         override fun getItemCount() = 1

@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import com.apps.darkstorm.cdr.dice.DiceFormula
+import org.jetbrains.anko.act
 import org.jetbrains.anko.find
 import org.jetbrains.anko.imageResource
 
@@ -21,6 +22,7 @@ class FormulaFragment : Fragment() {
             inflater.inflate(R.layout.fragment_formula, container, false)
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
+        act.find<FloatingActionButton>(R.id.fab).show()
         val disp = v.find<EditText>(R.id.display)
         disp.isEnabled = false
         v.find<ImageButton>(R.id.back).setOnClickListener {
