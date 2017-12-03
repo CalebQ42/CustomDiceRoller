@@ -17,6 +17,5 @@ class SimpleSide {
     fun set(side: Int){
         value = side.toString()
     }
-
     override fun toString() = value
 }
