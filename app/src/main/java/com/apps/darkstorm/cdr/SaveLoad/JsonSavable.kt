@@ -27,6 +27,10 @@ abstract class JsonSavable{
 
 //    basicLoad
 //    while(jr.hasNext() && jr.peek() != JsonToken.END_OBJECT){
+//        if(jr.peek()!=JsonToken.NAME){
+//            jr.skipValue()
+//            continue
+//        }
 //        val jName = jr.nextName()
 //        when(jName){
 //        }

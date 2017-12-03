@@ -18,13 +18,17 @@ class ComplexSide: JsonSavable() {
     override fun load(jr: JsonReader) {
         jr.beginObject()
         while(jr.hasNext() && jr.peek() != JsonToken.END_OBJECT){
+            if(jr.peek()!=JsonToken.NAME){
+                jr.skipValue()
+                continue
+            }
             val jName = jr.nextName()
             when(jName){
                 "number"->number = jr.nextInt()
                 "parts"->{
                     parts.clear()
                     jr.beginArray()
-                    while(jr.peek()==JsonToken.BEGIN_OBJECT){
+                    while(jr.peek()!=JsonToken.END_ARRAY){
                         val tmp = ComplexSidePart("",0)
                         tmp.load(jr)
                         parts.add(tmp)
@@ -41,6 +45,10 @@ class ComplexSide: JsonSavable() {
         override fun load(jr: JsonReader) {
             jr.beginObject()
             while(jr.hasNext() && jr.peek() != JsonToken.END_OBJECT){
+                if(jr.peek()!=JsonToken.NAME){
+                    jr.skipValue()
+                    continue
+                }
                 val name = jr.nextName()
                 when(name){
                     "Name"->this.name = jr.nextString()
