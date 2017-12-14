@@ -3,6 +3,7 @@ package com.apps.darkstorm.cdr
 import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.v7.widget.Toolbar
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,16 @@ import android.widget.EditText
 import android.widget.ImageButton
 import com.apps.darkstorm.cdr.dice.DiceFormula
 import org.jetbrains.anko.act
+import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
 import org.jetbrains.anko.imageResource
 
 class FormulaFragment : Fragment() {
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val toolbar = act.find<Toolbar>(R.id.toolbar)
+        toolbar.titleResource = R.string.formula_nav_drawer
+    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.fragment_formula, container, false)

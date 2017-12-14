@@ -6,7 +6,8 @@ import android.util.JsonWriter
 import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 
 class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
-    override val fileExtension = ".dice"
+    val name: String = ""
+    val fileExtension = ".dice"
     override fun save(jw: JsonWriter) {
         jw.beginObject()
         jw.name("dice").beginArray()

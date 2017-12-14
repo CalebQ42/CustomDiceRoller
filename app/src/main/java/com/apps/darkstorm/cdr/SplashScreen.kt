@@ -11,6 +11,7 @@ class SplashScreen : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val tmpFile = File(applicationInfo.dataDir+"/Dice")
         tmpFile.mkdir()
+        (application as CDR).dir = tmpFile.absolutePath
         (application as CDR).reloadAll()
         finish()
     }

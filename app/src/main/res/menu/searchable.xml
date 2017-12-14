@@ -8,8 +8,4 @@
         android:title="@android:string/search_go"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="always" />
-    <item
-        android:id="@+id/g_plus"
-        android:checkable="false"
-        android:title="@string/g_plus_option" />
 </menu>

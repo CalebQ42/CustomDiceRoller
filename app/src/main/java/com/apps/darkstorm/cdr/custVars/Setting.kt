@@ -27,9 +27,11 @@ class Setting(private val textID: Int, private val key: String, private val defa
     fun addCheckedChangedListener(ccl: (Boolean) -> Unit){checkedChangeListener = ccl}
     lateinit var onItemSelectedListener: (Int)->Unit
     lateinit var array: Array<String>
-    fun linkToSpinner(ac: Activity, sp: Spinner, itemViewID: Int = android.R.layout.simple_spinner_item){
+    fun linkToSpinner(ac: Activity, v: View, itemViewID: Int = android.R.layout.simple_spinner_item){
+        v.find<TextView>(R.id.name).textResource = textID
+        val sp = v.find<Spinner>(R.id.spinner)
         sp.adapter = ArrayAdapter<String>(ac,itemViewID,array)
-        sp.setSelection(defaultValue as Int)
+        sp.setSelection(prefs.getInt(key,defaultValue as Int))
         sp.onItemSelectedListener = object: AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(s0: AdapterView<*>?) {}
             override fun onItemSelected(s0: AdapterView<*>?, s1: View?, position: Int, s2: Long) {

@@ -22,9 +22,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
-
+        when((application as CDR).prefs.getInt(getString(R.string.default_section_key),0)){
+            0->fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
+                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+            1->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+            2->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+        }
     }
-
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -32,7 +38,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             super.onBackPressed()
         }
     }
-
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main, menu)
         return true
@@ -64,6 +69,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 else
                     fragmentManager.beginTransaction().replace(R.id.content_main,SettingsFragment())
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("settings").commit()
+            }
+            R.id.die->{
+                if(cur is ListFragment && !cur.dice)
+                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                else
+                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("die").commit()
+            }
+            R.id.dice->{
+                if(cur is ListFragment && cur.dice)
+                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                else
+                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("die").commit()
             }
         }
         drawer_layout.closeDrawer(GravityCompat.START)

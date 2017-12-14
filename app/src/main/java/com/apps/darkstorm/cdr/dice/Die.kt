@@ -7,7 +7,8 @@ import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 import java.util.*
 
 class Die: JsonSavable() {
-    override val fileExtension = ".dice"
+    val name: String = ""
+    val fileExtension = ".dice"
     override fun load(jr: JsonReader) {
         jr.beginObject()
         val sideTypes = mutableListOf<Boolean>()

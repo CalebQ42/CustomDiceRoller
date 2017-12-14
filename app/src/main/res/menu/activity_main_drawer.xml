@@ -6,11 +6,20 @@
         android:id="@+id/formula"
         android:icon="@drawable/function"
         android:title="@string/formula_nav_drawer" />
-    <item android:title="">
+    <item
+        android:id="@+id/die"
+        android:icon="@drawable/die"
+        android:title="@string/die_nav_drawer" />
+    <item
+        android:id="@+id/dice"
+        android:icon="@drawable/dice_stack"
+        android:title="@string/dice_group_nav_drawer" />
+    <item android:title="@string/other_nav_group">
         <menu>
-            <item android:id="@+id/settings"
+            <item
+                android:id="@+id/settings"
                 android:icon="@drawable/gear"
-                android:title="@string/settings_nav_drawer"/>
+                android:title="@string/settings_nav_drawer" />
         </menu>
     </item>
 </menu>

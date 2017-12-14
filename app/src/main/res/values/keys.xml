@@ -4,4 +4,5 @@
     <string name="preference_key">prefsKey</string>
     <string name="google_drive_key">gdriveKey</string>
     <string name="theme_key">lightThemeKey</string>
+    <string name="default_section_key">defSecKey</string>
 </resources>
