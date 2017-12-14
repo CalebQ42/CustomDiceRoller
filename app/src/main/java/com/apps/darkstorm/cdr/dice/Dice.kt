@@ -3,9 +3,10 @@ package com.apps.darkstorm.cdr.dice
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.JsonWriter
-import com.apps.darkstorm.cdr.SaveLoad.JsonSavable
+import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 
 class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
+    override val fileExtension = ".dice"
     override fun save(jw: JsonWriter) {
         jw.beginObject()
         jw.name("dice").beginArray()
@@ -35,6 +36,7 @@ class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() 
         jr.endObject()
     }
     companion object {
+        val fileExtension = ".dice"
         fun numberDice(number: Int, sides: Int):Dice{
             val d = Dice()
             (1..number).forEach {d.add(Die.numberDie(sides))}
@@ -53,7 +55,7 @@ class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() 
     fun roll(): DiceResults{
         val dr = DiceResults()
         for(d in dice){
-            val i = d.roll()
+            val i = d.rollIndex()
             when {
                 d.isComplex(i) -> {
                     val s = d.getComplex(i)
@@ -70,7 +72,6 @@ class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() 
                 }
             }
         }
-        println("Num: "+dr.number.toString())
         return dr
     }
 }

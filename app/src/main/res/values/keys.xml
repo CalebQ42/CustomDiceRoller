@@ -3,4 +3,5 @@
     <string name="individual_first_key">indKey</string>
     <string name="preference_key">prefsKey</string>
     <string name="google_drive_key">gdriveKey</string>
+    <string name="theme_key">lightThemeKey</string>
 </resources>

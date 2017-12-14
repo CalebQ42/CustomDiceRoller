@@ -3,7 +3,7 @@ package com.apps.darkstorm.cdr.dice
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.JsonWriter
-import com.apps.darkstorm.cdr.SaveLoad.JsonSavable
+import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 
 class ComplexSide: JsonSavable() {
     override fun save(jw: JsonWriter) {

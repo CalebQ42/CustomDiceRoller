@@ -3,10 +3,11 @@ package com.apps.darkstorm.cdr.dice
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.JsonWriter
-import com.apps.darkstorm.cdr.SaveLoad.JsonSavable
+import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 import java.util.*
 
 class Die: JsonSavable() {
+    override val fileExtension = ".dice"
     override fun load(jr: JsonReader) {
         jr.beginObject()
         val sideTypes = mutableListOf<Boolean>()
@@ -47,7 +48,6 @@ class Die: JsonSavable() {
         }
         jr.endObject()
     }
-
     override fun save(jw: JsonWriter) {
         jw.beginObject()
         jw.name("isComplex").beginArray()
@@ -60,6 +60,7 @@ class Die: JsonSavable() {
         jw.endObject()
     }
     companion object {
+        val fileExtension = ".dice"
         fun numberDie(i:Int): Die{
             val d = Die()
             (1..i).forEach {
@@ -79,6 +80,7 @@ class Die: JsonSavable() {
     fun add(a: JsonSavable){
         sides.add(a)
     }
-    fun roll(): Int = Random().nextInt(size())
+    fun rollIndex(): Int = Random().nextInt(size())
+    fun roll(): Any = sides[rollIndex()]
     override fun toString() = sides.toString()
 }

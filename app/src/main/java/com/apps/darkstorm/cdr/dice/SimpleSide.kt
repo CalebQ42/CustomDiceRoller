@@ -3,7 +3,7 @@ package com.apps.darkstorm.cdr.dice
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.JsonWriter
-import com.apps.darkstorm.cdr.SaveLoad.JsonSavable
+import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 
 class SimpleSide: JsonSavable {
     override fun save(jw: JsonWriter) {
@@ -21,6 +21,7 @@ class SimpleSide: JsonSavable {
             }
             val jName = jr.nextName()
             when(jName){
+                "value"->value = jr.nextString()
             }
         }
         jr.endObject()

@@ -13,13 +13,16 @@ import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
 
 class DiceResults {
-    var number = 0
+    private var number = 0
     private var reses = mutableListOf<Result>()
+    var subtractMode = false
     var resList = mutableListOf<Any>()
     class Result(var name:String, var value: Int){
         override fun toString() = value.toString() + " " + name
     }
     fun add(res: Result){
+        if(subtractMode)
+            res.value *= -1
         resList.add(res)
         val ind = indexOf(res.name)
         when(ind){
@@ -27,8 +30,10 @@ class DiceResults {
             else-> reses[ind].value += res.value
         }
     }
-    fun addNum(i: Int){
-        println("In: "+i.toString())
+    fun addNum(int: Int){
+        var i = int
+        if(subtractMode)
+            i*= -1
         number += i
         resList.add(i)
     }
@@ -49,6 +54,7 @@ class DiceResults {
                 ?.value
                 ?: 0
     }
+    fun getNum() = number
     fun indexOf(name:String):Int{
         return reses.indices.firstOrNull { reses[it].name == name }
                 ?: 0

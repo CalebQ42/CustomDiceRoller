@@ -10,9 +10,11 @@
 
     <string name="individual_first_text">Show individual results first</string>
     <string name="google_drive_text">Save Dice to Google Drive (Coming Soon)</string>
+    <string name="theme_text">Light Theme (Coming Soon)</string>
 
     <string name="individual">Individual</string>
     <string name="combined">Combined</string>
 
     <string name="g_plus_option">G+ Community</string>
+    <string name="title_activity_splash_screen">SplashScreen</string>
 </resources>

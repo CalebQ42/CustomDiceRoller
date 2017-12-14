@@ -18,7 +18,7 @@ class DiceFormula {
         private fun parse(str: String, dr: DiceResults){
             when{
                 str.contains("d")->{
-                    val sub = str.startsWith("-")
+                    dr.subtractMode = str.startsWith("-")
                     str.removePrefix("+")
                     str.removePrefix("-")
                     val pre: Int
@@ -32,11 +32,8 @@ class DiceFormula {
                         str.substring(0,dInd).toInt()
                     post = str.substring(dInd+1).toInt()
                     val out = Dice.numberDice(pre,post).roll()
-                    if(sub)
-                        out.number *=-1
-                    println("Hello: "+out.number)
-                    println("gobble: "+dr.number)
                     dr.combineWith(out)
+                    dr.subtractMode = false
                 }
                 str.contains("{") && str.contains("}")->{
                     val sub = str.startsWith("-")
@@ -44,7 +41,7 @@ class DiceFormula {
                     str.removePrefix("-")
                     //proper parsley once functionality implemented
                 }
-                else->dr.number += str.toInt()
+                else->dr.addNum(str.toInt())
             }
         }
     }

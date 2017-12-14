@@ -1,4 +1,4 @@
-package com.apps.darkstorm.cdr.SaveLoad
+package com.apps.darkstorm.cdr.saveLoad
 
 import android.util.JsonReader
 import android.util.JsonWriter
@@ -6,6 +6,7 @@ import java.io.Reader
 import java.io.Writer
 
 abstract class JsonSavable{
+    abstract val fileExtension: String
     abstract fun save(jw: JsonWriter)
     abstract fun load(jr: JsonReader)
     fun saveJson(wr: Writer){
