@@ -4,7 +4,6 @@ import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.Toolbar
-import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,16 +24,16 @@ class FormulaFragment : Fragment() {
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.fragment_formula, container, false)
+            inflater.inflate(R.layout.formula_new, container, false)
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
         act.find<FloatingActionButton>(R.id.fab).show()
         val disp = v.find<EditText>(R.id.display)
-        disp.isEnabled = false
         v.find<ImageButton>(R.id.back).setOnClickListener {
             if(disp.text.isNotEmpty())
-                disp.text = Editable.Factory.getInstance().newEditable(disp.text.substring(0,disp.text.length-1))
+                disp.text.delete(disp.text.length-1,disp.text.length)
         }
+        v.find<Button>(R.id.clear).setOnClickListener { disp.text.delete(0,disp.text.length)}
         v.find<Button>(R.id.one).setOnClickListener { disp.text.append('1') }
         v.find<Button>(R.id.two).setOnClickListener { disp.text.append('2') }
         v.find<Button>(R.id.three).setOnClickListener { disp.text.append('3') }

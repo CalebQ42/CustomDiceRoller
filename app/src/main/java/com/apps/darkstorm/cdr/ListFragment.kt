@@ -12,6 +12,7 @@ import android.widget.TextView
 import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
+import org.jetbrains.anko.imageResource
 
 class ListFragment: Fragment(){
     var dice = false
@@ -30,7 +31,10 @@ class ListFragment: Fragment(){
         else
             toolbar.titleResource = R.string.die_nav_drawer
         val fab = activity.find<FloatingActionButton>(R.id.fab)
-        fab.hide()
+        fab.imageResource = R.drawable.add
+        fab.setOnClickListener {
+            //create new die/dice UI
+        }
         recycle= view?.find(R.id.recycler)!!
         recycle.adapter = listAdapter()
         val linlay = LinearLayoutManager(act)

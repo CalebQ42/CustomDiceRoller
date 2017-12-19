@@ -21,4 +21,8 @@
 
     <string name="g_plus_option">G+ Community</string>
     <string name="title_activity_splash_screen">SplashScreen</string>
+
+    <string name="add_dice">Add Dice</string>
+    <string name="add_dice_group">Add Dice Group</string>
+    <string name="clear">Clear</string>
 </resources>

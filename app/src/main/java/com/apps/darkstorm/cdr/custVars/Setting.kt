@@ -12,7 +12,6 @@ import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
 import org.jetbrains.anko.hintResource
 import org.jetbrains.anko.textResource
-
 class Setting(private val textID: Int, private val key: String, private val defaultValue: Any, private val prefs: SharedPreferences, val type: Int){
     lateinit var checkedChangeListener: ((Boolean) -> Unit)
     fun linkToSwitch(sw: Switch){
