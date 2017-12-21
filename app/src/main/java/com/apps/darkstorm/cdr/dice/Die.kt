@@ -8,7 +8,7 @@ import java.util.*
 
 class Die: JsonSavable() {
     val name: String = ""
-    val fileExtension = ".dice"
+    val fileExtension = ".die"
     override fun load(jr: JsonReader) {
         jr.beginObject()
         val sideTypes = mutableListOf<Boolean>()
@@ -61,7 +61,7 @@ class Die: JsonSavable() {
         jw.endObject()
     }
     companion object {
-        val fileExtension = ".dice"
+        val fileExtension = ".die"
         fun numberDie(i:Int): Die{
             val d = Die()
             (1..i).forEach {

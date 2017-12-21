@@ -11,20 +11,20 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:editable="false"
+        android:cursorVisible="true"
         android:ems="10"
-        android:enabled="false"
+        android:enabled="true"
         android:inputType="none"
         android:textColor="?android:attr/textColorPrimaryNoDisable"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <android.support.constraint.ConstraintLayout
         android:id="@+id/main"
         android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="16dp"
+        android:layout_height="wrap_content"
         android:background="?attr/colorBackgroundFloating"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,28 +49,25 @@
 
                 <Button
                     android:id="@+id/clear"
+                    style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="@string/clear" />
 
-                <ImageButton
+                <ImageView
                     android:id="@+id/back"
-                    style="@android:style/Widget.DeviceDefault.Light.ImageButton"
                     android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_gravity="end"
                     android:layout_weight="1"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@+id/numpad"
-                    app:layout_constraintStart_toStartOf="@+id/back_guide"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.100000024"
+                    android:background="?attr/selectableItemBackground"
+                    android:cropToPadding="false"
+                    android:padding="8dp"
                     app:srcCompat="@drawable/backspace" />
+
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/die_dice_lay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -94,10 +91,8 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/numpad"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -258,9 +253,6 @@
 
             </LinearLayout>
 
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
         </LinearLayout>
 
     </android.support.constraint.ConstraintLayout>

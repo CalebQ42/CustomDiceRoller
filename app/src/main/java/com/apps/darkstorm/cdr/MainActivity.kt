@@ -23,11 +23,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
         when((application as CDR).prefs.getInt(getString(R.string.default_section_key),0)){
-            0->fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
+            0->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
                     .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-            1->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+            1->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
                     .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-            2->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+            2->fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
                     .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
         }
     }

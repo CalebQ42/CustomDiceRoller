@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="default_opening">
-        <item>Formula</item>
         <item>Dice</item>
         <item>Dice Groups</item>
+        <item>Formula</item>
     </string-array>
 </resources>
