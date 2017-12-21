@@ -1,7 +1,7 @@
 # CustomDiceRoller
 CDR for short. Custom dice app for Android
 
-(Google Play Store)[https://play.google.com/store/apps/details?id=com.apps.darkstorm.cdr]
+[Google Play Store](https://play.google.com/store/apps/details?id=com.apps.darkstorm.cdr)
 
 Features:
 * Type out dice formulas to roll
