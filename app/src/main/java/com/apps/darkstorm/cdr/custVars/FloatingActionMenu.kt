@@ -3,6 +3,7 @@ package com.apps.darkstorm.cdr.custVars
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.support.design.widget.FloatingActionButton
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnticipateOvershootInterpolator
@@ -10,10 +11,9 @@ import android.widget.TextView
 import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
 import org.jetbrains.anko.imageResource
-import org.jetbrains.anko.layoutInflater
 
 object FloatingActionMenu {
-    class MenuItem(var imageID: Int, var onClick: () -> Unit, private var label: String = ""){
+    class FloatingMenuItem(var imageID: Int, var onClick: () -> Unit, private var label: String = ""){
         lateinit var linkedItem: View
         lateinit var hideAction: ()->Unit
         fun setImage(imageID: Int){
@@ -50,32 +50,30 @@ object FloatingActionMenu {
                 hideAction()
             }
             fab.imageResource = imageID
-            if(label == "")
-                item.find<TextView>(R.id.label).visibility = View.GONE
-            else {
-                item.find<TextView>(R.id.label).text = label
-                item.find<TextView>(R.id.label).visibility = View.VISIBLE
-            }
         }
     }
-    fun connect(mainfab: FloatingActionButton,root: ViewGroup, items: Array<MenuItem>){
+    fun connect(mainfab: FloatingActionButton,root: ViewGroup, items: Array<FloatingMenuItem>){
         mainfab.imageResource = R.drawable.add
         val openAnimation = {
             for((i,it) in items.withIndex()) {
-                println(it.linkedItem.y)
-                it.linkedItem.y -= (54 * mainfab.resources.displayMetrics.density)
-                println(it.linkedItem.y)
-//                it.linkedItem.animate().translationYBy(-(54 * (i+1)) * mainfab.resources.displayMetrics.density).start()
+                when(i){
+                    0->it.linkedItem.animate().translationYBy(-mainfab.resources.getDimension(R.dimen.fam_1)).start()
+                    1->it.linkedItem.animate().translationYBy(-mainfab.resources.getDimension(R.dimen.fam_2)).start()
+                    2->it.linkedItem.animate().translationYBy(-mainfab.resources.getDimension(R.dimen.fam_3)).start()
+                    3->it.linkedItem.animate().translationYBy(-mainfab.resources.getDimension(R.dimen.fam_4)).start()
+                }
                 if(it.getLabel()!="")
                     it.linkedItem.find<TextView>(R.id.label).visibility = View.VISIBLE
             }
         }
         val closeAnimation = {
             for((i,it) in items.withIndex()) {
-                println(it.linkedItem.y)
-                it.linkedItem.y += (54 * mainfab.resources.displayMetrics.density) + (i*10)
-                println(it.linkedItem.y)
-//                it.linkedItem.animate().translationYBy((54 * (i+1)) * mainfab.resources.displayMetrics.density).start()
+                when(i){
+                    0->it.linkedItem.animate().translationYBy(mainfab.resources.getDimension(R.dimen.fam_1)).start()
+                    1->it.linkedItem.animate().translationYBy(mainfab.resources.getDimension(R.dimen.fam_2)).start()
+                    2->it.linkedItem.animate().translationYBy(mainfab.resources.getDimension(R.dimen.fam_3)).start()
+                    3->it.linkedItem.animate().translationYBy(mainfab.resources.getDimension(R.dimen.fam_4)).start()
+                }
                 it.linkedItem.find<TextView>(R.id.label).visibility = View.GONE
             }
         }
@@ -103,9 +101,9 @@ object FloatingActionMenu {
             closeAnimation()
         }
         for(i in items){
-            val v = root.context.layoutInflater.inflate(R.layout.menu_item,root,true)
-            println(v)
-            i.linkToItem(v,{closeAnimation()})
+            val v = LayoutInflater.from(root.context).inflate(R.layout.menu_item,root,false)
+            i.linkToItem(v,{mainfabClose()})
+            root.addView(v)
         }
         mainfab.setOnClickListener { mainfabOpen() }
     }

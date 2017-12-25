@@ -26,5 +26,8 @@
     <string name="add_dice_group">Add Dice Group</string>
     <string name="clear">Clear</string>
 
+    <string name="simple_side">Simple Side</string>
+    <string name="complex_side">Complex Side</string>
+
     <string name="modifier">Modifier</string>
 </resources>
