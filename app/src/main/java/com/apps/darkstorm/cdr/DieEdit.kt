@@ -11,7 +11,7 @@ import org.jetbrains.anko.find
 
 class DieEdit: Fragment(){
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
-            inflater.inflate(R.layout.edit_die,container,false)
+            inflater?.inflate(R.layout.edit,container,false)
 
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         val mainFab = act.find<FloatingActionButton>(R.id.fab)

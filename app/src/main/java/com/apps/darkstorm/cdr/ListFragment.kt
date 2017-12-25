@@ -7,8 +7,10 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
+import android.widget.FrameLayout
 import android.widget.SearchView
 import android.widget.TextView
+import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
@@ -40,6 +42,8 @@ class ListFragment: Fragment(){
         val linlay = LinearLayoutManager(act)
         linlay.orientation = LinearLayoutManager.VERTICAL
         recycle.layoutManager = linlay
+        val items = arrayOf(FloatingActionMenu.MenuItem(R.drawable.add,{println("hello1")},"test1"),FloatingActionMenu.MenuItem(R.drawable.add,{println("hello2")},"test2"))
+        FloatingActionMenu.connect(fab,view.find<FrameLayout>(R.id.constraint),items)
     }
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.searchable, menu)
