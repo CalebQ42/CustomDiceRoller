@@ -19,6 +19,7 @@ Goals before release:
 Goals (In general):
 * Functional and nice looking material design UI
 
-Maybe Future Goals:
+Post release Goals:
 * Publish your dice online
 * Share dice directly to others
+* You tell me! Look for the issue entitled Ideas! that has a help wanted tag, or email me at belacdarkstorm@gmail.com
