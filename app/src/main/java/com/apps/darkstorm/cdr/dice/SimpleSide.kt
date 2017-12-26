@@ -5,13 +5,13 @@ import android.util.JsonToken
 import android.util.JsonWriter
 import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 
-class SimpleSide: JsonSavable {
+data class SimpleSide(private var value: String = ""): JsonSavable() {
+    override fun clone() = this.copy()
     override fun save(jw: JsonWriter) {
         jw.beginObject()
         jw.name("value").value(value)
         jw.endObject()
     }
-
     override fun load(jr: JsonReader) {
         jr.beginObject()
         while(jr.hasNext() && jr.peek() != JsonToken.END_OBJECT){
@@ -25,14 +25,6 @@ class SimpleSide: JsonSavable {
             }
         }
         jr.endObject()
-    }
-
-    private var value = ""
-    constructor(value: String){
-        this.value = value
-    }
-    constructor(value: Int){
-        this.value = value.toString()
     }
     fun intSide() = value.toInt()
     fun stringSide() = value

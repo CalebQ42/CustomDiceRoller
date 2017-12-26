@@ -31,11 +31,21 @@ class ListFragment: Fragment(){
         else
             toolbar.titleResource = R.string.die_nav_drawer
         val fab = activity.find<FloatingActionButton>(R.id.fab)
-        fab.imageResource = R.drawable.add
-        fab.setOnClickListener {
-            //create new die/dice UI
-        }
-        recycle= view?.find(R.id.recycler)!!
+        fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
+            override fun onHidden(fab: FloatingActionButton) {
+                fab.imageResource = R.drawable.add
+                fab.setOnClickListener {
+                    if(dice)
+                        fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
+                                .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                    else
+                        fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
+                                .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                }
+                fab.show()
+            }
+        })
+        recycle = view?.find(R.id.recycler)!!
         recycle.adapter = listAdapter()
         val linlay = LinearLayoutManager(act)
         linlay.orientation = LinearLayoutManager.VERTICAL
@@ -54,20 +64,22 @@ class ListFragment: Fragment(){
         })
     }
     inner class listAdapter: RecyclerView.Adapter<listAdapter.ViewHolder>(){
+        var searchString = ""
         override fun getItemCount() = when(dice){
-            true->(act.application as CDR).diceMaster.size
-            else->(act.application as CDR).dieMaster.size
+            true->(act.application as CDR).getDice(searchString).size
+            else->(act.application as CDR).getDice(searchString).size
         }
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(act.layoutInflater.inflate(R.layout.list_item,parent,false))
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if(dice){
-                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).diceMaster[position].name
+                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDice(searchString)[position].getName()
             }else{
-                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).dieMaster[position].name
+                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDice(searchString)[position].getName()
             }
         }
         fun handleQuery(str: String){
-            //handle searching
+            searchString = str
+            this.notifyDataSetChanged()
         }
         inner class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
     }

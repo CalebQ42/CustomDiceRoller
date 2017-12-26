@@ -10,8 +10,50 @@ import java.io.File
 class CDR: Application(){
     lateinit var prefs: SharedPreferences
     lateinit var dir: String
-    lateinit var diceMaster: MutableList<Dice>
-    lateinit var dieMaster: MutableList<Die>
+    lateinit private var diceMaster: MutableList<Dice>
+    lateinit private var dieMaster: MutableList<Die>
+    fun getDies(str: String): MutableList<Die>{
+        dieMaster.sortBy { it.getName() }
+        if(str=="")
+            return dieMaster
+        return dieMaster
+                .filter { it.getName().contains(str) }
+                .toMutableList()
+    }
+    fun getDice(str: String): MutableList<Dice>{
+        diceMaster.sortBy { it.getName() }
+        if(str=="")
+            return diceMaster
+        return diceMaster
+                .filter { it.getName().contains(str) }
+                .toMutableList()
+    }
+    fun addNewDie(): Die {
+        val newy = Die()
+        newy.renameNoFileMove("New Die")
+        var i = 1
+        while(dieMaster.find { d->
+                d.getName() == newy.getName()
+            }!=null){
+            newy.renameNoFileMove("New Die" + i.toString())
+            i++
+        }
+        dieMaster.add(newy)
+        return newy
+    }
+    fun addNewGroup(): Dice {
+        val newy = Dice()
+        newy.renameNoFileMove("New Group")
+        var i = 1
+        while(dieMaster.find { d->
+                d.getName() == newy.getName()
+            }!=null){
+            newy.renameNoFileMove("New Group" + i.toString())
+            i++
+        }
+        diceMaster.add(newy)
+        return newy
+    }
     override fun onCreate() {
         prefs = getSharedPreferences(getString(R.string.preference_key), Context.MODE_PRIVATE)
         super.onCreate()
@@ -26,6 +68,7 @@ class CDR: Application(){
                 dieMaster.add(tmp)
             }
         }
+        dieMaster.sortBy { it.getName() }
     }
     fun reloadDiceMaster(){
         diceMaster = mutableListOf()
@@ -37,6 +80,7 @@ class CDR: Application(){
                 diceMaster.add(tmp)
             }
         }
+        diceMaster.sortBy { it.getName() }
     }
     fun reloadAll(){
         reloadDieMaster()

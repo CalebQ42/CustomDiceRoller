@@ -3,12 +3,28 @@ package com.apps.darkstorm.cdr.dice
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.JsonWriter
+import com.apps.darkstorm.cdr.CDR
 import com.apps.darkstorm.cdr.saveLoad.JsonSavable
+import com.apps.darkstorm.cdr.saveLoad.Save
+import java.io.File
 import java.util.*
 
-class Die: JsonSavable() {
-    val name: String = ""
+data class Die(private var sides: MutableList<JsonSavable> = mutableListOf()): JsonSavable() {
+    companion object {
+        val fileExtension = ".die"
+        fun numberDie(i:Int): Die{
+            val d = Die()
+            (1..i).forEach {
+                d.add(SimpleSide(it.toString()))
+            }
+            return d
+        }
+    }
+
+    private var name: String = ""
     val fileExtension = ".die"
+
+    override fun clone() = copy()
     override fun load(jr: JsonReader) {
         jr.beginObject()
         val sideTypes = mutableListOf<Boolean>()
@@ -52,25 +68,15 @@ class Die: JsonSavable() {
     override fun save(jw: JsonWriter) {
         jw.beginObject()
         jw.name("isComplex").beginArray()
-        for(i in 0..size())
+        for(i in 0 until size())
             jw.value(isComplex(i))
+        jw.endArray()
         jw.name("sides").beginArray()
         for(s in sides)
             s.save(jw)
         jw.endArray()
         jw.endObject()
     }
-    companion object {
-        val fileExtension = ".die"
-        fun numberDie(i:Int): Die{
-            val d = Die()
-            (1..i).forEach {
-                d.add(SimpleSide(it))
-            }
-            return d
-        }
-    }
-    private var sides = mutableListOf<JsonSavable>()
     fun size() = sides.size
     fun isComplex(i: Int) = sides[i] is ComplexSide
     fun getComplex(i: Int) = sides[i] as? ComplexSide
@@ -84,4 +90,14 @@ class Die: JsonSavable() {
     fun rollIndex(): Int = Random().nextInt(size())
     fun roll(): Any = sides[rollIndex()]
     override fun toString() = sides.toString()
+    fun localLocation(cdr: CDR) = cdr.dir+"/"+name+fileExtension
+    fun rename(newName: String,cdr: CDR){
+        File(localLocation(cdr)).delete()
+        name = newName
+        Save.local(this,localLocation(cdr))
+    }
+    fun renameNoFileMove(newName: String){
+        name = newName
+    }
+    fun getName() = name
 }

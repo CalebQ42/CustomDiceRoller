@@ -28,6 +28,7 @@
 
     <string name="simple_side">Simple Side</string>
     <string name="complex_side">Complex Side</string>
+    <string name="roll">Roll</string>
 
     <string name="modifier">Modifier</string>
 </resources>

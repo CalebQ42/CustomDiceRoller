@@ -3,11 +3,25 @@ package com.apps.darkstorm.cdr.dice
 import android.util.JsonReader
 import android.util.JsonToken
 import android.util.JsonWriter
+import com.apps.darkstorm.cdr.CDR
 import com.apps.darkstorm.cdr.saveLoad.JsonSavable
+import com.apps.darkstorm.cdr.saveLoad.Save
+import java.io.File
 
-class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
-    val name: String = ""
+data class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
+    companion object {
+        val fileExtension = ".dice"
+        fun numberDice(number: Int, sides: Int):Dice{
+            val d = Dice()
+            (1..number).forEach {d.add(Die.numberDie(sides))}
+            return d
+        }
+    }
+
+    private var name: String = ""
     val fileExtension = ".dice"
+
+    override fun clone() = copy()
     override fun save(jw: JsonWriter) {
         jw.beginObject()
         jw.name("dice").beginArray()
@@ -35,15 +49,6 @@ class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() 
             }
         }
         jr.endObject()
-    }
-    companion object {
-        val fileExtension = ".dice"
-        fun numberDice(number: Int, sides: Int):Dice{
-            val d = Dice()
-            (1..number).forEach {d.add(Die.numberDie(sides))}
-            println(d.dice)
-            return d
-        }
     }
     fun size() = dice.size
     fun add(d: Die){
@@ -75,4 +80,14 @@ class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() 
         }
         return dr
     }
+    fun localLocation(cdr: CDR) = cdr.dir+"/"+name+fileExtension
+    fun rename(newName: String,cdr: CDR){
+        File(localLocation(cdr)).delete()
+        name = newName
+        Save.local(this,localLocation(cdr))
+    }
+    fun renameNoFileMove(newName: String){
+        name = newName
+    }
+    fun getName() = name
 }

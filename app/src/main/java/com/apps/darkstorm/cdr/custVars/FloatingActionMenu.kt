@@ -6,7 +6,6 @@ import android.support.design.widget.FloatingActionButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnticipateOvershootInterpolator
 import android.widget.TextView
 import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
@@ -50,10 +49,10 @@ object FloatingActionMenu {
                 hideAction()
             }
             fab.imageResource = imageID
+            item.find<TextView>(R.id.label).text = label
         }
     }
     fun connect(mainfab: FloatingActionButton,root: ViewGroup, items: Array<FloatingMenuItem>){
-        mainfab.imageResource = R.drawable.add
         val openAnimation = {
             for((i,it) in items.withIndex()) {
                 when(i){
@@ -79,7 +78,7 @@ object FloatingActionMenu {
         }
         var mainfabClose = {}
         val mainfabOpen = {
-            mainfab.animate().rotation(45f).setInterpolator(AnticipateOvershootInterpolator(4f)).setListener(object: AnimatorListenerAdapter(){
+            mainfab.animate().rotation(45f).setListener(object: AnimatorListenerAdapter(){
                 override fun onAnimationEnd(p0: Animator?) {
                     mainfab.setOnClickListener {
                         mainfabClose()
@@ -90,7 +89,7 @@ object FloatingActionMenu {
             openAnimation()
         }
         mainfabClose = {
-            mainfab.animate().rotation(0f).setInterpolator(AnticipateOvershootInterpolator()).setListener(object: AnimatorListenerAdapter(){
+            mainfab.animate().rotation(0f).setListener(object: AnimatorListenerAdapter(){
                 override fun onAnimationEnd(p0: Animator?) {
                     mainfab.setOnClickListener {
                         mainfabOpen.invoke()
@@ -100,11 +99,20 @@ object FloatingActionMenu {
             }).start()
             closeAnimation()
         }
-        for(i in items){
-            val v = LayoutInflater.from(root.context).inflate(R.layout.menu_item,root,false)
-            i.linkToItem(v,{mainfabClose()})
-            root.addView(v)
-        }
-        mainfab.setOnClickListener { mainfabOpen() }
+        mainfab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
+            override fun onHidden(fab: FloatingActionButton) {
+                mainfab.imageResource = R.drawable.add
+                mainfab.show(object: FloatingActionButton.OnVisibilityChangedListener(){
+                    override fun onShown(fab: FloatingActionButton) {
+                        for(i in items){
+                            val v = LayoutInflater.from(root.context).inflate(R.layout.menu_item,root,false)
+                            i.linkToItem(v,{mainfabClose()})
+                            root.addView(v)
+                        }
+                        mainfab.setOnClickListener { mainfabOpen() }
+                    }
+                })
+            }
+        })
     }
 }

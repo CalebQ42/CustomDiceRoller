@@ -14,10 +14,9 @@
         android:layout_gravity="center_vertical"
         android:layout_marginRight="5dp"
         android:layout_weight="1"
-        android:background="@android:color/background_dark"
-        android:padding="3dp"
-        android:text=""
-        android:textColor="@android:color/background_light"
+        android:background="?attr/colorBackgroundFloating"
+        android:padding="5dp"
+        android:text="Testing Text"
         android:visibility="gone" />
 
     <android.support.design.widget.FloatingActionButton

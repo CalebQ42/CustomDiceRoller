@@ -5,7 +5,20 @@ import android.util.JsonToken
 import android.util.JsonWriter
 import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 
-class ComplexSide: JsonSavable() {
+data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePart> = mutableListOf()): JsonSavable() {
+    fun addPart(side: ComplexSidePart) = parts.add(side)
+    fun size() = parts.size
+    fun get(i: Int) = parts[i]
+    fun set(i: Int, side: ComplexSidePart){
+        parts[i] = side
+    }
+    fun add(side: ComplexSidePart) = parts.add(side)
+    override fun toString(): String {
+        var out = number.toString() + ", "
+        out += parts.toString()
+        return out
+    }
+    override fun clone() = this.copy()
     override fun save(jw: JsonWriter) {
         jw.beginObject()
         jw.name("number").value(number)
@@ -39,9 +52,8 @@ class ComplexSide: JsonSavable() {
         }
         jr.endObject()
     }
-    var number = 0
-    var parts = mutableListOf<ComplexSidePart>()
-    class ComplexSidePart(var name: String, var value: Int): JsonSavable(){
+    data class ComplexSidePart(var name: String, var value: Int): JsonSavable(){
+        override fun clone() = copy()
         override fun load(jr: JsonReader) {
             jr.beginObject()
             while(jr.hasNext() && jr.peek() != JsonToken.END_OBJECT){
@@ -64,16 +76,33 @@ class ComplexSide: JsonSavable() {
             jw.endObject()
         }
     }
-    fun addPart(side: ComplexSidePart) = parts.add(side)
-    fun size() = parts.size
-    fun get(i: Int) = parts[i]
-    fun set(i: Int, side: ComplexSidePart){
-        parts[i] = side
-    }
-    fun add(side: ComplexSidePart) = parts.add(side)
-    override fun toString(): String {
-        var out = number.toString() + ", "
-        out += parts.toString()
-        return out
-    }
 }
+
+//class ComplexSide: JsonSavable() {
+//    fun addPart(side: ComplexSidePart) = parts.add(side)
+//    fun size() = parts.size
+//    fun get(i: Int) = parts[i]
+//    fun set(i: Int, side: ComplexSidePart){
+//        parts[i] = side
+//    }
+//    fun add(side: ComplexSidePart) = parts.add(side)
+//    override fun toString(): String {
+//        var out = number.toString() + ", "
+//        out += parts.toString()
+//        return out
+//    }
+//    override fun equals(other: Any?): Boolean {
+//        if (this === other) return true
+//        if (other !is ComplexSide) return false
+//
+//        if (number != other.number) return false
+//        if (parts != other.parts) return false
+//
+//        return true
+//    }
+//    override fun hashCode(): Int {
+//        var result = number
+//        result = 31 * result + parts.hashCode()
+//        return result
+//    }
+//}
