@@ -24,11 +24,10 @@ class DiceResults {
         if(subtractMode)
             res.value *= -1
         resList.add(res)
-        val ind = indexOf(res.name)
-        when(ind){
-            -1 -> reses.add(res)
-            else-> reses[ind].value += res.value
-        }
+        if(has(res.name))
+            reses[indexOf(res.name)].value += res.value
+        else
+            reses.add(res)
     }
     fun addNum(int: Int){
         var i = int
@@ -107,6 +106,14 @@ class DiceResults {
         }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
             dialog.cancel()
         }).show()
+    }
+
+    override fun toString(): String{
+        var out = number.toString()
+        reses.forEach{
+            out += ", " + it.value + " " + it.name
+        }
+        return out
     }
 
     inner class ResultsAdap(private val a: Activity): RecyclerView.Adapter<ResultsAdap.ViewHolder>(){

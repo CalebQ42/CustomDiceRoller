@@ -8,12 +8,12 @@ import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 import com.apps.darkstorm.cdr.saveLoad.Save
 import java.io.File
 
-data class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
+data class Dice(var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
     companion object {
         val fileExtension = ".dice"
         fun numberDice(number: Int, sides: Int):Dice{
             val d = Dice()
-            (1..number).forEach {d.add(Die.numberDie(sides))}
+            (1..number).forEach {d.dice.add(Die.numberDie(sides))}
             return d
         }
     }
@@ -24,6 +24,7 @@ data class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavab
     override fun clone() = copy()
     override fun save(jw: JsonWriter) {
         jw.beginObject()
+        jw.name("name").value(name)
         jw.name("dice").beginArray()
         for(d in dice)
             d.save(jw)
@@ -39,25 +40,17 @@ data class Dice(private var dice: MutableList<Die> = mutableListOf()): JsonSavab
             }
             val jName = jr.nextName()
             when(jName){
-                "dice"->{
+                "name"->name = jr.nextString()
+                "dice"->
                     while(jr.peek()!= JsonToken.END_ARRAY){
                         val dc = Die()
                         dc.load(jr)
                         dice.add(dc)
                     }
-                }
             }
         }
         jr.endObject()
     }
-    fun size() = dice.size
-    fun add(d: Die){
-        dice.add(d)
-    }
-    fun set(i: Int, d: Die){
-        dice[i] = d
-    }
-    fun get(i:Int) = dice[i]
     fun roll(): DiceResults{
         val dr = DiceResults()
         for(d in dice){

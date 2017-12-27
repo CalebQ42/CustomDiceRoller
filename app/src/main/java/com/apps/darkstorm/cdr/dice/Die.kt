@@ -9,13 +9,13 @@ import com.apps.darkstorm.cdr.saveLoad.Save
 import java.io.File
 import java.util.*
 
-data class Die(private var sides: MutableList<JsonSavable> = mutableListOf()): JsonSavable() {
+data class Die(var sides: MutableList<JsonSavable> = mutableListOf()): JsonSavable() {
     companion object {
         val fileExtension = ".die"
         fun numberDie(i:Int): Die{
             val d = Die()
             (1..i).forEach {
-                d.add(SimpleSide(it.toString()))
+                d.sides.add(SimpleSide(it.toString()))
             }
             return d
         }
@@ -35,6 +35,7 @@ data class Die(private var sides: MutableList<JsonSavable> = mutableListOf()): J
             }
             val jName = jr.nextName()
             when(jName){
+                "name"->name = jr.nextString()
                 "isComplex"->{
                     jr.beginArray()
                     while(jr.peek()!=JsonToken.END_ARRAY)
@@ -67,8 +68,9 @@ data class Die(private var sides: MutableList<JsonSavable> = mutableListOf()): J
     }
     override fun save(jw: JsonWriter) {
         jw.beginObject()
+        jw.name("name").value(name)
         jw.name("isComplex").beginArray()
-        for(i in 0 until size())
+        for(i in 0 until sides.size)
             jw.value(isComplex(i))
         jw.endArray()
         jw.name("sides").beginArray()
@@ -77,17 +79,10 @@ data class Die(private var sides: MutableList<JsonSavable> = mutableListOf()): J
         jw.endArray()
         jw.endObject()
     }
-    fun size() = sides.size
     fun isComplex(i: Int) = sides[i] is ComplexSide
     fun getComplex(i: Int) = sides[i] as? ComplexSide
     fun getSimple(i: Int) = sides[i] as? SimpleSide
-    fun set(i: Int, a: JsonSavable){
-        sides[i] = a
-    }
-    fun add(a: JsonSavable){
-        sides.add(a)
-    }
-    fun rollIndex(): Int = Random().nextInt(size())
+    fun rollIndex(): Int = Random().nextInt(sides.size)
     fun roll(): Any = sides[rollIndex()]
     override fun toString() = sides.toString()
     fun localLocation(cdr: CDR) = cdr.dir+"/"+name+fileExtension

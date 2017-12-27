@@ -37,6 +37,7 @@ class CDR: Application(){
             }!=null){
             newy.renameNoFileMove("New Die" + i.toString())
             i++
+            println("Renamed!")
         }
         dieMaster.add(newy)
         return newy
@@ -62,10 +63,12 @@ class CDR: Application(){
         dieMaster = mutableListOf()
         val root = File(dir)
         root.listFiles().forEach { fil ->
+            println(fil.name)
             if(fil.isFile && fil.name.endsWith(Die.fileExtension)){
                 val tmp = Die()
                 tmp.loadJson(fil.reader())
                 dieMaster.add(tmp)
+                println("Adding: "+fil.name)
             }
         }
         dieMaster.sortBy { it.getName() }

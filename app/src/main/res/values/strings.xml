@@ -31,4 +31,9 @@
     <string name="roll">Roll</string>
 
     <string name="modifier">Modifier</string>
+
+    <string name="simple_side_hint">Number or Text</string>
+    <string name="delete">Delete</string>
+    <string name="number">Number:</string>
+    <string name="add_part">Add Part</string>
 </resources>

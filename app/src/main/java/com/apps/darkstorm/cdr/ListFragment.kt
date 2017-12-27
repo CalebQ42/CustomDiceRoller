@@ -66,15 +66,15 @@ class ListFragment: Fragment(){
     inner class listAdapter: RecyclerView.Adapter<listAdapter.ViewHolder>(){
         var searchString = ""
         override fun getItemCount() = when(dice){
-            true->(act.application as CDR).getDice(searchString).size
-            else->(act.application as CDR).getDice(searchString).size
+            true->(act.application as CDR).getDies(searchString).size
+            else->(act.application as CDR).getDies(searchString).size
         }
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(act.layoutInflater.inflate(R.layout.list_item,parent,false))
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if(dice){
-                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDice(searchString)[position].getName()
+                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDies(searchString)[position].getName()
             }else{
-                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDice(searchString)[position].getName()
+                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDies(searchString)[position].getName()
             }
         }
         fun handleQuery(str: String){
