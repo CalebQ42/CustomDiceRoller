@@ -31,20 +31,32 @@ class ListFragment: Fragment(){
         else
             toolbar.titleResource = R.string.die_nav_drawer
         val fab = activity.find<FloatingActionButton>(R.id.fab)
-        fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
-            override fun onHidden(fab: FloatingActionButton) {
-                fab.imageResource = R.drawable.add
-                fab.setOnClickListener {
-                    if(dice)
-                        fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
-                                .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-                    else
-                        fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
-                                .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-                }
-                fab.show()
+        if(fab.visibility == View.GONE){
+            fab.imageResource = R.drawable.add
+            fab.setOnClickListener {
+                if(dice)
+                    fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                else
+                    fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
             }
-        })
+            fab.show()
+        }else
+            fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
+                override fun onHidden(fab: FloatingActionButton) {
+                    fab.imageResource = R.drawable.add
+                    fab.setOnClickListener {
+                        if(dice)
+                            fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
+                                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                        else
+                            fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
+                                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                    }
+                    fab.show()
+                }
+            })
         recycle = view?.find(R.id.recycler)!!
         recycle.adapter = listAdapter()
         val linlay = LinearLayoutManager(act)
@@ -72,9 +84,17 @@ class ListFragment: Fragment(){
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(act.layoutInflater.inflate(R.layout.list_item,parent,false))
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if(dice){
-                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDies(searchString)[position].getName()
+                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDice(searchString)[position].getName()
+                holder.v.setOnClickListener {
+                    fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).getDice(searchString)[holder.adapterPosition]))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                }
             }else{
                 holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDies(searchString)[position].getName()
+                holder.v.setOnClickListener {
+                    fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).getDies(searchString)[holder.adapterPosition]))
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                }
             }
         }
         fun handleQuery(str: String){

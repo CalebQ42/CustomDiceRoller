@@ -19,14 +19,14 @@ import org.jetbrains.anko.imageResource
 class FormulaFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val toolbar = act.find<Toolbar>(R.id.toolbar)
-        toolbar.titleResource = R.string.formula_nav_drawer
     }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.formula_new, container, false)
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
+        val toolbar = act.find<Toolbar>(R.id.toolbar)
+        toolbar.titleResource = R.string.formula_nav_drawer
         val disp = v.find<EditText>(R.id.display)
         v.find<Button>(R.id.clear).setOnClickListener { disp.text.delete(0,disp.text.length)}
         disp.showSoftInputOnFocus = false
@@ -54,12 +54,17 @@ class FormulaFragment : Fragment() {
             }
         }
         val fab = activity.find<FloatingActionButton>(R.id.fab)
-        fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
-            override fun onHidden(fab: FloatingActionButton) {
-                fab.setOnClickListener { DiceFormula.solve(disp.text.toString()).showDialog(activity) }
-                fab.imageResource = R.drawable.die_roll
-                fab.show()
-            }
-        })
+        if(fab.visibility == View.GONE){
+            fab.setOnClickListener { DiceFormula.solve(disp.text.toString()).showDialog(activity) }
+            fab.imageResource = R.drawable.die_roll
+            fab.show()
+        }else
+            fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
+                override fun onHidden(fab: FloatingActionButton) {
+                    fab.setOnClickListener { DiceFormula.solve(disp.text.toString()).showDialog(activity) }
+                    fab.imageResource = R.drawable.die_roll
+                    fab.show()
+                }
+            })
     }
 }

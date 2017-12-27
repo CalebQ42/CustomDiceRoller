@@ -133,16 +133,13 @@ data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePar
                 val part = 0
             }
             override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
-                val out = if(viewType == EditItemAdapter.number) {
-                    println("number Created")
+                val out = if(viewType == EditItemAdapter.number)
                     ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.side_complex_number, parent, false))
-                }else {
-                    println("part Created")
+                else
                     ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.side_complex_part, parent, false))
-                }
                 val np = out.v.find<NumberPicker>(R.id.numberPicker)
                 np.minValue = 0
-                np.maxValue = 100
+                np.maxValue = 10
                 return out
             }
             override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
