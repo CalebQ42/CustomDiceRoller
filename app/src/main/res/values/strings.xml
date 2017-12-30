@@ -36,4 +36,7 @@
     <string name="delete">Delete</string>
     <string name="number">Number:</string>
     <string name="add_part">Add Part</string>
+
+    <string name="rename">Rename</string>
+    <string name="rename_dialog">Name:</string>
 </resources>

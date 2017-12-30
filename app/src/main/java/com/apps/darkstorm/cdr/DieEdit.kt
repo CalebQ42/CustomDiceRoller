@@ -1,6 +1,7 @@
 package com.apps.darkstorm.cdr
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -8,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -19,6 +21,7 @@ import com.apps.darkstorm.cdr.dice.Die
 import com.apps.darkstorm.cdr.dice.SimpleSide
 import org.jetbrains.anko.act
 import org.jetbrains.anko.find
+import org.jetbrains.anko.hintResource
 
 class DieEdit: Fragment(){
     lateinit var die: Die
@@ -38,16 +41,30 @@ class DieEdit: Fragment(){
     }
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.rollable,menu)
+        inflater?.inflate(R.menu.renamable,menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?) =
-        if(item?.itemId  == R.id.roll){
-            val d = Dice()
-            d.dice.add(die)
-            d.roll().showDialog(act)
-            true
-        }else
-            super.onOptionsItemSelected(item)
+            when(item?.itemId){
+                R.id.roll->{
+                    val d = Dice()
+                    d.dice.add(die)
+                    d.roll().showDialog(act)
+                    true
+                }
+                R.id.rename->{
+                    val b = AlertDialog.Builder(act)
+                    val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
+                    val edit = v.find<EditText>(R.id.editText)
+                    edit.hintResource = R.string.rename_dialog
+                    edit.text.insert(0,die.getName())
+                    b.setPositiveButton(android.R.string.ok,{_,_ ->
+                        die.rename(edit.text.toString(),act.application as CDR)
+                    }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                    true
+                }
+                else->super.onOptionsItemSelected(item)
+            }
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         if (view == null)
             return
