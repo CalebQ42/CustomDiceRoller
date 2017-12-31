@@ -1,21 +1,25 @@
 package com.apps.darkstorm.cdr
 
+import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.Toolbar
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import android.widget.EditText
 import android.widget.FrameLayout
 import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import com.apps.darkstorm.cdr.dice.Dice
 import org.jetbrains.anko.act
 import org.jetbrains.anko.find
+import org.jetbrains.anko.hintResource
 
 class DiceEdit : Fragment(){
     lateinit var dice: Dice
-
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
             inflater?.inflate(R.layout.edit,container,false)
     override fun onResume() {
@@ -26,6 +30,29 @@ class DiceEdit : Fragment(){
         super.onPause()
         dice.stopEditing()
     }
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        inflater?.inflate(R.menu.rollable,menu)
+        inflater?.inflate(R.menu.renamable,menu)
+    }
+    override fun onOptionsItemSelected(item: MenuItem?) =
+            when(item?.itemId){
+                R.id.roll->{
+                    dice.roll().showDialog(act)
+                    true
+                }
+                R.id.rename->{
+                    val b = AlertDialog.Builder(act)
+                    val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
+                    val edit = v.find<EditText>(R.id.editText)
+                    edit.hintResource = R.string.rename_dialog
+                    edit.text.insert(0,dice.getName())
+                    b.setPositiveButton(android.R.string.ok,{_,_ ->
+                        dice.rename(edit.text.toString(),act.application as CDR)
+                    }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                    true
+                }
+                else->super.onOptionsItemSelected(item)
+            }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val toolbar = act.find<Toolbar>(R.id.toolbar)
         toolbar.title = dice.getName()
