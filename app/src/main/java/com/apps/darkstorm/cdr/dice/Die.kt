@@ -87,9 +87,13 @@ data class Die(var sides: MutableList<JsonSavable> = mutableListOf()): JsonSavab
     override fun toString() = sides.toString()
     fun localLocation(cdr: CDR) = cdr.dir+"/"+name+fileExtension
     fun rename(newName: String,cdr: CDR){
+        saving = true
+        println(localLocation(cdr))
         File(localLocation(cdr)).delete()
         name = newName
+        println(localLocation(cdr))
         Save.local(this,localLocation(cdr))
+        saving = false
     }
     fun renameNoFileMove(newName: String){
         name = newName

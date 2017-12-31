@@ -55,11 +55,13 @@ class DieEdit: Fragment(){
                 R.id.rename->{
                     val b = AlertDialog.Builder(act)
                     val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
+                    b.setView(v)
                     val edit = v.find<EditText>(R.id.editText)
                     edit.hintResource = R.string.rename_dialog
                     edit.text.insert(0,die.getName())
                     b.setPositiveButton(android.R.string.ok,{_,_ ->
                         die.rename(edit.text.toString(),act.application as CDR)
+                        act.find<Toolbar>(R.id.toolbar).title = die.getName()
                     }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
                     true
                 }
@@ -68,8 +70,7 @@ class DieEdit: Fragment(){
     override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
         if (view == null)
             return
-        val toolbar = act.find<Toolbar>(R.id.toolbar)
-        toolbar.title = die.getName()
+        act.find<Toolbar>(R.id.toolbar).title = die.getName()
 
         val rec = view.find<RecyclerView>(R.id.recycler)
         rec.layoutManager = LinearLayoutManager(act)

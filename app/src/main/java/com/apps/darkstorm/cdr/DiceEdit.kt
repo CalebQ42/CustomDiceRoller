@@ -43,19 +43,20 @@ class DiceEdit : Fragment(){
                 R.id.rename->{
                     val b = AlertDialog.Builder(act)
                     val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
+                    b.setView(v)
                     val edit = v.find<EditText>(R.id.editText)
                     edit.hintResource = R.string.rename_dialog
                     edit.text.insert(0,dice.getName())
                     b.setPositiveButton(android.R.string.ok,{_,_ ->
                         dice.rename(edit.text.toString(),act.application as CDR)
+                        act.find<Toolbar>(R.id.toolbar).title = dice.getName()
                     }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
                     true
                 }
                 else->super.onOptionsItemSelected(item)
             }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val toolbar = act.find<Toolbar>(R.id.toolbar)
-        toolbar.title = dice.getName()
+        act.find<Toolbar>(R.id.toolbar).title = dice.getName()
         val menuItems = arrayOf(FloatingActionMenu.FloatingMenuItem(R.drawable.die,{
             println("Die Add")
             //die add
