@@ -3,6 +3,7 @@ package com.apps.darkstorm.cdr
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import com.apps.darkstorm.cdr.dice.Dice
 import com.apps.darkstorm.cdr.dice.Die
 import java.io.File
@@ -12,6 +13,7 @@ class CDR: Application(){
     lateinit var dir: String
     lateinit private var diceMaster: MutableList<Dice>
     lateinit private var dieMaster: MutableList<Die>
+    lateinit var fab: FloatingActionMenu
     fun getDies(str: String): MutableList<Die>{
         dieMaster.sortBy { it.getName() }
         if(str=="")

@@ -2,7 +2,6 @@ package com.apps.darkstorm.cdr
 
 import android.app.Fragment
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -35,7 +34,7 @@ class SettingsFragment: Fragment(){
             //Theme change
         }
         settings[3].setSpinnerItems(act.resources.getStringArray(R.array.default_opening))
-        act.find<FloatingActionButton>(R.id.fab).hide()
+        (act.application as CDR).fab.hide()
         val r = view.find<RecyclerView>(R.id.recycler)
         r.adapter = SettingsAdap(settings)
         val lm = LinearLayoutManager(view.context)

@@ -2,7 +2,6 @@ package com.apps.darkstorm.cdr.dice
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
@@ -84,12 +83,8 @@ class DiceResults {
         val lm = LinearLayoutManager(a)
         lm.orientation = LinearLayoutManager.VERTICAL
         r.layoutManager = lm
-        build.setPositiveButton(R.string.individual, { dialogInterface: DialogInterface, _: Int ->
-            showIndividualDialog(a)
-            dialogInterface.cancel()
-        }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
-            dialog.cancel()
-        }).show()
+        build.setPositiveButton(R.string.individual, { _, _ -> showIndividualDialog(a) })
+                .setNegativeButton(android.R.string.cancel, {_,_-> }).show()
     }
     fun showIndividualDialog(a: Activity){
         val b = AlertDialog.Builder(a)
@@ -100,12 +95,8 @@ class DiceResults {
         val l = LinearLayoutManager(a)
         l.orientation = LinearLayoutManager.VERTICAL
         rec.layoutManager = l
-        b.setPositiveButton(R.string.combined,{dialogInt: DialogInterface, _: Int ->
-            showCombinedDialog(a)
-            dialogInt.cancel()
-        }).setNegativeButton(android.R.string.cancel, {dialog: DialogInterface,_:Int->
-            dialog.cancel()
-        }).show()
+        b.setPositiveButton(R.string.combined,{_, _ -> showCombinedDialog(a) })
+                .setNegativeButton(android.R.string.cancel, {_,_->}).show()
     }
 
     override fun toString(): String{

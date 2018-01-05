@@ -2,7 +2,6 @@ package com.apps.darkstorm.cdr
 
 import android.app.Fragment
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -12,7 +11,6 @@ import android.widget.TextView
 import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
-import org.jetbrains.anko.imageResource
 
 class ListFragment: Fragment(){
     var dice = false
@@ -30,33 +28,14 @@ class ListFragment: Fragment(){
             toolbar.titleResource = R.string.dice_group_nav_drawer
         else
             toolbar.titleResource = R.string.die_nav_drawer
-        val fab = activity.find<FloatingActionButton>(R.id.fab)
-        if(fab.visibility == View.GONE){
-            fab.imageResource = R.drawable.add
-            fab.setOnClickListener {
-                if(dice)
-                    fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
-                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-                else
-                    fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
-                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-            }
-            fab.show()
-        }else
-            fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
-                override fun onHidden(fab: FloatingActionButton) {
-                    fab.imageResource = R.drawable.add
-                    fab.setOnClickListener {
-                        if(dice)
-                            fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
-                                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-                        else
-                            fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
-                                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-                    }
-                    fab.show()
-                }
-            })
+        (act.application as CDR).fab.setStatic(R.drawable.add){
+            if(dice)
+                fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
+                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("New Group").commit()
+            else
+                fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
+                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("New Die").commit()
+        }
         recycle = view?.find(R.id.recycler)!!
         recycle.adapter = listAdapter()
         val linlay = LinearLayoutManager(act)
@@ -87,13 +66,13 @@ class ListFragment: Fragment(){
                 holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDice(searchString)[position].getName()
                 holder.v.setOnClickListener {
                     fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).getDice(searchString)[holder.adapterPosition]))
-                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
                 }
             }else{
                 holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDies(searchString)[position].getName()
                 holder.v.setOnClickListener {
                     fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).getDies(searchString)[holder.adapterPosition]))
-                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
                 }
             }
         }

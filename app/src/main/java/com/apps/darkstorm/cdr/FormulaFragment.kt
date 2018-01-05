@@ -2,7 +2,6 @@ package com.apps.darkstorm.cdr
 
 import android.app.Fragment
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +13,6 @@ import com.apps.darkstorm.cdr.dice.DiceFormula
 import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
-import org.jetbrains.anko.imageResource
 
 class FormulaFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,18 +51,6 @@ class FormulaFragment : Fragment() {
                 }
             }
         }
-        val fab = activity.find<FloatingActionButton>(R.id.fab)
-        if(fab.visibility == View.GONE){
-            fab.setOnClickListener { DiceFormula.solve(disp.text.toString()).showDialog(activity) }
-            fab.imageResource = R.drawable.die_roll
-            fab.show()
-        }else
-            fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
-                override fun onHidden(fab: FloatingActionButton) {
-                    fab.setOnClickListener { DiceFormula.solve(disp.text.toString()).showDialog(activity) }
-                    fab.imageResource = R.drawable.die_roll
-                    fab.show()
-                }
-            })
+        (act.application as CDR).fab.setStatic(R.drawable.die_roll,{DiceFormula.solve(disp.text.toString()).showDialog(activity)})
     }
 }

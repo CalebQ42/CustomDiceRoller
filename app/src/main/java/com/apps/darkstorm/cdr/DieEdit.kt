@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
@@ -77,7 +75,7 @@ class DieEdit: Fragment(){
         val adap = sidesAdapter()
         rec.adapter = adap
 
-        val menuItems = arrayOf(FloatingActionMenu.FloatingMenuItem(R.drawable.add_box,{
+        val menuItems = mutableListOf(FloatingActionMenu.FloatingMenuItem(R.drawable.add_box,{
             SimpleSide.edit(act,object: OnEditDialogClose(){
                 override fun onOk() {
                     adap.notifyItemInserted(die.sides.size-1)
@@ -90,8 +88,9 @@ class DieEdit: Fragment(){
                 }
             },die)
         },getString(R.string.complex_side)))
-        val mainFab = act.find<FloatingActionButton>(R.id.fab)
-        FloatingActionMenu.connect(mainFab,view.find<FrameLayout>(R.id.frame),menuItems)
+        (act.application as CDR).fab.setMenu(menuItems)
+//        val mainFab = act.find<FloatingActionButton>(R.id.fab)
+//        FloatingActionMenuLegacy.connect(mainFab,view.find<FrameLayout>(R.id.frame),menuItems)
     }
 
     inner class sidesAdapter(): RecyclerView.Adapter<sidesAdapter.ViewHolder>() {

@@ -1,15 +1,18 @@
 package com.apps.darkstorm.cdr
 
 import android.os.Bundle
+import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
 import org.jetbrains.anko.browse
+import org.jetbrains.anko.find
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
@@ -22,13 +25,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         drawer_layout.addDrawerListener(toggle)
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
+        (application as CDR).fab = FloatingActionMenu(find<CoordinatorLayout>(R.id.coord))
         when((application as CDR).prefs.getInt(getString(R.string.default_section_key),0)){
-            0->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+            0->fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
                     .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-            1->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+            1->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
                     .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-            2->fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
-                    .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
+            2->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
         }
     }
     override fun onBackPressed() {

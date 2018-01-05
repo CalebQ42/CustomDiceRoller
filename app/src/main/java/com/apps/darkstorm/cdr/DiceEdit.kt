@@ -3,11 +3,9 @@ package com.apps.darkstorm.cdr
 import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.EditText
-import android.widget.FrameLayout
 import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import com.apps.darkstorm.cdr.dice.Dice
 import org.jetbrains.anko.act
@@ -57,15 +55,19 @@ class DiceEdit : Fragment(){
             }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         act.find<Toolbar>(R.id.toolbar).title = dice.getName()
-        val menuItems = arrayOf(FloatingActionMenu.FloatingMenuItem(R.drawable.die,{
-            println("Die Add")
+        val menuItems = mutableListOf(FloatingActionMenu.FloatingMenuItem(R.drawable.custom_die, {
+            println("Custom Die Add")
             //die add
-        },getString(R.string.die_nav_drawer)), FloatingActionMenu.FloatingMenuItem(R.drawable.add_box,{
+        }, getString(R.string.custom_die)), FloatingActionMenu.FloatingMenuItem(R.drawable.die, {
+            println("numbered die add")
+            //number die add
+        }, getString(R.string.number_die)), FloatingActionMenu.FloatingMenuItem(R.drawable.add_box, {
             println("modifier Add")
             //modifier add
-        },getString(R.string.modifier)))
-        val mainFab = act.find<FloatingActionButton>(R.id.fab)
-        FloatingActionMenu.connect(mainFab,view.find<FrameLayout>(R.id.frame),menuItems)
+        }, getString(R.string.modifier)))
+        (act.application as CDR).fab.setMenu(menuItems)
+//        val mainFab = act.find<FloatingActionButton>(R.id.fab)
+//        FloatingActionMenuLegacy.connect(mainFab,view.find<FrameLayout>(R.id.frame),menuItems)
     }
     companion object {
         fun newInstance(dice: Dice): DiceEdit {

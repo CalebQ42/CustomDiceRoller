@@ -41,12 +41,15 @@ data class Dice(var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
             val jName = jr.nextName()
             when(jName){
                 "name"->name = jr.nextString()
-                "dice"->
-                    while(jr.peek()!= JsonToken.END_ARRAY){
+                "dice"-> {
+                    jr.beginArray()
+                    while (jr.peek() != JsonToken.END_ARRAY) {
                         val dc = Die()
                         dc.load(jr)
                         dice.add(dc)
                     }
+                    jr.endArray()
+                }
             }
         }
         jr.endObject()
