@@ -10,11 +10,13 @@ import android.widget.TextView
 import com.apps.darkstorm.cdr.CDR
 import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
+import org.jetbrains.anko.toast
 
 class DiceResults {
     private var number = 0
     private var reses = mutableListOf<Result>()
     var subtractMode = false
+    var problem = false
     var resList = mutableListOf<Any>()
     class Result(var name:String, var value: Int){
         override fun toString() = value.toString() + " " + name
@@ -66,11 +68,15 @@ class DiceResults {
         }
     }
     fun isNumOnly() = resList.size == 0
-    fun showDialog(a: Activity) =
-        if((a.application as CDR).prefs.getBoolean(a.getString(R.string.individual_first_key),false))
-            showIndividualDialog(a)
-        else
-            showCombinedDialog(a)
+    fun showDialog(a: Activity, messageIfProblem: String) {
+        if(!problem) {
+            if ((a.application as CDR).prefs.getBoolean(a.getString(R.string.individual_first_key), false))
+                showIndividualDialog(a)
+            else
+                showCombinedDialog(a)
+        }else
+            a.toast(messageIfProblem)
+    }
     fun showCombinedDialog(a: Activity){
         val build = AlertDialog.Builder(a)
         val v = a.layoutInflater.inflate(R.layout.results_dialog,null)

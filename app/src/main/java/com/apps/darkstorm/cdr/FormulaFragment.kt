@@ -13,11 +13,9 @@ import com.apps.darkstorm.cdr.dice.DiceFormula
 import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
+import org.jetbrains.anko.toast
 
 class FormulaFragment : Fragment() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
             inflater.inflate(R.layout.formula_new, container, false)
@@ -51,6 +49,13 @@ class FormulaFragment : Fragment() {
                 }
             }
         }
-        (act.application as CDR).fab.setStatic(R.drawable.die_roll,{DiceFormula.solve(disp.text.toString()).showDialog(activity)})
+        v.find<Button>(R.id.add_dice).setOnClickListener { toast("Coming soon") }
+        v.find<Button>(R.id.add_group).setOnClickListener { toast("Coming soon") }
+        (act.application as CDR).fab.setStatic(R.drawable.die_roll,{
+            if(disp.text.toString() == "")
+                toast("Please type something in")
+            else
+                DiceFormula.solve(disp.text.toString()).showDialog(activity,"Formula is invalid")
+        })
     }
 }

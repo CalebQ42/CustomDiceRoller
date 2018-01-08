@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "275276476822-2bqtadbd3igjrrlpmvjgikb72d2vit3u.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.apps.darkstorm.cdr",
+            "certificate_hash": "ab6b7b013c2204de6e895155eaa8459fd6f305ea"
+          }
+        },
+        {
           "client_id": "275276476822-l36k3vc47566g62dspv9bp0dtuvp3rk0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

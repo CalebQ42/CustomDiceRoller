@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -19,10 +20,10 @@ import com.apps.darkstorm.cdr.dice.Die
 import com.apps.darkstorm.cdr.dice.SimpleSide
 import org.jetbrains.anko.act
 import org.jetbrains.anko.find
-import org.jetbrains.anko.hintResource
 
-class DieEdit: Fragment(){
+class DieEdit(): Fragment(){
     lateinit var die: Die
+    var dice: Dice? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -31,11 +32,17 @@ class DieEdit: Fragment(){
             inflater?.inflate(R.layout.edit,container,false)
     override fun onResume() {
         super.onResume()
-        die.startEditing(die.localLocation(act.application as CDR))
+        if(dice == null)
+            die.startEditing(die.localLocation(act.application as CDR))
+        else
+            dice!!.startEditing(dice!!.localLocation(act.application as CDR))
     }
     override fun onPause() {
         super.onPause()
-        die.stopEditing()
+        if(dice == null)
+            die.stopEditing()
+        else
+            dice!!.stopEditing()
     }
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.rollable,menu)
@@ -47,7 +54,7 @@ class DieEdit: Fragment(){
                 R.id.roll->{
                     val d = Dice()
                     d.dice.add(die)
-                    d.roll().showDialog(act)
+                    d.roll().showDialog(act, "Oops, something went wrong")
                     true
                 }
                 R.id.rename->{
@@ -55,10 +62,13 @@ class DieEdit: Fragment(){
                     val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
                     b.setView(v)
                     val edit = v.find<EditText>(R.id.editText)
-                    edit.hintResource = R.string.rename_dialog
+                    (v as TextInputLayout).hint = getString(R.string.rename_dialog)
                     edit.text.insert(0,die.getName())
                     b.setPositiveButton(android.R.string.ok,{_,_ ->
-                        die.rename(edit.text.toString(),act.application as CDR)
+                        if(dice == null)
+                            die.rename(edit.text.toString(),act.application as CDR)
+                        else
+                            die.renameNoFileMove(edit.text.toString())
                         act.find<Toolbar>(R.id.toolbar).title = die.getName()
                     }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
                     true
@@ -99,6 +109,7 @@ class DieEdit: Fragment(){
         override fun getItemCount() = die.sides.size
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
+            holder?.v?.find<LinearLayout>(R.id.items)?.removeAllViews()
             if(die.isComplex(position)){
                 val side = die.getComplex(position)!!
                 if(side.number!= 0) {
@@ -116,7 +127,7 @@ class DieEdit: Fragment(){
                 text.text = die.getSimple(position)?.stringSide()
                 holder?.v?.find<LinearLayout>(R.id.items)?.addView(text)
             }
-            holder?.v?.setOnLongClickListener {
+            holder?.v?.setOnClickListener {
                 if(die.isComplex(holder.adapterPosition)){
                     ComplexSide.edit(act,object: OnEditDialogClose(){
                         override fun onOk(){
@@ -136,6 +147,14 @@ class DieEdit: Fragment(){
                         }
                     },die,holder.adapterPosition)
                 }
+            }
+            holder?.v?.setOnLongClickListener {
+                val b = AlertDialog.Builder(act)
+                b.setMessage(R.string.delete_confirmation)
+                b.setPositiveButton(android.R.string.yes,{_,_->
+                    die.sides.removeAt(holder.adapterPosition)
+                    this.notifyItemRemoved(holder.adapterPosition)
+                }).setNegativeButton(android.R.string.no,{_,_->}).show()
                 true
             }
         }
@@ -145,6 +164,12 @@ class DieEdit: Fragment(){
         fun newInstance(die: Die): DieEdit{
             val new = DieEdit()
             new.die = die
+            return new
+        }
+        fun newInstance(die: Die, dice: Dice): DieEdit{
+            val new = DieEdit()
+            new.die = die
+            new.dice = dice
             return new
         }
     }

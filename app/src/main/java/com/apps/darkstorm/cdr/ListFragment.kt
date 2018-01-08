@@ -1,5 +1,6 @@
 package com.apps.darkstorm.cdr
 
+import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
@@ -57,7 +58,7 @@ class ListFragment: Fragment(){
     inner class listAdapter: RecyclerView.Adapter<listAdapter.ViewHolder>(){
         var searchString = ""
         override fun getItemCount() = when(dice){
-            true->(act.application as CDR).getDies(searchString).size
+            true->(act.application as CDR).getDice(searchString).size
             else->(act.application as CDR).getDies(searchString).size
         }
         override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(act.layoutInflater.inflate(R.layout.list_item,parent,false))
@@ -68,11 +69,31 @@ class ListFragment: Fragment(){
                     fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).getDice(searchString)[holder.adapterPosition]))
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
                 }
+                holder.v.setOnLongClickListener {
+                    val b = AlertDialog.Builder(act)
+                    b.setMessage(R.string.delete_confirmation)
+                    b.setPositiveButton(android.R.string.yes,{_,_->
+                        println(holder.adapterPosition)
+                        (act.application as CDR).removeDiceAt(searchString,holder.adapterPosition)
+                        this.notifyItemRemoved(holder.adapterPosition)
+                    }).setNegativeButton(android.R.string.no,{_,_->}).show()
+                    true
+                }
             }else{
                 holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDies(searchString)[position].getName()
                 holder.v.setOnClickListener {
                     fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).getDies(searchString)[holder.adapterPosition]))
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
+                }
+                holder.v.setOnLongClickListener {
+                    val b = AlertDialog.Builder(act)
+                    b.setMessage(R.string.delete_confirmation)
+                    b.setPositiveButton(android.R.string.yes,{_,_->
+                        println(holder.adapterPosition)
+                        (act.application as CDR).removeDieAt(searchString,holder.adapterPosition)
+                        this.notifyItemRemoved(holder.adapterPosition)
+                    }).setNegativeButton(android.R.string.no,{_,_->}).show()
+                    true
                 }
             }
         }

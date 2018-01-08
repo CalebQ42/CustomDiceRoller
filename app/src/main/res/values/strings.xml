@@ -42,4 +42,9 @@
 
     <string name="number_die">Number Die</string>
     <string name="custom_die">Custom Die</string>
+
+    <string name="side_number">Dice Sides</string>
+    <string name="dice_number">Number of dice</string>
+
+    <string name="delete_confirmation">Are you sure you want to delete?</string>
 </resources>

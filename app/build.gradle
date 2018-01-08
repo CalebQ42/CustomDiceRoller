@@ -4,14 +4,16 @@ apply plugin: 'kotlin-android'
 
 apply plugin: 'kotlin-android-extensions'
 
+apply plugin: 'io.fabric'
+
 android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.apps.darkstorm.cdr"
         minSdkVersion 21
         targetSdkVersion 27
-        versionCode 4
-        versionName '0.0.0.4'
+        versionCode 8
+        versionName '0.1.1.0'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -26,9 +28,11 @@ android {
 }
 
 dependencies {
+    compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
+        transitive = true
+    }
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support:support-v4:27.0.2'
-    implementation 'com.google.firebase:firebase-crash:11.8.0'
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:appcompat-v7:27.0.2'
     implementation 'com.google.firebase:firebase-ads:11.8.0'

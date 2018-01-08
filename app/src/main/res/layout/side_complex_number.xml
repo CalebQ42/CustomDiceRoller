@@ -24,7 +24,7 @@
         <NumberPicker
             android:id="@+id/numberPicker"
             android:layout_width="wrap_content"
-            android:layout_height="35dp"
+            android:layout_height="45dp"
             android:layout_weight="0" />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>

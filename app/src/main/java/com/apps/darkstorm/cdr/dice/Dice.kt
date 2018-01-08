@@ -8,7 +8,7 @@ import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 import com.apps.darkstorm.cdr.saveLoad.Save
 import java.io.File
 
-data class Dice(var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
+data class Dice(var dice: MutableList<Die> = mutableListOf(), var modifier: Int = 0,private var name: String = ""): JsonSavable() {
     companion object {
         val fileExtension = ".dice"
         fun numberDice(number: Int, sides: Int):Dice{
@@ -18,7 +18,6 @@ data class Dice(var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
         }
     }
 
-    private var name: String = ""
     val fileExtension = ".dice"
 
     override fun clone() = copy()
@@ -77,6 +76,9 @@ data class Dice(var dice: MutableList<Die> = mutableListOf()): JsonSavable() {
         return dr
     }
     fun localLocation(cdr: CDR) = cdr.dir+"/"+name+fileExtension
+    fun delete(cdr: CDR){
+        File(localLocation(cdr)).delete()
+    }
     fun rename(newName: String,cdr: CDR){
         File(localLocation(cdr)).delete()
         name = newName

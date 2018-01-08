@@ -13,6 +13,7 @@ import android.util.JsonWriter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.NumberPicker
 import com.apps.darkstorm.cdr.R
@@ -20,11 +21,14 @@ import com.apps.darkstorm.cdr.custVars.OnEditDialogClose
 import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 import org.jetbrains.anko.find
 
+
 data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePart> = mutableListOf()): JsonSavable() {
     override fun toString(): String {
-        var out = number.toString() + ", "
-        out += parts.toString()
-        return out
+        val out = mutableListOf<String>()
+        if(number != 0)
+            out.add(number.toString())
+        parts.forEach{ out.add(it.toString()) }
+        return out.joinToString()
     }
     override fun clone() = this.copy()
     override fun save(jw: JsonWriter) {
@@ -83,6 +87,7 @@ data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePar
             jw.name("Value").value(value)
             jw.endObject()
         }
+        override fun toString() = value.toString() + " " + name
     }
     companion object {
         //Leave -1 for new side
@@ -108,6 +113,7 @@ data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePar
                 else
                     d.sides[position] = comp
                 close.onOk()
+
             }).setNeutralButton(R.string.add_part,{_,_->})
             if(position==-1)
                 b.setNegativeButton(android.R.string.cancel,{dialog,_->
@@ -121,6 +127,7 @@ data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePar
                     dialog.cancel()
                 })
             val dialog = b.show()
+            dialog.window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM)
             val button = dialog.getButton(DialogInterface.BUTTON_NEUTRAL)
             button.setOnClickListener {
                 comp.parts.add(ComplexSidePart())
@@ -153,16 +160,16 @@ data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePar
                     holder?.v?.find<NumberPicker>(R.id.numberPicker)?.value = c.number
                 else {
                     holder?.v?.find<NumberPicker>(R.id.numberPicker)?.value = c.parts[position - 1].value
-                    holder?.v?.find<EditText>(R.id.editText)?.text = Editable.Factory.getInstance().newEditable(c.parts[position - 1].name)
-                    holder?.v?.find<EditText>(R.id.editText)?.addTextChangedListener(object: TextWatcher{
+                    val edit = holder?.v?.find<EditText>(R.id.editText)!!
+                    edit.setText(c.parts[position-1].name)
+                    edit.addTextChangedListener(object: TextWatcher{
                         override fun afterTextChanged(p0: Editable?) {
                             c.parts[holder.adapterPosition - 1].name = p0.toString()
                         }
                         override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
                         override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-
                     })
-                    holder?.v?.find<View>(R.id.remove)?.setOnClickListener {
+                    holder.v.find<View>(R.id.remove).setOnClickListener {
                         c.parts.removeAt(holder.adapterPosition-1)
                         this.notifyItemRemoved(holder.adapterPosition)
                     }
@@ -174,41 +181,7 @@ data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePar
                         EditItemAdapter.number
                     else
                         EditItemAdapter.part
-//            fun createNewPart(){
-//                c.parts.add(ComplexSidePart())
-//                println("Hello: "+c.parts.toString())
-//                notifyDataSetChanged()
-//            }
             class ViewHolder(var v: View): RecyclerView.ViewHolder(v)
         }
     }
 }
-
-//class ComplexSide: JsonSavable() {
-//    fun addPart(side: ComplexSidePart) = parts.add(side)
-//    fun size() = parts.size
-//    fun get(i: Int) = parts[i]
-//    fun set(i: Int, side: ComplexSidePart){
-//        parts[i] = side
-//    }
-//    fun add(side: ComplexSidePart) = parts.add(side)
-//    override fun toString(): String {
-//        var out = number.toString() + ", "
-//        out += parts.toString()
-//        return out
-//    }
-//    override fun equals(other: Any?): Boolean {
-//        if (this === other) return true
-//        if (other !is ComplexSide) return false
-//
-//        if (number != other.number) return false
-//        if (parts != other.parts) return false
-//
-//        return true
-//    }
-//    override fun hashCode(): Int {
-//        var result = number
-//        result = 31 * result + parts.hashCode()
-//        return result
-//    }
-//}

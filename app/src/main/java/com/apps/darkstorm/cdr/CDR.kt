@@ -15,12 +15,19 @@ class CDR: Application(){
     lateinit private var dieMaster: MutableList<Die>
     lateinit var fab: FloatingActionMenu
     fun getDies(str: String): MutableList<Die>{
+        println(dieMaster)
         dieMaster.sortBy { it.getName() }
         if(str=="")
             return dieMaster
         return dieMaster
                 .filter { it.getName().contains(str) }
                 .toMutableList()
+    }
+    fun removeDieAt(str: String, i: Int){
+        println(getDies(str)[i].getName())
+        getDies(str)[i].delete(this)
+        dieMaster.remove(getDies(str)[i])
+        println(dieMaster)
     }
     fun getDice(str: String): MutableList<Dice>{
         diceMaster.sortBy { it.getName() }
@@ -29,6 +36,11 @@ class CDR: Application(){
         return diceMaster
                 .filter { it.getName().contains(str) }
                 .toMutableList()
+    }
+    fun removeDiceAt(str: String, i: Int){
+        println(getDice(str)[i].getName())
+        getDice(str)[i].delete(this)
+        diceMaster.remove(getDice(str)[i])
     }
     fun addNewDie(): Die {
         val newy = Die()
@@ -65,12 +77,19 @@ class CDR: Application(){
         dieMaster = mutableListOf()
         val root = File(dir)
         root.listFiles().forEach { fil ->
-            println(fil.name)
             if(fil.isFile && fil.name.endsWith(Die.fileExtension)){
-                val tmp = Die()
-                tmp.loadJson(fil.reader())
-                dieMaster.add(tmp)
-                println("Adding: "+fil.name)
+                val bak = File(fil.absolutePath+".bak")
+                if(bak.exists()){
+                    val tmp = Die()
+                    tmp.loadJson(bak.reader())
+                    dieMaster.add(tmp)
+                    bak.delete()
+                    tmp.saveJson(fil.writer())
+                }else {
+                    val tmp = Die()
+                    tmp.loadJson(fil.reader())
+                    dieMaster.add(tmp)
+                }
             }
         }
         dieMaster.sortBy { it.getName() }
@@ -80,9 +99,18 @@ class CDR: Application(){
         val root = File(dir)
         root.listFiles().forEach { fil ->
             if(fil.isFile && fil.name.endsWith(Dice.fileExtension)){
-                val tmp = Dice()
-                tmp.loadJson(fil.reader())
-                diceMaster.add(tmp)
+                val bak = File(fil.absolutePath+".bak")
+                if(bak.exists()){
+                    val tmp = Dice()
+                    tmp.loadJson(fil.reader())
+                    diceMaster.add(tmp)
+                    bak.delete()
+                    tmp.saveJson(fil.writer())
+                }else {
+                    val tmp = Dice()
+                    tmp.loadJson(fil.reader())
+                    diceMaster.add(tmp)
+                }
             }
         }
         diceMaster.sortBy { it.getName() }

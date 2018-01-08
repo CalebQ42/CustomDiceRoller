@@ -3,4 +3,5 @@
     <color name="colorPrimary">#5e35b1</color>
     <color name="colorPrimaryDark">#4527a0</color>
     <color name="colorAccent">#ff9100</color>
+    <color name="fam_blocker_clear">#ffffff</color>
 </resources>

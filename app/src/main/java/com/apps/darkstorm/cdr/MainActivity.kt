@@ -4,10 +4,12 @@ import android.os.Bundle
 import android.support.design.widget.CoordinatorLayout
 import android.support.design.widget.NavigationView
 import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -23,6 +25,16 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
         drawer_layout.addDrawerListener(toggle)
+        drawer_layout.addDrawerListener(object: DrawerLayout.DrawerListener{
+            override fun onDrawerStateChanged(newState: Int) {}
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) { (application as CDR).fab.closeMenu() }
+            override fun onDrawerClosed(drawerView: View) {}
+            override fun onDrawerOpened(drawerView: View) { (application as CDR).fab.closeMenu() }
+        })
+        toolbar.setOnTouchListener { _, _ ->
+            (application as CDR).fab.closeMenu()
+            false
+        }
         toggle.syncState()
         nav_view.setNavigationItemSelectedListener(this)
         (application as CDR).fab = FloatingActionMenu(find<CoordinatorLayout>(R.id.coord))
@@ -39,7 +51,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
         } else {
-            super.onBackPressed()
+            val fragment = fragmentManager.findFragmentById(R.id.content_main)
+            if (fragment != null) {
+                fragmentManager.popBackStack()
+            } else {
+                super.onBackPressed()
+            }
         }
     }
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -47,12 +64,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean = when (item.itemId) {
-        R.id.g_plus ->{
-            browse("https://plus.google.com/communities/117741233533206107778")
-            true
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        (application as CDR).fab.closeMenu()
+        return when (item.itemId) {
+            R.id.g_plus -> {
+                browse("https://plus.google.com/communities/117741233533206107778")
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
-        else -> super.onOptionsItemSelected(item)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {

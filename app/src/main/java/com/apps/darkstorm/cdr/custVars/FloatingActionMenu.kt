@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import com.apps.darkstorm.cdr.R
 import org.jetbrains.anko.find
@@ -18,6 +19,7 @@ class FloatingActionMenu(val root: ViewGroup) {
     var close: onOpenClose? = null
     var isMenu = false
     var isOpen = false
+    var rotation: Float = 45f
     init{
         fab.visibility = View.GONE
     }
@@ -28,41 +30,19 @@ class FloatingActionMenu(val root: ViewGroup) {
         }
         changeImage(pictureResource,click)
     }
-    fun setMenu(menuItems: MutableList<FloatingMenuItem>,pictureResource: Int = R.drawable.add,rotation: Float = 45f){
+    fun setMenu(menuItems: MutableList<FloatingMenuItem>,pictureResource: Int = R.drawable.add,rotationAmount: Float = 45f){
         if(menuItems.size>4)
             error("FAM can't be more then 4 items")
         if(isMenu)
             removeMenu(true)
         items = menuItems
-        var mainfabClose = {}
-        val mainfabOpen = {
-            fab.animate().rotation(rotation).setListener(object: AnimatorListenerAdapter(){
-                override fun onAnimationEnd(p0: Animator?) {
-                    fab.setOnClickListener {
-                        mainfabClose()
-                    }
-                }
-                override fun onAnimationStart(p0: Animator?) { fab.setOnClickListener {} }
-            }).start()
-            openMenu()
-        }
-        mainfabClose = {
-            fab.animate().rotation(0f).setListener(object: AnimatorListenerAdapter(){
-                override fun onAnimationEnd(p0: Animator?) {
-                    fab.setOnClickListener {
-                        mainfabOpen()
-                    }
-                }
-                override fun onAnimationStart(p0: Animator?) { fab.setOnClickListener {} }
-            }).start()
-            closeMenu()
-        }
+        this.rotation = rotationAmount
         fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
             override fun onHidden(fab: FloatingActionButton?) {
-                changeImage(pictureResource,mainfabOpen,{
+                changeImage(pictureResource,{openMenu()},{
                     for(i in items){
                         val v = LayoutInflater.from(root.context).inflate(R.layout.fam_item,root,false)
-                        i.linkToItem(v,mainfabClose)
+                        i.linkToItem(v,{closeMenu()})
                         root.addView(i.linkedItem)
                     }
                 })
@@ -111,6 +91,7 @@ class FloatingActionMenu(val root: ViewGroup) {
                     done = true
                 }
             }
+            closeMenu()
             if(wait)
                 while(!done)
                     Thread.sleep(300)
@@ -121,130 +102,167 @@ class FloatingActionMenu(val root: ViewGroup) {
         }
     }
     private fun openMenu(){
-        for((i,it) in items.withIndex()){
-            when(i) {
-                0 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_1)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = true
-                                open?.onOpen()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_1)).start()
+        if(!isOpen) {
+            fab.animate().rotation(rotation).setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(p0: Animator?) {
+                    fab.setOnClickListener {
+                        closeMenu()
+                    }
                 }
-                1 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_2)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = true
-                                open?.onOpen()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_2)).start()
+
+                override fun onAnimationStart(p0: Animator?) {
+                    fab.setOnClickListener {}
                 }
-                2 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_3)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = true
-                                open?.onOpen()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_3)).start()
+            }).start()
+            for ((i, it) in items.withIndex()) {
+                when (i) {
+                    0 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_1)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = true
+                                    open?.onOpen()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_1)).start()
+                    }
+                    1 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_2)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = true
+                                    open?.onOpen()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_2)).start()
+                    }
+                    2 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_3)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = true
+                                    open?.onOpen()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_3)).start()
+                    }
+                    3 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_4)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = true
+                                    open?.onOpen()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_4)).start()
+                    }
                 }
-                3 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_4)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = true
-                                open?.onOpen()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_4)).start()
-                }
+                if (it.getLabel() != "")
+                    it.linkedItem.find<TextView>(R.id.label).visibility = View.VISIBLE
             }
-            if(it.getLabel()!="")
-                it.linkedItem.find<TextView>(R.id.label).visibility = View.VISIBLE
+            val blocker = LayoutInflater.from(root.context).inflate(R.layout.fam_blocker,root,false)
+            blocker.setOnClickListener { closeMenu() }
+            root.addView(blocker, root.indexOfChild(root.find(R.id.content_main))+1)
+            blocker.alpha = 0f
+            blocker.animate().alpha(.5f)
         }
     }
-    private fun closeMenu(){
-        for((i,it) in items.withIndex()){
-            when(i) {
-                0 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_1)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = false
-                                close?.onClose()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_1)).start()
+    fun closeMenu(){
+        if(isMenu && isOpen) {
+            fab.animate().rotation(0f).setListener(object: AnimatorListenerAdapter(){
+                override fun onAnimationEnd(p0: Animator?) {
+                    fab.setOnClickListener {
+                        openMenu()
+                    }
                 }
-                1 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_2)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = false
-                                close?.onClose()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_2)).start()
+                override fun onAnimationStart(p0: Animator?) { fab.setOnClickListener {} }
+            }).start()
+            for ((i, it) in items.withIndex()) {
+                when (i) {
+                    0 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_1)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = false
+                                    close?.onClose()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_1)).start()
+                    }
+                    1 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_2)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = false
+                                    close?.onClose()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_2)).start()
+                    }
+                    2 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_3)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = false
+                                    close?.onClose()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_3)).start()
+                    }
+                    3 -> {
+                        if (items.size == i + 1)
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_4)).setListener(object : Animator.AnimatorListener {
+                                override fun onAnimationRepeat(animation: Animator?) {}
+                                override fun onAnimationEnd(animation: Animator?) {
+                                    isOpen = false
+                                    close?.onClose()
+                                }
+
+                                override fun onAnimationCancel(animation: Animator?) {}
+                                override fun onAnimationStart(animation: Animator?) {}
+                            }).start()
+                        else
+                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_4)).start()
+                    }
                 }
-                2 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_3)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = false
-                                close?.onClose()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_3)).start()
-                }
-                3 -> {
-                    if (items.size == i+1)
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_4)).setListener(object: Animator.AnimatorListener{
-                            override fun onAnimationRepeat(animation: Animator?) {}
-                            override fun onAnimationEnd(animation: Animator?) {
-                                isOpen = false
-                                close?.onClose()
-                            }
-                            override fun onAnimationCancel(animation: Animator?) {}
-                            override fun onAnimationStart(animation: Animator?) {}
-                        }).start()
-                    else
-                        it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_4)).start()
-                }
+                it.linkedItem.find<TextView>(R.id.label).visibility = View.GONE
+                root.removeView(root.findViewById<FrameLayout>(R.id.fam_blocker))
             }
-            it.linkedItem.find<TextView>(R.id.label).visibility = View.GONE
         }
     }
     abstract class onOpenClose{
