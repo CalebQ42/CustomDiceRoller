@@ -5,16 +5,18 @@ CDR for short. Custom dice app for Android
 
 Features:
 * Type out dice formulas to roll
-
-Goals before beta:
 * Create custom dice
 * Create custom dice groups
+* Search dice and dice groups
 
 Goals before release:
+* Stop formula crashing when an incorrect formula is tried
+* Delete custom dice and dice groups
+* Make renaming more obvious
 * Roll custom dice & dice groups inside formulas
-* Search through custom dice & dice groups
 * Google Drive Support
 * Light Theme
+* (?) More ways to roll dice
 
 Goals (In general):
 * Functional and nice looking material design UI
