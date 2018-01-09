@@ -51,7 +51,10 @@ class DiceFormula {
                     str.removePrefix("-")
                     //proper parsley once functionality implemented
                 }
-                else->dr.addNum(str.toInt())
+                else->{
+                    val tmp = str.toIntOrNull() ?: return true
+                    dr.addNum(tmp)
+                }
             }
             return false
         }
