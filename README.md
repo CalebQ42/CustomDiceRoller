@@ -10,8 +10,6 @@ Features:
 * Search dice and dice groups
 
 Goals before release:
-* Stop formula crashing when an incorrect formula is tried
-* Delete custom dice and dice groups
 * Make renaming more obvious
 * Roll custom dice & dice groups inside formulas
 * Google Drive Support
