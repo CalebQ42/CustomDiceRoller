@@ -24,10 +24,8 @@ class CDR: Application(){
                 .toMutableList()
     }
     fun removeDieAt(str: String, i: Int){
-        println(getDies(str)[i].getName())
         getDies(str)[i].delete(this)
         dieMaster.remove(getDies(str)[i])
-        println(dieMaster)
     }
     fun getDice(str: String): MutableList<Dice>{
         diceMaster.sortBy { it.getName() }
@@ -38,7 +36,6 @@ class CDR: Application(){
                 .toMutableList()
     }
     fun removeDiceAt(str: String, i: Int){
-        println(getDice(str)[i].getName())
         getDice(str)[i].delete(this)
         diceMaster.remove(getDice(str)[i])
     }

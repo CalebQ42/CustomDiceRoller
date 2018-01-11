@@ -47,4 +47,8 @@
     <string name="dice_number">Number of dice</string>
 
     <string name="delete_confirmation">Are you sure you want to delete?</string>
+
+    <string name="new_custom_die">New Die</string>
+
+    <string name="name">Name:</string>
 </resources>

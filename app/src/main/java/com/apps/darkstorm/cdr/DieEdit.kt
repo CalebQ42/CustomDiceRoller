@@ -12,6 +12,7 @@ import android.view.*
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
+import com.apps.darkstorm.cdr.custVars.Adapters
 import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import com.apps.darkstorm.cdr.custVars.OnEditDialogClose
 import com.apps.darkstorm.cdr.dice.ComplexSide
@@ -46,7 +47,6 @@ class DieEdit(): Fragment(){
     }
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         inflater?.inflate(R.menu.rollable,menu)
-        inflater?.inflate(R.menu.renamable,menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem?) =
@@ -55,22 +55,6 @@ class DieEdit(): Fragment(){
                     val d = Dice()
                     d.dice.add(die)
                     d.roll().showDialog(act, "Oops, something went wrong")
-                    true
-                }
-                R.id.rename->{
-                    val b = AlertDialog.Builder(act)
-                    val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
-                    b.setView(v)
-                    val edit = v.find<EditText>(R.id.editText)
-                    (v as TextInputLayout).hint = getString(R.string.rename_dialog)
-                    edit.text.insert(0,die.getName())
-                    b.setPositiveButton(android.R.string.ok,{_,_ ->
-                        if(dice == null)
-                            die.rename(edit.text.toString(),act.application as CDR)
-                        else
-                            die.renameNoFileMove(edit.text.toString())
-                        act.find<Toolbar>(R.id.toolbar).title = die.getName()
-                    }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
                     true
                 }
                 else->super.onOptionsItemSelected(item)
@@ -82,83 +66,109 @@ class DieEdit(): Fragment(){
 
         val rec = view.find<RecyclerView>(R.id.recycler)
         rec.layoutManager = LinearLayoutManager(act)
-        val adap = sidesAdapter()
+        val adap = SidesAdapter()
         rec.adapter = adap
 
         val menuItems = mutableListOf(FloatingActionMenu.FloatingMenuItem(R.drawable.add_box,{
             SimpleSide.edit(act,object: OnEditDialogClose(){
                 override fun onOk() {
-                    adap.notifyItemInserted(die.sides.size-1)
+                    adap.notifyItemInserted(die.sides.size)
                 }
             },die)
         },getString(R.string.simple_side)), FloatingActionMenu.FloatingMenuItem(R.drawable.library_add,{
             ComplexSide.edit(act,object: OnEditDialogClose(){
                 override fun onOk() {
-                    adap.notifyItemInserted(die.sides.size-1)
+                    adap.notifyItemInserted(die.sides.size)
                 }
             },die)
         },getString(R.string.complex_side)))
         (act.application as CDR).fab.setMenu(menuItems)
-//        val mainFab = act.find<FloatingActionButton>(R.id.fab)
-//        FloatingActionMenuLegacy.connect(mainFab,view.find<FrameLayout>(R.id.frame),menuItems)
     }
 
-    inner class sidesAdapter(): RecyclerView.Adapter<sidesAdapter.ViewHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = 
-                ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.sides_layout,parent,false))
-        override fun getItemCount() = die.sides.size
+    inner class SidesAdapter: RecyclerView.Adapter<Adapters.SimpleHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = if(viewType == nameCard)
+                Adapters.SimpleHolder(LayoutInflater.from(parent?.context).inflate(R.layout.name_card,parent,false))
+            else
+                Adapters.SimpleHolder(LayoutInflater.from(parent?.context).inflate(R.layout.sides_layout,parent,false))
+        override fun getItemCount() = die.sides.size + 1
         @SuppressLint("SetTextI18n")
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            holder?.v?.find<LinearLayout>(R.id.items)?.removeAllViews()
-            if(die.isComplex(position)){
-                val side = die.getComplex(position)!!
+        override fun onBindViewHolder(holder: Adapters.SimpleHolder?, position: Int) {
+            if(holder == null)
+                return
+            if(position == 0){
+                holder.v.findViewById<TextView>(R.id.name).text = die.getName()
+                holder.v.setOnClickListener {
+                    val b = AlertDialog.Builder(act)
+                    val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
+                    b.setView(v)
+                    val edit = v.find<EditText>(R.id.editText)
+                    (v as TextInputLayout).hint = getString(R.string.rename_dialog)
+                    edit.text.insert(0,die.getName())
+                    b.setPositiveButton(android.R.string.ok,{_,_ ->
+                        die.rename(edit.text.toString(),act.application as CDR)
+                        holder.v.findViewById<TextView>(R.id.name).text = die.getName()
+                    }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                }
+                return
+            }
+            holder.v.findViewById<LinearLayout>(R.id.items).removeAllViews()
+            if(die.isComplex(position-1)){
+                val side = die.getComplex(position-1)!!
                 if(side.number!= 0) {
-                    val text: TextView = LayoutInflater.from(holder?.v?.context)?.inflate(R.layout.side_part, holder?.v?.find<LinearLayout>(R.id.items), false) as TextView
+                    val text: TextView = LayoutInflater.from(holder.v.context)?.inflate(R.layout.side_part, holder.v.findViewById<LinearLayout>(R.id.items), false) as TextView
                     text.text = side.number.toString()
-                    holder?.v?.find<LinearLayout>(R.id.items)?.addView(text)
+                    holder.v.findViewById<LinearLayout>(R.id.items).addView(text)
                 }
                 for(pt in side.parts){
-                    val text: TextView = LayoutInflater.from(holder?.v?.context)?.inflate(R.layout.side_part, holder?.v?.find<LinearLayout>(R.id.items), false) as TextView
+                    val text: TextView = LayoutInflater.from(holder.v.context)?.inflate(R.layout.side_part, holder.v.findViewById<LinearLayout>(R.id.items), false) as TextView
                     text.text = pt.value.toString() + " " +pt.name
-                    holder?.v?.find<LinearLayout>(R.id.items)?.addView(text)
+                    holder.v.findViewById<LinearLayout>(R.id.items).addView(text)
                 }
             }else{
-                val text: TextView = LayoutInflater.from(holder?.v?.context)?.inflate(R.layout.side_part, holder?.v?.find<LinearLayout>(R.id.items), false) as TextView
-                text.text = die.getSimple(position)?.stringSide()
-                holder?.v?.find<LinearLayout>(R.id.items)?.addView(text)
+                val text: TextView = LayoutInflater.from(holder.v.context)?.inflate(R.layout.side_part, holder.v.findViewById<LinearLayout>(R.id.items), false) as TextView
+                text.text = die.getSimple(position-1)?.stringSide()
+                holder.v.findViewById<LinearLayout>(R.id.items).addView(text)
             }
-            holder?.v?.setOnClickListener {
-                if(die.isComplex(holder.adapterPosition)){
+            holder.v.setOnClickListener {
+                if(die.isComplex(holder.adapterPosition-1)){
                     ComplexSide.edit(act,object: OnEditDialogClose(){
                         override fun onOk(){
-                            this@sidesAdapter.notifyItemChanged(holder.adapterPosition)
+                            this@SidesAdapter.notifyItemChanged(holder.adapterPosition-1)
                         }
                         override fun onDelete() {
-                            this@sidesAdapter.notifyItemRemoved(holder.adapterPosition)
+                            this@SidesAdapter.notifyItemRemoved(holder.adapterPosition-1)
                         }
-                    },die,holder.adapterPosition)
+                    },die,holder.adapterPosition-1)
                 }else{
                     SimpleSide.edit(act,object: OnEditDialogClose(){
                         override fun onOk(){
-                            this@sidesAdapter.notifyItemChanged(holder.adapterPosition)
+                            this@SidesAdapter.notifyItemChanged(holder.adapterPosition-1)
                         }
                         override fun onDelete() {
-                            this@sidesAdapter.notifyItemRemoved(holder.adapterPosition)
+                            this@SidesAdapter.notifyItemRemoved(holder.adapterPosition-1)
                         }
-                    },die,holder.adapterPosition)
+                    },die,holder.adapterPosition-1)
                 }
             }
-            holder?.v?.setOnLongClickListener {
+            holder.v.setOnLongClickListener {
                 val b = AlertDialog.Builder(act)
                 b.setMessage(R.string.delete_confirmation)
                 b.setPositiveButton(android.R.string.yes,{_,_->
-                    die.sides.removeAt(holder.adapterPosition)
-                    this.notifyItemRemoved(holder.adapterPosition)
+                    die.sides.removeAt(holder.adapterPosition-1)
+                    this.notifyItemRemoved(holder.adapterPosition-1)
                 }).setNegativeButton(android.R.string.no,{_,_->}).show()
                 true
             }
         }
-        inner class ViewHolder(var v: View): RecyclerView.ViewHolder(v)
+
+        override fun getItemViewType(position: Int): Int {
+            return if(position == 0)
+                nameCard
+            else
+                normalCard
+        }
+        val nameCard = -1
+        val normalCard = 1
     }
     companion object {
         fun newInstance(die: Die): DieEdit{

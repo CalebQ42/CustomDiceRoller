@@ -8,7 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.SearchView
-import android.widget.TextView
+import com.apps.darkstorm.cdr.custVars.Adapters
 import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
@@ -38,7 +38,30 @@ class ListFragment: Fragment(){
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("New Die").commit()
         }
         recycle = view?.find(R.id.recycler)!!
-        recycle.adapter = listAdapter()
+        recycle.adapter = if(dice)
+            Adapters.DiceGroupListAdapter(act.application as CDR,true,{ d ->
+                fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance(d))
+                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
+            },{_,str,i->
+                val b = AlertDialog.Builder(act)
+                b.setMessage(R.string.delete_confirmation)
+                b.setPositiveButton(android.R.string.yes,{_,_->
+                    (act.application as CDR).removeDiceAt(str,i)
+                    recycle.adapter.notifyItemRemoved(i)
+                }).setNegativeButton(android.R.string.no,{_,_->}).show()
+            })
+        else
+            Adapters.DieListAdapter(act.application as CDR,true,{ d ->
+                fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance(d))
+                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
+            },{_,str,i->
+                val b = AlertDialog.Builder(act)
+                b.setMessage(R.string.delete_confirmation)
+                b.setPositiveButton(android.R.string.yes,{_,_->
+                    (act.application as CDR).removeDieAt(str,i)
+                    recycle.adapter.notifyItemRemoved(i)
+                }).setNegativeButton(android.R.string.no,{_,_->}).show()
+            })
         val linlay = LinearLayoutManager(act)
         linlay.orientation = LinearLayoutManager.VERTICAL
         recycle.layoutManager = linlay
@@ -50,58 +73,10 @@ class ListFragment: Fragment(){
             override fun onQueryTextSubmit(p0: String?): Boolean {return true}
             override fun onQueryTextChange(p0: String?): Boolean {
                 if(p0 != null)
-                    (recycle.adapter as listAdapter).handleQuery(p0)
+                    (recycle.adapter as Adapters.SearchableAdapter).search(p0)
                 return true
             }
         })
-    }
-    inner class listAdapter: RecyclerView.Adapter<listAdapter.ViewHolder>(){
-        var searchString = ""
-        override fun getItemCount() = when(dice){
-            true->(act.application as CDR).getDice(searchString).size
-            else->(act.application as CDR).getDies(searchString).size
-        }
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(act.layoutInflater.inflate(R.layout.list_item,parent,false))
-        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            if(dice){
-                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDice(searchString)[position].getName()
-                holder.v.setOnClickListener {
-                    fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).getDice(searchString)[holder.adapterPosition]))
-                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
-                }
-                holder.v.setOnLongClickListener {
-                    val b = AlertDialog.Builder(act)
-                    b.setMessage(R.string.delete_confirmation)
-                    b.setPositiveButton(android.R.string.yes,{_,_->
-                        println(holder.adapterPosition)
-                        (act.application as CDR).removeDiceAt(searchString,holder.adapterPosition)
-                        this.notifyItemRemoved(holder.adapterPosition)
-                    }).setNegativeButton(android.R.string.no,{_,_->}).show()
-                    true
-                }
-            }else{
-                holder.v.find<TextView>(R.id.name).text = (act.application as CDR).getDies(searchString)[position].getName()
-                holder.v.setOnClickListener {
-                    fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).getDies(searchString)[holder.adapterPosition]))
-                            .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
-                }
-                holder.v.setOnLongClickListener {
-                    val b = AlertDialog.Builder(act)
-                    b.setMessage(R.string.delete_confirmation)
-                    b.setPositiveButton(android.R.string.yes,{_,_->
-                        println(holder.adapterPosition)
-                        (act.application as CDR).removeDieAt(searchString,holder.adapterPosition)
-                        this.notifyItemRemoved(holder.adapterPosition)
-                    }).setNegativeButton(android.R.string.no,{_,_->}).show()
-                    true
-                }
-            }
-        }
-        fun handleQuery(str: String){
-            searchString = str
-            this.notifyDataSetChanged()
-        }
-        inner class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
     }
     companion object {
         fun newInstance(dice: Boolean): ListFragment{
