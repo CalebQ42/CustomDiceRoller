@@ -10,7 +10,6 @@ Features:
 * Search dice and dice groups
 
 Goals before release:
-* Make renaming more obvious
 * Roll custom dice & dice groups inside formulas
 * Google Drive Support
 * Light Theme
