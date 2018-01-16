@@ -51,4 +51,8 @@
     <string name="new_custom_die">New Die</string>
 
     <string name="name">Name:</string>
+
+    <string name="invalid_name">Names cannot contain {,},+, or -</string>
+    <string name="overwrite_warning_die">There is already another die by this name, if you continue that die will be overwritten</string>
+    <string name="overwrite_warning_group">There is already another dice group by this name, if you continue that group will be overwritten</string>
 </resources>

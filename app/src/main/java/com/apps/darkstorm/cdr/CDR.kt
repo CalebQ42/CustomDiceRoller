@@ -64,6 +64,22 @@ class CDR: Application(){
         diceMaster.add(newy)
         return newy
     }
+    fun hasConflictDie(name: String): Boolean{
+        val out = dieMaster.find {d->
+            d.getName() == name ||
+                d.getName().replace(" ","_") == name ||
+                d.getName().replace(" ","_") == name.replace(" ","_")
+        }
+        return out != null
+    }
+    fun hasConflictGroup(name: String): Boolean{
+        val out = diceMaster.find {d->
+            d.getName() == name ||
+                    d.getName().replace(" ","_") == name ||
+                    d.getName().replace(" ","_") == name.replace(" ","_")
+        }
+        return out != null
+    }
     override fun onCreate() {
         prefs = getSharedPreferences(getString(R.string.preference_key), Context.MODE_PRIVATE)
         super.onCreate()

@@ -21,6 +21,7 @@ import com.apps.darkstorm.cdr.dice.Die
 import com.apps.darkstorm.cdr.dice.SimpleSide
 import org.jetbrains.anko.act
 import org.jetbrains.anko.find
+import org.jetbrains.anko.longToast
 
 class DieEdit(): Fragment(){
     lateinit var die: Die
@@ -104,10 +105,31 @@ class DieEdit(): Fragment(){
                     val edit = v.find<EditText>(R.id.editText)
                     (v as TextInputLayout).hint = getString(R.string.rename_dialog)
                     edit.text.insert(0,die.getName())
-                    b.setPositiveButton(android.R.string.ok,{_,_ ->
-                        die.rename(edit.text.toString(),act.application as CDR)
-                        holder.v.findViewById<TextView>(R.id.name).text = die.getName()
-                    }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                    val d = b.setPositiveButton(android.R.string.ok,{_,_ -> }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                    d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+                        if(dice != null){
+                            die.renameNoFileMove(edit.text.toString())
+                            holder.v.findViewById<TextView>(R.id.name).text = die.getName()
+                        }else {
+                            if(edit.text.toString() == die.getName())
+                                d.cancel()
+                            else if (edit.text.contains("{") || edit.text.contains("}") || edit.text.contains("+") || edit.text.contains("-")) {
+                                longToast(R.string.invalid_name)
+                            } else if ((act.application as CDR).hasConflictDie(edit.text.toString())) {
+                                val build = AlertDialog.Builder(act)
+                                build.setMessage(R.string.overwrite_warning_die)
+                                build.setPositiveButton(android.R.string.ok, { _, _ ->
+                                    die.rename(edit.text.toString(), act.application as CDR)
+                                    holder.v.findViewById<TextView>(R.id.name).text = die.getName()
+                                    (act.application as CDR).reloadDieMaster()
+                                    d.cancel()
+                                }).setNegativeButton(android.R.string.cancel, { _, _ -> }).show()
+                            } else {
+                                die.rename(edit.text.toString(), act.application as CDR)
+                                holder.v.findViewById<TextView>(R.id.name).text = die.getName()
+                            }
+                        }
+                    }
                 }
                 return
             }
