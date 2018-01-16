@@ -20,6 +20,7 @@ Goals (In general):
 
 Known Issues:
 * There is no warning when you rename a die or group to the name of an existing die or group, causing the old one to be overwritten.
+* Having '{', '}', '+', '-' in the name of a die or group can cause issues in formula.
 
 Post release Goals:
 * Publish your dice online
