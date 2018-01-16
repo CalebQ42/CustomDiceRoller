@@ -1,7 +1,10 @@
 package com.apps.darkstorm.cdr
 
+import android.app.AlertDialog
 import android.app.Fragment
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import com.apps.darkstorm.cdr.custVars.Adapters
 import com.apps.darkstorm.cdr.dice.DiceFormula
 import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
@@ -39,23 +43,96 @@ class FormulaFragment : Fragment() {
         v.find<Button>(R.id.plus).setOnClickListener { disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"+") }
         v.find<Button>(R.id.minus).setOnClickListener { disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"-") }
         v.find<Button>(R.id.dee).setOnClickListener { disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"d") }
+        v.find<Button>(R.id.add_dice).setOnClickListener {
+            val b = AlertDialog.Builder(act)
+            val view = LayoutInflater.from(act).inflate(R.layout.recycle,null)
+            b.setView(view)
+            val rec = view as RecyclerView
+            b.setNegativeButton(android.R.string.cancel,{_,_->})
+            rec.layoutManager = LinearLayoutManager(act)
+            val d = b.show()
+            rec.adapter = Adapters.DieListAdapter(act.application as CDR,false,{die->
+                disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"{Die:" + die.getName() + "}")
+                d.cancel()
+            })
+        }
+        v.find<Button>(R.id.add_group).setOnClickListener {
+            val b = AlertDialog.Builder(act)
+            val view = LayoutInflater.from(act).inflate(R.layout.recycle,null)
+            b.setView(view)
+            val rec = view as RecyclerView
+            b.setNegativeButton(android.R.string.cancel,{_,_->})
+            rec.layoutManager = LinearLayoutManager(act)
+            val d = b.show()
+            rec.adapter = Adapters.DiceGroupListAdapter(act.application as CDR,false,{dice->
+                disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"{Group:" + dice.getName() + "}")
+                d.cancel()
+            })
+        }
         v.find<ImageView>(R.id.back).setOnClickListener {
             if(disp.text.isNotEmpty()){
-                if(disp.selectionStart!=0){
-                    if(disp.hasSelection())
-                        disp.text.delete(disp.selectionStart,disp.selectionEnd)
-                    else
-                        disp.text.delete(disp.selectionStart-1,disp.selectionStart)
+                if(disp.hasSelection()) {
+                    var begin = disp.selectionStart
+                    var end = disp.selectionEnd
+                    for (i in begin downTo 0) {
+                        if (disp.text[i] == '}')
+                            break
+                        else if (disp.text[i] == '{') {
+                            begin = i
+                            break
+                        }
+                    }
+                    for (i in end until disp.text.length) {
+                        if (disp.text[i] == '{')
+                            break
+                        else if (disp.text[i] == '}') {
+                            end = i+1
+                            break
+                        }
+                    }
+                    disp.text.delete(begin, end)
+                }else if(disp.selectionStart!=0){
+                    if(disp.text[disp.selectionStart-1]=='}'){
+                        println("Hello")
+                        var begin = disp.selectionStart-2
+                        for (i in begin downTo 0) {
+                            if (disp.text[i] == '}')
+                                break
+                            else if (disp.text[i] == '{') {
+                                begin = i
+                                break
+                            }
+                        }
+                        disp.text.delete(begin,disp.selectionStart)
+                    }else {
+                        var begin = disp.selectionStart - 1
+                        var end = disp.selectionStart
+                        for (i in begin downTo 0) {
+                            if (disp.text[i] == '}')
+                                break
+                            else if (disp.text[i] == '{') {
+                                begin = i
+                                break
+                            }
+                        }
+                        for (i in end until disp.text.length) {
+                            if (disp.text[i] == '{')
+                                break
+                            else if (disp.text[i] == '}') {
+                                end = i + 1
+                                break
+                            }
+                        }
+                        disp.text.delete(begin, end)
+                    }
                 }
             }
         }
-        v.find<Button>(R.id.add_dice).setOnClickListener { toast("Coming soon") }
-        v.find<Button>(R.id.add_group).setOnClickListener { toast("Coming soon") }
         (act.application as CDR).fab.setStatic(R.drawable.die_roll,{
             if(disp.text.toString() == "")
                 toast("Please type something in")
             else
-                DiceFormula.solve(disp.text.toString()).showDialog(activity,"Formula is invalid")
+                DiceFormula.solve(disp.text.toString(),act.application as CDR).showDialog(activity,"Formula is invalid")
         })
     }
 }

@@ -14,6 +14,8 @@ object Save{
         tmp = File(filename+".bak")
         File(filename).delete()
         js.saveJson(FileWriter(filename))
+        File(filename).setReadable(true)
+        File(filename).setWritable(true)
         tmp.delete()
     }
     fun drive(js: JsonSavable,drc: DriveResourceClient,df: DriveFile, blocking: Boolean){

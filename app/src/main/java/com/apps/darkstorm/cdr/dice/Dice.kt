@@ -75,14 +75,18 @@ data class Dice(var dice: MutableList<Die> = mutableListOf(), var modifier: Int 
         }
         return dr
     }
-    fun localLocation(cdr: CDR) = cdr.dir+"/"+name+fileExtension
+    fun localLocation(cdr: CDR) = cdr.dir+"/"+name.replace(" ","_")+fileExtension
     fun delete(cdr: CDR){
         File(localLocation(cdr)).delete()
     }
     fun rename(newName: String,cdr: CDR){
+        while (saving)
+            Thread.sleep(200)
+        saving = true
         File(localLocation(cdr)).delete()
         name = newName
         Save.local(this,localLocation(cdr))
+        saving = false
     }
     fun renameNoFileMove(newName: String){
         name = newName

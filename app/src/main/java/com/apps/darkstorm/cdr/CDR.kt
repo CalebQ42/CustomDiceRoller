@@ -15,7 +15,6 @@ class CDR: Application(){
     lateinit private var dieMaster: MutableList<Die>
     lateinit var fab: FloatingActionMenu
     fun getDies(str: String): MutableList<Die>{
-        println(dieMaster)
         dieMaster.sortBy { it.getName() }
         if(str=="")
             return dieMaster
@@ -48,7 +47,6 @@ class CDR: Application(){
             }!=null){
             newy.renameNoFileMove("New Die" + i.toString())
             i++
-            println("Renamed!")
         }
         dieMaster.add(newy)
         return newy

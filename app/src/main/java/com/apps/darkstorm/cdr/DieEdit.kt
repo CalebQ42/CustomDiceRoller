@@ -34,9 +34,9 @@ class DieEdit(): Fragment(){
     override fun onResume() {
         super.onResume()
         if(dice == null)
-            die.startEditing(die.localLocation(act.application as CDR))
+            die.startEditing({cdr: CDR -> die.localLocation(cdr)},act.application as CDR)
         else
-            dice!!.startEditing(dice!!.localLocation(act.application as CDR))
+            dice!!.startEditing({cdr: CDR -> dice!!.localLocation(cdr)},act.application as CDR)
     }
     override fun onPause() {
         super.onPause()

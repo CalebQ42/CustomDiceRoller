@@ -24,7 +24,7 @@ class DiceResults {
     fun add(res: Result){
         if(subtractMode)
             res.value *= -1
-        resList.add(res)
+        resList.add(Result(res.name,res.value))
         if(has(res.name))
             reses[indexOf(res.name)].value += res.value
         else

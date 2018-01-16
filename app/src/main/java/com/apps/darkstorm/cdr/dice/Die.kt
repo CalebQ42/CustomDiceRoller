@@ -9,7 +9,7 @@ import com.apps.darkstorm.cdr.saveLoad.Save
 import java.io.File
 import java.util.*
 
-data class Die(var sides: MutableList<JsonSavable> = mutableListOf(),private var name: String = ""): JsonSavable() {
+data class Die(var sides: MutableList<JsonSavable> = mutableListOf(), private var name: String = ""): JsonSavable() {
     companion object {
         val fileExtension = ".die"
         fun numberDie(i:Int): Die{
@@ -84,7 +84,7 @@ data class Die(var sides: MutableList<JsonSavable> = mutableListOf(),private var
     fun rollIndex(): Int = Random().nextInt(sides.size)
     fun roll(): Any = sides[rollIndex()]
     override fun toString() = name + " " +  sides.toString()
-    fun localLocation(cdr: CDR) = cdr.dir+"/"+name+fileExtension
+    fun localLocation(cdr: CDR) = cdr.dir+"/"+name.replace(" ","_")+fileExtension
     fun delete(cdr: CDR){
         File(localLocation(cdr)).delete()
     }

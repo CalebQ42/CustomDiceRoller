@@ -28,7 +28,7 @@ class DiceEdit : Fragment(){
             inflater?.inflate(R.layout.edit,container,false)
     override fun onResume() {
         super.onResume()
-        dice.startEditing(dice.localLocation(act.application as CDR))
+        dice.startEditing({cdr: CDR -> dice.localLocation(cdr)},act.application as CDR)
     }
     override fun onPause() {
         super.onPause()

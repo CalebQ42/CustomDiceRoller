@@ -2,6 +2,7 @@ package com.apps.darkstorm.cdr.saveLoad
 
 import android.util.JsonReader
 import android.util.JsonWriter
+import com.apps.darkstorm.cdr.CDR
 import com.google.android.gms.drive.DriveFile
 import com.google.android.gms.drive.DriveResourceClient
 import org.jetbrains.anko.doAsync
@@ -36,16 +37,16 @@ abstract class JsonSavable: Cloneable{
     fun stopEditing(){
         editing = false
     }
-    fun startEditing(filename: String){
+    fun startEditing(nameGetter: (CDR)->String,cdr: CDR){
         if(!editing) {
             editing = true
-            Save.local(this, filename)
+            Save.local(this, nameGetter(cdr))
             var tmp = clone()
             doAsync {
                 while (editing) {
                     if (tmp != this && !saving) {
                         saving = true
-                        Save.local(this@JsonSavable, filename)
+                        Save.local(this@JsonSavable, nameGetter(cdr))
                         tmp = clone()
                         saving = false
                     }
@@ -53,7 +54,7 @@ abstract class JsonSavable: Cloneable{
                 }
                 if (tmp != this && !saving) {
                     saving = true
-                    Save.local(this@JsonSavable, filename)
+                    Save.local(this@JsonSavable, nameGetter(cdr))
                     saving = false
                 }
             }
