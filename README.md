@@ -8,9 +8,9 @@ Features:
 * Create custom dice
 * Create custom dice groups
 * Search dice and dice groups
+* Roll custom dice & dice groups inside formulas
 
 Goals before release:
-* Roll custom dice & dice groups inside formulas
 * Google Drive Support
 * Light Theme
 * (?) More ways to roll dice
