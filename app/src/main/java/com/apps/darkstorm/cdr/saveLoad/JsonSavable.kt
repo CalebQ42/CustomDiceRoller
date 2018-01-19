@@ -3,8 +3,8 @@ package com.apps.darkstorm.cdr.saveLoad
 import android.util.JsonReader
 import android.util.JsonWriter
 import com.apps.darkstorm.cdr.CDR
+import com.apps.darkstorm.cdr.R
 import com.google.android.gms.drive.DriveFile
-import com.google.android.gms.drive.DriveResourceClient
 import org.jetbrains.anko.doAsync
 import java.io.Reader
 import java.io.Writer
@@ -37,7 +37,7 @@ abstract class JsonSavable: Cloneable{
     fun stopEditing(){
         editing = false
     }
-    fun startEditing(nameGetter: (CDR)->String,cdr: CDR){
+    fun startEditing(nameGetter: (CDR)->String,cdr: CDR, df: ((CDR)->DriveFile?)? = null){
         if(!editing) {
             editing = true
             Save.local(this, nameGetter(cdr))
@@ -47,6 +47,8 @@ abstract class JsonSavable: Cloneable{
                     if (tmp != this && !saving) {
                         saving = true
                         Save.local(this@JsonSavable, nameGetter(cdr))
+                        if(cdr.prefs.getBoolean(cdr.getString(R.string.google_drive_key),false))
+                            Save.drive(this@JsonSavable,cdr.drc, df!!(cdr)!!,true)
                         tmp = clone()
                         saving = false
                     }
@@ -55,29 +57,10 @@ abstract class JsonSavable: Cloneable{
                 if (tmp != this && !saving) {
                     saving = true
                     Save.local(this@JsonSavable, nameGetter(cdr))
+                    if(cdr.prefs.getBoolean(cdr.getString(R.string.google_drive_key),false))
+                        Save.drive(this@JsonSavable,cdr.drc, df!!(cdr)!!,true)
                     saving = false
                 }
-            }
-        }
-    }
-    fun startEditing(drc: DriveResourceClient, df: DriveFile){
-        if(!editing) {
-            editing = true
-            Save.drive(this, drc, df, true)
-            var tmp = clone()
-            while (editing) {
-                if (tmp != this && !saving) {
-                    saving = true
-                    Save.drive(this, drc, df, true)
-                    tmp = clone()
-                    saving = false
-                }
-                Thread.sleep(300)
-            }
-            if (tmp != this && !saving) {
-                saving = true
-                Save.drive(this, drc, df, true)
-                saving = false
             }
         }
     }

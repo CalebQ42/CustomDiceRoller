@@ -118,7 +118,7 @@ class FloatingActionMenu(val root: ViewGroup) {
                 when (i) {
                     0 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_1)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_1))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = true
@@ -127,13 +127,13 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_1)).start()
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_1))?.start()
                     }
                     1 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_2)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_2))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = true
@@ -142,13 +142,13 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_2)).start()
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_2))?.start()
                     }
                     2 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_3)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_3))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = true
@@ -157,13 +157,13 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_3)).start()
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_3))?.start()
                     }
                     3 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_4)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_4))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = true
@@ -172,13 +172,13 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(-fab.resources.getDimension(R.dimen.fam_4)).start()
+                            it.linkedItem?.animate()?.translationYBy(-fab.resources.getDimension(R.dimen.fam_4))?.start()
                     }
                 }
                 if (it.getLabel() != "")
-                    it.linkedItem.find<TextView>(R.id.label).visibility = View.VISIBLE
+                    it.linkedItem?.find<TextView>(R.id.label)?.visibility = View.VISIBLE
             }
             val blocker = LayoutInflater.from(root.context).inflate(R.layout.fam_blocker,root,false)
             blocker.setOnClickListener { closeMenu() }
@@ -201,7 +201,7 @@ class FloatingActionMenu(val root: ViewGroup) {
                 when (i) {
                     0 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_1)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_1))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = false
@@ -210,13 +210,13 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_1)).start()
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_1))?.start()
                     }
                     1 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_2)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_2))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = false
@@ -225,13 +225,13 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_2)).start()
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_2))?.start()
                     }
                     2 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_3)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_3))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = false
@@ -240,13 +240,13 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_3)).start()
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_3))?.start()
                     }
                     3 -> {
                         if (items.size == i + 1)
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_4)).setListener(object : Animator.AnimatorListener {
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_4))?.setListener(object : Animator.AnimatorListener {
                                 override fun onAnimationRepeat(animation: Animator?) {}
                                 override fun onAnimationEnd(animation: Animator?) {
                                     isOpen = false
@@ -255,12 +255,12 @@ class FloatingActionMenu(val root: ViewGroup) {
 
                                 override fun onAnimationCancel(animation: Animator?) {}
                                 override fun onAnimationStart(animation: Animator?) {}
-                            }).start()
+                            })?.start()
                         else
-                            it.linkedItem.animate().translationYBy(fab.resources.getDimension(R.dimen.fam_4)).start()
+                            it.linkedItem?.animate()?.translationYBy(fab.resources.getDimension(R.dimen.fam_4))?.start()
                     }
                 }
-                it.linkedItem.find<TextView>(R.id.label).visibility = View.GONE
+                it.linkedItem?.find<TextView>(R.id.label)?.visibility = View.GONE
                 root.removeView(root.findViewById<FrameLayout>(R.id.fam_blocker))
             }
         }
@@ -270,29 +270,29 @@ class FloatingActionMenu(val root: ViewGroup) {
         open fun onOpen(){}
     }
     class FloatingMenuItem(var imageID: Int, var onClick: () -> Unit, private var label: String = ""){
-        lateinit var linkedItem: View
+        var linkedItem: View? = null
         lateinit var hideAction: ()->Unit
         fun setImage(imageID: Int){
             this.imageID = imageID
-            if(::linkedItem.isInitialized)
-                linkedItem.findViewById<FloatingActionButton>(R.id.item).imageResource = imageID
+            if(linkedItem != null)
+                linkedItem?.findViewById<FloatingActionButton>(R.id.item)?.imageResource = imageID
         }
         fun setOnClickListener(onClick: () -> Unit){
             this.onClick = onClick
-            if(::linkedItem.isInitialized)
-                linkedItem.find<FloatingActionButton>(R.id.item).setOnClickListener {
+            if(linkedItem != null)
+                linkedItem?.find<FloatingActionButton>(R.id.item)?.setOnClickListener {
                     onClick()
                     hideAction()
                 }
         }
         fun setLabel(label: String){
             this.label = label
-            if(::linkedItem.isInitialized) {
+            if(linkedItem != null) {
                 if(label == "")
-                    linkedItem.find<TextView>(R.id.label).visibility = View.GONE
+                    linkedItem?.find<TextView>(R.id.label)?.visibility = View.GONE
                 else {
-                    linkedItem.find<TextView>(R.id.label).text = label
-                    linkedItem.find<TextView>(R.id.label).visibility = View.VISIBLE
+                    linkedItem?.find<TextView>(R.id.label)?.text = label
+                    linkedItem?.find<TextView>(R.id.label)?.visibility = View.VISIBLE
                 }
             }
         }

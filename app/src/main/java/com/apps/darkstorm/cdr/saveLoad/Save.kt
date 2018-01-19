@@ -2,6 +2,7 @@ package com.apps.darkstorm.cdr.saveLoad
 
 import com.google.android.gms.drive.DriveFile
 import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.tasks.Tasks
 import java.io.File
 import java.io.FileWriter
 import java.io.OutputStreamWriter
@@ -19,14 +20,23 @@ object Save{
         tmp.delete()
     }
     fun drive(js: JsonSavable,drc: DriveResourceClient,df: DriveFile, blocking: Boolean){
-        var done= false
-        drc.openFile(df,DriveFile.MODE_WRITE_ONLY).addOnSuccessListener {driveContents ->
-            js.saveJson(OutputStreamWriter(driveContents.outputStream))
-            done = true
-        }
-        if(blocking){
-            while(!done)
-                Thread.sleep(300)
+        if(!blocking)
+            drc.openFile(df,DriveFile.MODE_WRITE_ONLY).addOnSuccessListener {driveContents ->
+                val os = driveContents.outputStream
+                val osw = OutputStreamWriter(os)
+                js.saveJson(osw)
+                os.close()
+                drc.commitContents(driveContents,null)
+            }
+        else {
+            val res = drc.openFile(df, DriveFile.MODE_WRITE_ONLY)
+            Tasks.await(res)
+            val cont = res.result
+            val os = cont.outputStream
+            val osw = OutputStreamWriter(os)
+            js.saveJson(osw)
+            os.close()
+            drc.commitContents(cont,null)
         }
     }
 }

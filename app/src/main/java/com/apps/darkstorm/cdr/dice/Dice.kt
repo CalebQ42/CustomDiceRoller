@@ -6,6 +6,13 @@ import android.util.JsonWriter
 import com.apps.darkstorm.cdr.CDR
 import com.apps.darkstorm.cdr.saveLoad.JsonSavable
 import com.apps.darkstorm.cdr.saveLoad.Save
+import com.google.android.gms.drive.DriveFile
+import com.google.android.gms.drive.DriveFolder
+import com.google.android.gms.drive.MetadataChangeSet
+import com.google.android.gms.drive.query.Filters
+import com.google.android.gms.drive.query.Query
+import com.google.android.gms.drive.query.SearchableField
+import com.google.android.gms.tasks.Tasks
 import java.io.File
 
 data class Dice(var dice: MutableList<Die> = mutableListOf(), var modifier: Int = 0,private var name: String = ""): JsonSavable() {
@@ -76,6 +83,29 @@ data class Dice(var dice: MutableList<Die> = mutableListOf(), var modifier: Int 
         return dr
     }
     fun localLocation(cdr: CDR) = cdr.dir+"/"+name.replace(" ","_")+fileExtension
+    fun driveFile(cdr: CDR): DriveFile?{
+        var out: DriveFile? = null
+        val res = cdr.drc.rootFolder
+        Tasks.await(res)
+        if(!res.isSuccessful)
+            return out
+        val appFold: DriveFolder = res.result
+        val childRes = cdr.drc.queryChildren(appFold, Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,name.replace(" ","_")+fileExtension)).build())
+        Tasks.await(childRes)
+        if(!childRes.isSuccessful)
+            return out
+        val metBuf = childRes.result
+        out = if(metBuf.count ==0){
+            val createRes = cdr.drc.createFile(appFold, MetadataChangeSet.Builder().setTitle(name.replace(" ","_")+fileExtension).build(),null)
+            Tasks.await(createRes)
+            if(!createRes.isSuccessful)
+                return out
+            createRes.result
+        }else
+            metBuf[0].driveId.asDriveFile()
+        childRes.result.release()
+        return out
+    }
     fun delete(cdr: CDR){
         File(localLocation(cdr)).delete()
     }

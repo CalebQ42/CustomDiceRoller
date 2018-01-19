@@ -6,9 +6,22 @@ import android.content.SharedPreferences
 import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import com.apps.darkstorm.cdr.dice.Dice
 import com.apps.darkstorm.cdr.dice.Die
+import com.apps.darkstorm.cdr.saveLoad.Load
+import com.apps.darkstorm.cdr.saveLoad.Save
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.drive.DriveClient
+import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.drive.query.Query
+import com.google.android.gms.tasks.Tasks
+import org.jetbrains.anko.doAsync
 import java.io.File
 
 class CDR: Application(){
+    lateinit var gsi: GoogleSignInClient
+    lateinit var dc: DriveClient
+    lateinit var drc: DriveResourceClient
+    var driveFail = false
+
     lateinit var prefs: SharedPreferences
     lateinit var dir: String
     lateinit private var diceMaster: MutableList<Dice>
@@ -89,18 +102,9 @@ class CDR: Application(){
         val root = File(dir)
         root.listFiles().forEach { fil ->
             if(fil.isFile && fil.name.endsWith(Die.fileExtension)){
-                val bak = File(fil.absolutePath+".bak")
-                if(bak.exists()){
-                    val tmp = Die()
-                    tmp.loadJson(bak.reader())
-                    dieMaster.add(tmp)
-                    bak.delete()
-                    tmp.saveJson(fil.writer())
-                }else {
-                    val tmp = Die()
-                    tmp.loadJson(fil.reader())
-                    dieMaster.add(tmp)
-                }
+                val tmp = Die()
+                Load.local(tmp,fil.absolutePath)
+                dieMaster.add(tmp)
             }
         }
         dieMaster.sortBy { it.getName() }
@@ -110,18 +114,9 @@ class CDR: Application(){
         val root = File(dir)
         root.listFiles().forEach { fil ->
             if(fil.isFile && fil.name.endsWith(Dice.fileExtension)){
-                val bak = File(fil.absolutePath+".bak")
-                if(bak.exists()){
-                    val tmp = Dice()
-                    tmp.loadJson(fil.reader())
-                    diceMaster.add(tmp)
-                    bak.delete()
-                    tmp.saveJson(fil.writer())
-                }else {
-                    val tmp = Dice()
-                    tmp.loadJson(fil.reader())
-                    diceMaster.add(tmp)
-                }
+                val tmp = Dice()
+                Load.local(tmp,fil.absolutePath)
+                diceMaster.add(tmp)
             }
         }
         diceMaster.sortBy { it.getName() }
@@ -129,5 +124,76 @@ class CDR: Application(){
     fun reloadAll(){
         reloadDieMaster()
         reloadDiceMaster()
+    }
+    fun reloadAllDrive(){
+        dieMaster = mutableListOf()
+        diceMaster = mutableListOf()
+        try {
+            val syncRes = dc.requestSync()
+            Tasks.await(syncRes)
+        }catch(_: java.util.concurrent.ExecutionException){}
+        val appFoldRes = drc.rootFolder
+        Tasks.await(appFoldRes)
+        val appFold = appFoldRes.result
+        val queryRes = drc.queryChildren(appFold, Query.Builder().build())
+        Tasks.await(queryRes)
+        val out = queryRes.result
+        out.forEach { met ->
+            if(met.title.endsWith(Die.fileExtension) && !met.isTrashed) {
+                val tmp = Die()
+                Load.drive(tmp,drc,met.driveId.asDriveFile(),true)
+                dieMaster.add(tmp)
+            }else if(met.title.endsWith(Dice.fileExtension) && !met.isTrashed){
+                val tmp = Dice()
+                Load.drive(tmp,drc,met.driveId.asDriveFile(),true)
+                diceMaster.add(tmp)
+            }
+        }
+        out.release()
+        dieMaster.sortBy { it.getName() }
+        diceMaster.sortBy { it.getName() }
+    }
+    fun sync(postExecute: ()->Unit){
+        doAsync{
+            reloadAllDrive()
+            val localDie = mutableListOf<Die>()
+            val localDice = mutableListOf<Dice>()
+            val root = File(dir)
+            root.listFiles().forEach { fil ->
+                if(fil.isFile && fil.name.endsWith(Dice.fileExtension)){
+                    val tmp = Dice()
+                    Load.local(tmp,fil.absolutePath)
+                    localDice.add(tmp)
+                }else if(fil.isFile && fil.name.endsWith(Die.fileExtension)){
+                    val tmp = Die()
+                    Load.local(tmp,fil.absolutePath)
+                    localDie.add(tmp)
+                }
+            }
+            dieMaster.forEach {die ->
+                val d = localDie.find{it.getName() == die.getName()}
+                if(d!= null){
+                    val dFile = File(d.localLocation(this@CDR))
+                    val dieDriveFile = die.driveFile(this@CDR)
+                    if(dieDriveFile!= null) {
+                        val meta = drc.getMetadata(dieDriveFile)
+                        Tasks.await(meta)
+                        if (dFile.lastModified() < meta.result.modifiedDate.time)
+                            Save.local(die,die.localLocation(this@CDR))
+                        else
+                            Save.drive(d,drc,dieDriveFile,true)
+                    }
+                }else
+                    Save.local(die,die.localLocation(this@CDR))
+            }
+            localDie.filter{ die->
+                val d = dieMaster.find{it.getName() == die.getName()}
+                d==null
+            }.forEach {
+                Save.drive(it,drc,it.driveFile(this@CDR)!!,true)
+            }
+            reloadAllDrive()
+            postExecute()
+        }
     }
 }

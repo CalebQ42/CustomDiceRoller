@@ -68,7 +68,7 @@ class DiceEdit : Fragment(){
                         adap.notifyItemInserted(dice.dice.size)
                     }).show()
             recB.adapter = Adapters.DieListAdapter(act.application as CDR,false,{d->
-                dice.dice.add(d)
+                dice.dice.add(d.copy())
                 adap.notifyItemInserted(dice.dice.size)
                 dialog.cancel()
             })
@@ -141,6 +141,7 @@ class DiceEdit : Fragment(){
                         } else {
                             dice.rename(edit.text.toString(), act.application as CDR)
                             holder.v.findViewById<TextView>(R.id.name).text = dice.getName()
+                            d.cancel()
                         }
                     }
                 }
@@ -161,7 +162,7 @@ class DiceEdit : Fragment(){
                 b.setMessage(R.string.delete_confirmation)
                 b.setPositiveButton(android.R.string.yes,{_,_->
                     dice.dice.removeAt(holder.adapterPosition-1)
-                    this.notifyItemRemoved(holder.adapterPosition-1)
+                    this.notifyItemRemoved(holder.adapterPosition)
                 }).setNegativeButton(android.R.string.no,{_,_->}).show()
                 true
             }

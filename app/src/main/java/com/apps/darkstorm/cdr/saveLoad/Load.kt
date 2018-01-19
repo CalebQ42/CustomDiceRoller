@@ -2,6 +2,7 @@ package com.apps.darkstorm.cdr.saveLoad
 
 import com.google.android.gms.drive.DriveFile
 import com.google.android.gms.drive.DriveResourceClient
+import com.google.android.gms.tasks.Tasks
 import java.io.File
 import java.io.InputStreamReader
 
@@ -15,14 +16,15 @@ object Load{
             js.loadJson(File(filename).reader())
     }
     fun drive(js: JsonSavable, drc: DriveResourceClient, df: DriveFile, blocking: Boolean){
-        var done= false
-        drc.openFile(df, DriveFile.MODE_READ_ONLY).addOnSuccessListener { driveContents ->
-            js.loadJson(InputStreamReader(driveContents.inputStream))
-            done = true
-        }
-        if(blocking){
-            while(!done)
-                Thread.sleep(300)
+        if(!blocking)
+            drc.openFile(df, DriveFile.MODE_READ_ONLY).addOnSuccessListener { driveContents ->
+                js.loadJson(InputStreamReader(driveContents.inputStream))
+            }
+        else{
+            val res = drc.openFile(df, DriveFile.MODE_READ_ONLY)
+            Tasks.await(res)
+            val cont = res.result
+            js.loadJson(InputStreamReader(cont.inputStream))
         }
     }
 }

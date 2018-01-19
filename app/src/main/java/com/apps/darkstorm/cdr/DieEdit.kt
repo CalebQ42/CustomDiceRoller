@@ -23,7 +23,7 @@ import org.jetbrains.anko.act
 import org.jetbrains.anko.find
 import org.jetbrains.anko.longToast
 
-class DieEdit(): Fragment(){
+class DieEdit: Fragment(){
     lateinit var die: Die
     var dice: Dice? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,9 +35,9 @@ class DieEdit(): Fragment(){
     override fun onResume() {
         super.onResume()
         if(dice == null)
-            die.startEditing({cdr: CDR -> die.localLocation(cdr)},act.application as CDR)
+            die.startEditing({cdr -> die.localLocation(cdr)},act.application as CDR,{cdr -> die.driveFile(cdr)})
         else
-            dice!!.startEditing({cdr: CDR -> dice!!.localLocation(cdr)},act.application as CDR)
+            dice!!.startEditing({cdr -> dice!!.localLocation(cdr)},act.application as CDR,{cdr -> dice!!.driveFile(cdr)})
     }
     override fun onPause() {
         super.onPause()
@@ -110,6 +110,7 @@ class DieEdit(): Fragment(){
                         if(dice != null){
                             die.renameNoFileMove(edit.text.toString())
                             holder.v.findViewById<TextView>(R.id.name).text = die.getName()
+                            d.cancel()
                         }else {
                             if(edit.text.toString() == die.getName())
                                 d.cancel()
@@ -127,6 +128,7 @@ class DieEdit(): Fragment(){
                             } else {
                                 die.rename(edit.text.toString(), act.application as CDR)
                                 holder.v.findViewById<TextView>(R.id.name).text = die.getName()
+                                d.cancel()
                             }
                         }
                     }
