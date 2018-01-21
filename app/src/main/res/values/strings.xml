@@ -12,8 +12,8 @@
     <string name="other_nav_group">Other</string>
 
     <string name="individual_first_text">Show individual results first</string>
-    <string name="google_drive_text">Save Dice to Google Drive (Coming Soon)</string>
-    <string name="theme_text">Light Theme (Coming Soon)</string>
+    <string name="google_drive_text">Save Dice to Google Drive (Might not work properly, data loss is possible)</string>
+    <string name="theme_text">Light Theme</string>
     <string name="default_section">Default Section</string>
 
     <string name="individual">Individual</string>

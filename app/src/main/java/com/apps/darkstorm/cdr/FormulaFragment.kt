@@ -2,10 +2,12 @@ package com.apps.darkstorm.cdr
 
 import android.app.AlertDialog
 import android.app.Fragment
+import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,12 +24,25 @@ import org.jetbrains.anko.toast
 class FormulaFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
-            inflater.inflate(R.layout.formula_new, container, false)
+            inflater.inflate(R.layout.formula_fragment, container, false)
+
+    override fun onConfigurationChanged(newConfig: Configuration?) {
+        super.onConfigurationChanged(newConfig)
+        var remake = false
+        if(newConfig?.orientation != origOrientation)
+            fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment.newInstance(disp.text.toString())).commit()
+    }
+
+    var startText = ""
+    lateinit var disp: EditText
+    private var origOrientation = 0
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
+        origOrientation = resources.configuration.orientation
         val toolbar = act.find<Toolbar>(R.id.toolbar)
         toolbar.titleResource = R.string.formula_nav_drawer
-        val disp = v.find<EditText>(R.id.display)
+        disp = v.find(R.id.display)
+        disp.text = Editable.Factory().newEditable(startText)
         v.find<Button>(R.id.clear).setOnClickListener { disp.text.delete(0,disp.text.length)}
         disp.showSoftInputOnFocus = false
         v.find<Button>(R.id.one).setOnClickListener { disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"1") }
@@ -134,5 +149,12 @@ class FormulaFragment : Fragment() {
             else
                 DiceFormula.solve(disp.text.toString(),act.application as CDR).showDialog(activity,"Formula is invalid")
         })
+    }
+    companion object {
+        fun newInstance(str: String): FormulaFragment{
+            val out = FormulaFragment()
+            out.startText = str
+            return out
+        }
     }
 }

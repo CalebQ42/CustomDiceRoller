@@ -85,7 +85,7 @@ data class Dice(var dice: MutableList<Die> = mutableListOf(), var modifier: Int 
     fun localLocation(cdr: CDR) = cdr.dir+"/"+name.replace(" ","_")+fileExtension
     fun driveFile(cdr: CDR): DriveFile?{
         var out: DriveFile? = null
-        val res = cdr.drc.rootFolder
+        val res = cdr.drc.appFolder
         Tasks.await(res)
         if(!res.isSuccessful)
             return out

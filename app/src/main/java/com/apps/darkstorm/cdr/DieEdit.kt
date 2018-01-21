@@ -54,7 +54,8 @@ class DieEdit: Fragment(){
             when(item?.itemId){
                 R.id.roll->{
                     val d = Dice()
-                    d.dice.add(die)
+                    if(die.sides.size>0)
+                        d.dice.add(die)
                     d.roll().showDialog(act, "Oops, something went wrong")
                     true
                 }

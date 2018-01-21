@@ -16,9 +16,12 @@ import kotlinx.android.synthetic.main.app_bar_main.*
 import org.jetbrains.anko.browse
 import org.jetbrains.anko.find
 
+
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        if((application as CDR).prefs.getBoolean(getString(R.string.theme_key),false))
+            setTheme(R.style.LightAppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar)
@@ -47,13 +50,24 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
         }
     }
+
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START)
         } else {
-            val fragment = fragmentManager.findFragmentById(R.id.content_main)
-            if (fragment != null) {
-                fragmentManager.popBackStack()
+            val cur = fragmentManager.findFragmentById(R.id.content_main)
+            if (cur != null) {
+//                val childMost = cur.childFragmentManager.findFragmentByTag("android:switcher:" + R.id.pager + ":" + 1)
+//                if (childMost != null && childMost.childFragmentManager.backStackEntryCount > 0) {
+//                    childMost.childFragmentManager.popBackStack()
+//                    (findViewById<View>(R.id.fab) as FloatingActionButton).show()
+//                } else
+                    if (cur.childFragmentManager.backStackEntryCount > 0) {
+                    cur.childFragmentManager.popBackStack()
+                } else {
+                    super.onBackPressed()
+                }
             } else {
                 super.onBackPressed()
             }

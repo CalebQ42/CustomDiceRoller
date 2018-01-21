@@ -22,15 +22,15 @@ import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
 
 class SettingsFragment: Fragment(){
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val toolbar = act.find<Toolbar>(R.id.toolbar)
-        toolbar.titleResource = R.string.settings_nav_drawer
-    }
+//    override fun onCreate(savedInstanceState: Bundle?) {
+//        super.onCreate(savedInstanceState)
+//    }
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
             inflater.inflate(R.layout.recycle,container,false)
     lateinit var adap: SettingsAdap
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val toolbar = activity.findViewById<Toolbar>(R.id.toolbar)
+        toolbar.titleResource = R.string.settings_nav_drawer
         val settings = arrayOf(Setting(R.string.individual_first_text,getString(R.string.individual_first_key), false,(activity.application as CDR).prefs,Setting.boolean),
                 Setting(R.string.google_drive_text,getString(R.string.google_drive_key),false,(activity.application as CDR).prefs,Setting.boolean),
                 Setting(R.string.theme_text,getString(R.string.theme_key),false,(activity.application as CDR).prefs,Setting.boolean),
@@ -38,7 +38,7 @@ class SettingsFragment: Fragment(){
         settings[1].addCheckedChangedListener { b ->
             if(b) {
                 val signInOptions = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestScopes(Drive.SCOPE_FILE)
+                        .requestScopes(Drive.SCOPE_APPFOLDER)
                         .build()
                 (act.application as CDR).gsi = GoogleSignIn.getClient(act, signInOptions)
                 startActivityForResult((act.application as CDR).gsi.signInIntent, 0)
@@ -47,7 +47,7 @@ class SettingsFragment: Fragment(){
             }
         }
         settings[2].addCheckedChangedListener { b ->
-            //Theme change
+            activity.recreate()
         }
         settings[3].setSpinnerItems(act.resources.getStringArray(R.array.default_opening))
         (act.application as CDR).fab.hide()
@@ -89,6 +89,7 @@ class SettingsFragment: Fragment(){
                     (act.application as CDR).drc = Drive.getDriveResourceClient(act.applicationContext, GoogleSignIn.getLastSignedInAccount(act.application)!!)
                     val bu = AlertDialog.Builder(act)
                     bu.setView(R.layout.waiting_sync)
+                    bu.setCancelable(false)
                     val dia = bu.create()
                     if((act.application as CDR).getDies("").size>0 || (act.application as CDR).getDice("").size>0){
                         val b = AlertDialog.Builder(act)
@@ -104,7 +105,6 @@ class SettingsFragment: Fragment(){
                         dia.show()
                     (act.application as CDR).sync({dia.cancel()})
                 }else {
-                    println("Broken")
                     (act.application as CDR).prefs.edit().putBoolean(getString(R.string.google_drive_key), false).apply()
                     adap.notifyItemChanged(2)
                 }

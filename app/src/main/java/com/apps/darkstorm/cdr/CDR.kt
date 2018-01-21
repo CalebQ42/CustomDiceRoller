@@ -132,7 +132,7 @@ class CDR: Application(){
             val syncRes = dc.requestSync()
             Tasks.await(syncRes)
         }catch(_: java.util.concurrent.ExecutionException){}
-        val appFoldRes = drc.rootFolder
+        val appFoldRes = drc.appFolder
         Tasks.await(appFoldRes)
         val appFold = appFoldRes.result
         val queryRes = drc.queryChildren(appFold, Query.Builder().build())
