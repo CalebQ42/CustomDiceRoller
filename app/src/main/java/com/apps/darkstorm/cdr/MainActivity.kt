@@ -52,24 +52,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onBackPressed() {
-        val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START)
-        } else {
-            val cur = fragmentManager.findFragmentById(R.id.content_main)
-            if (cur != null) {
-//                val childMost = cur.childFragmentManager.findFragmentByTag("android:switcher:" + R.id.pager + ":" + 1)
-//                if (childMost != null && childMost.childFragmentManager.backStackEntryCount > 0) {
-//                    childMost.childFragmentManager.popBackStack()
-//                    (findViewById<View>(R.id.fab) as FloatingActionButton).show()
-//                } else
-                    if (cur.childFragmentManager.backStackEntryCount > 0) {
-                    cur.childFragmentManager.popBackStack()
-                } else {
+        if((application as CDR).fab.isOpen)
+            (application as CDR).fab.closeMenu()
+        else {
+            val drawer = findViewById<View>(R.id.drawer_layout) as DrawerLayout
+            if (drawer.isDrawerOpen(GravityCompat.START))
+                drawer.closeDrawer(GravityCompat.START)
+            else {
+                val cur = fragmentManager.findFragmentById(R.id.content_main)
+                if(cur != null){
+                    if (cur.childFragmentManager.backStackEntryCount > 0)
+                        cur.childFragmentManager.popBackStack()
+                    else
+                        super.onBackPressed()
+                }else
                     super.onBackPressed()
-                }
-            } else {
-                super.onBackPressed()
             }
         }
     }

@@ -14,6 +14,7 @@ import com.google.android.gms.drive.query.Filters
 import com.google.android.gms.drive.query.Query
 import com.google.android.gms.drive.query.SearchableField
 import com.google.android.gms.tasks.Tasks
+import org.jetbrains.anko.doAsync
 import java.io.File
 import java.util.*
 
@@ -94,25 +95,30 @@ data class Die(var sides: MutableList<JsonSavable> = mutableListOf(), private va
     fun localLocation(cdr: CDR) = cdr.dir+"/"+name.replace(" ","_")+fileExtension
     fun driveFile(cdr: CDR): DriveFile?{
         var out: DriveFile? = null
-        val res = cdr.drc.appFolder
-        Tasks.await(res)
-        if(!res.isSuccessful)
-            return out
-        val appFold: DriveFolder = res.result
-        val childRes = cdr.drc.queryChildren(appFold, Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,name.replace(" ","_")+fileExtension)).build())
-        Tasks.await(childRes)
-        if(!childRes.isSuccessful)
-            return out
-        val metBuf = childRes.result
-        out = if(metBuf.count ==0){
-            val createRes = cdr.drc.createFile(appFold, MetadataChangeSet.Builder().setTitle(name.replace(" ","_")+fileExtension).build(),null)
-            Tasks.await(createRes)
-            if(!createRes.isSuccessful)
-                return out
-            createRes.result
-        }else
-            metBuf[0].driveId.asDriveFile()
-        childRes.result.release()
+        val async = doAsync {
+            val res = cdr.drc.appFolder
+            Tasks.await(res)
+            if(!res.isSuccessful)
+                return@doAsync
+            val appFold: DriveFolder = res.result
+            val childRes = cdr.drc.queryChildren(appFold, Query.Builder().addFilter(Filters.eq(SearchableField.TITLE,name.replace(" ","_")+fileExtension)).build())
+            Tasks.await(childRes)
+            if(!childRes.isSuccessful)
+                return@doAsync
+            val metBuf = childRes.result
+            val met = metBuf.find { !it.isTrashed }
+            out = if(met == null){
+                val createRes = cdr.drc.createFile(appFold, MetadataChangeSet.Builder().setTitle(name.replace(" ","_")+fileExtension).build(),null)
+                Tasks.await(createRes)
+                if(!createRes.isSuccessful)
+                    return@doAsync
+                createRes.result
+            }else
+                met.driveId.asDriveFile()
+            childRes.result.release()
+        }
+        while(!async.isDone)
+            Thread.sleep(200)
         return out
     }
     fun delete(cdr: CDR){
@@ -126,7 +132,7 @@ data class Die(var sides: MutableList<JsonSavable> = mutableListOf(), private va
         saving = true
         File(localLocation(cdr)).delete()
         name = newName
-        Save.local(this,localLocation(cdr))
+        Save.local(this@Die,localLocation(cdr))
         if(cdr.prefs.getBoolean(cdr.getString(R.string.google_drive_key),false)) {
             driveFile(cdr)?.driveId?.asDriveResource()?.let {
                 cdr.drc.updateMetadata(it,MetadataChangeSet.Builder().setTitle(name.replace(" ","_")+fileExtension).build())
