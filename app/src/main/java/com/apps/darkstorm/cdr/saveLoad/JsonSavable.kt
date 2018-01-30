@@ -38,12 +38,12 @@ abstract class JsonSavable: Cloneable{
     }
     fun startEditing(nameGetter: (CDR)->String,cdr: CDR, df: ((CDR)->DriveFile?)? = null){
         if(!editing) {
-            editing = true
-            Save.local(this, nameGetter(cdr))
-            if(cdr.prefs.getBoolean(cdr.getString(R.string.google_drive_key),false))
-                Save.drive(this@JsonSavable,cdr.drc, df!!(cdr)!!,true)
-            var tmp = clone()
             doAsync {
+                editing = true
+                Save.local(this@JsonSavable, nameGetter(cdr))
+                if(cdr.prefs.getBoolean(cdr.getString(R.string.google_drive_key),false))
+                    Save.drive(this@JsonSavable,cdr.drc, df!!(cdr)!!,true)
+                var tmp = clone()
                 while (editing) {
                     if (tmp != this && !saving) {
                         saving = true

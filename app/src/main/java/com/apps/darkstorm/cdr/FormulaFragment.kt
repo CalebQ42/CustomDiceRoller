@@ -145,9 +145,9 @@ class FormulaFragment : Fragment() {
         }
         (act.application as CDR).fab.setStatic(R.drawable.die_roll,{
             if(disp.text.toString() == "")
-                toast("Please type something in")
+                toast(getString(R.string.empty_formula))
             else
-                DiceFormula.solve(disp.text.toString(),act.application as CDR).showDialog(activity,"Formula is invalid")
+                DiceFormula.solve(disp.text.toString(),act.application as CDR).showDialog(activity,getString(R.string.invalid_formula))
         })
     }
     companion object {

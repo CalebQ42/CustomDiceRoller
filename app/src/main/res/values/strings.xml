@@ -48,7 +48,8 @@
 
     <string name="delete_confirmation">Are you sure you want to delete?</string>
 
-    <string name="new_custom_die">New Die</string>
+    <string name="new_die">New Die</string>
+    <string name="new_group">New Group</string>
 
     <string name="name">Name:</string>
 
@@ -59,4 +60,13 @@
     <string name="upload_profiles_drive">Do you want to upload your existing dice and dice groups?</string>
 
     <string name="sync_waiting">Downloading and uploading dice</string>
+
+    <string name="something_went_wrong">Oops, something went wrong</string>
+
+    <string name="needs_one_side">Please add at least one side</string>
+
+    <string name="empty_formula">Please type something in</string>
+    <string name="invalid_formula">Formula is invalid</string>
+
+    <string name="help_translate">Help Translate!</string>
 </resources>

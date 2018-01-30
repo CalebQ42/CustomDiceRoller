@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="individual_first_key">indKey</string>
-    <string name="preference_key">prefsKey</string>
-    <string name="google_drive_key">gdriveKey</string>
-    <string name="theme_key">lightThemeKey</string>
-    <string name="default_section_key">defSecKey</string>
+    <string name="individual_first_key" translatable="false">indKey</string>
+    <string name="preference_key" translatable="false">prefsKey</string>
+    <string name="google_drive_key" translatable="false">gdriveKey</string>
+    <string name="theme_key" translatable="false">lightThemeKey</string>
+    <string name="default_section_key" translatable="false">defSecKey</string>
 </resources>

@@ -41,7 +41,7 @@ class DiceEdit : Fragment(){
     override fun onOptionsItemSelected(item: MenuItem?) =
             when(item?.itemId){
                 R.id.roll->{
-                    dice.roll().showDialog(act,"Oops, something went wrong")
+                    dice.roll().showDialog(act,getString(R.string.something_went_wrong))
                     true
                 }
                 else->super.onOptionsItemSelected(item)
@@ -61,9 +61,9 @@ class DiceEdit : Fragment(){
             val recB = v as RecyclerView
             recB.layoutManager = LinearLayoutManager(act)
             val dialog = b.setNegativeButton(android.R.string.cancel,{_,_->})
-                    .setNeutralButton(R.string.new_custom_die,{_,_->
+                    .setNeutralButton(R.string.new_die,{ _, _->
                         val d = Die()
-                        d.renameNoFileMove("New Die")
+                        d.renameNoFileMove(getString(R.string.new_die))
                         dice.dice.add(d)
                         adap.notifyItemInserted(dice.dice.size)
                     }).show()
@@ -130,7 +130,7 @@ class DiceEdit : Fragment(){
                             d.cancel()
                         else if (edit.text.contains("{") || edit.text.contains("}") || edit.text.contains("+") || edit.text.contains("-")) {
                             longToast(R.string.invalid_name)
-                        } else if ((act.application as CDR).hasConflictDie(edit.text.toString())) {
+                        } else if ((act.application as CDR).hasConflictGroup(edit.text.toString())) {
                             val build = AlertDialog.Builder(act)
                             build.setMessage(R.string.overwrite_warning_group)
                             build.setPositiveButton(android.R.string.ok, { _, _ ->

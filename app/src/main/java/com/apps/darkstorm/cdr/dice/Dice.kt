@@ -63,20 +63,22 @@ data class Dice(var dice: MutableList<Die> = mutableListOf(), var modifier: Int 
     fun roll(): DiceResults{
         val dr = DiceResults()
         for(d in dice){
-            val i = d.rollIndex()
-            when {
-                d.isComplex(i) -> {
-                    val s = d.getComplex(i)
-                    for (p in s!!.parts)
-                        dr.add(DiceResults.Result(p.name, p.value))
-                    dr.addNum(s.number)
-                }
-                else -> {
-                    val s = d.getSimple(i)
-                    if(s!!.isInt())
-                        dr.addNum(s.intSide())
-                    else
-                        dr.add(DiceResults.Result(s.stringSide(),1))
+            if(d.sides.size>0) {
+                val i = d.rollIndex()
+                when {
+                    d.isComplex(i) -> {
+                        val s = d.getComplex(i)
+                        for (p in s!!.parts)
+                            dr.add(DiceResults.Result(p.name, p.value))
+                        dr.addNum(s.number)
+                    }
+                    else -> {
+                        val s = d.getSimple(i)
+                        if (s!!.isInt())
+                            dr.addNum(s.intSide())
+                        else
+                            dr.add(DiceResults.Result(s.stringSide(), 1))
+                    }
                 }
             }
         }

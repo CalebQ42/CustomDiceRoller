@@ -22,6 +22,7 @@ import com.apps.darkstorm.cdr.dice.SimpleSide
 import org.jetbrains.anko.act
 import org.jetbrains.anko.find
 import org.jetbrains.anko.longToast
+import org.jetbrains.anko.toast
 
 class DieEdit: Fragment(){
     lateinit var die: Die
@@ -53,10 +54,12 @@ class DieEdit: Fragment(){
     override fun onOptionsItemSelected(item: MenuItem?) =
             when(item?.itemId){
                 R.id.roll->{
-                    val d = Dice()
-                    if(die.sides.size>0)
+                    if(die.sides.size>0) {
+                        val d = Dice()
                         d.dice.add(die)
-                    d.roll().showDialog(act, "Oops, something went wrong")
+                        d.roll().showDialog(act,getString(R.string.something_went_wrong))
+                    }else
+                        toast(R.string.needs_one_side)
                     true
                 }
                 else->super.onOptionsItemSelected(item)
@@ -192,8 +195,8 @@ class DieEdit: Fragment(){
             else
                 normalCard
         }
-        val nameCard = -1
-        val normalCard = 1
+        private val nameCard = -1
+        private val normalCard = 1
     }
     companion object {
         fun newInstance(die: Die): DieEdit{

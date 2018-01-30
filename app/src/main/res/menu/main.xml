@@ -4,4 +4,7 @@
         android:id="@+id/g_plus"
         android:checkable="false"
         android:title="@string/g_plus_option" />
+    <item
+        android:id="@+id/translate"
+        android:title="@string/help_translate" />
 </menu>

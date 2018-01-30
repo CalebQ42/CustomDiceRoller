@@ -82,6 +82,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 browse("https://plus.google.com/communities/117741233533206107778")
                 true
             }
+            R.id.translate->{
+                browse("https://crwd.in/customdiceroller")
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }

@@ -53,12 +53,12 @@ class CDR: Application(){
     }
     fun addNewDie(): Die {
         val newy = Die()
-        newy.renameNoFileMove("New Die")
+        newy.renameNoFileMove(getString(R.string.new_die))
         var i = 1
         while(dieMaster.find { d->
                 d.getName() == newy.getName()
             }!=null){
-            newy.renameNoFileMove("New Die" + i.toString())
+            newy.renameNoFileMove(getString(R.string.new_die) + i.toString())
             i++
         }
         dieMaster.add(newy)
@@ -66,12 +66,12 @@ class CDR: Application(){
     }
     fun addNewGroup(): Dice {
         val newy = Dice()
-        newy.renameNoFileMove("New Group")
+        newy.renameNoFileMove(getString(R.string.new_group))
         var i = 1
-        while(dieMaster.find { d->
+        while(diceMaster.find { d->
                 d.getName() == newy.getName()
             }!=null){
-            newy.renameNoFileMove("New Group" + i.toString())
+            newy.renameNoFileMove(getString(R.string.new_group) + i.toString())
             i++
         }
         diceMaster.add(newy)
