@@ -12,13 +12,13 @@ class DiceStart extends StatelessWidget{
         accentColor: Colors.deepOrangeAccent
       ),
       home: new Scaffold(
-        drawer: new Drawer(
-          child: new Text("Hello")
-        ),
+        drawer: new Drawer(),
         appBar: new AppBar(
           title: new Text("Custom Dice Roller")
         ),
-        //body:
+        body: new Center(
+          child: new Text("Hello World")
+        )
       )
     );
   }

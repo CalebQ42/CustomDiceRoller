@@ -1,4 +1,4 @@
-package com.apps.darkstorm.customdiceroller;
+package com.apps.darkstorm.cdr;
 
 import android.os.Bundle;
 
