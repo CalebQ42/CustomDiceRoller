@@ -9,7 +9,7 @@ class DiceStart extends StatelessWidget{
       title:"Custom Dice Roller",
       theme: ThemeData.dark().copyWith(
         primaryColor: Colors.deepPurple,
-        accentColor: Colors.deepPurpleAccent
+        accentColor: Colors.deepOrangeAccent
       ),
       home: new Scaffold(
         drawer: new Drawer(
