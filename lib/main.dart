@@ -22,5 +22,4 @@ class DiceStart extends StatelessWidget{
       )
     );
   }
-
 }

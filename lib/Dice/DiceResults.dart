@@ -33,7 +33,23 @@ class DiceResults{
     return out;
   }
   int getNum() => _number;
-
+  void combineWith(DiceResults dr){
+    dr.resList.forEach((r){
+      if(r is int)
+        addNum(r);
+      else if(r is Result)
+        add(r);
+    });
+  }
+  bool isNumOnly() => resList.length == 0;
+  //TODO: showDialog
+  //TODO: showCombinedDialog
+  //TODO: showIndividualDialog
+  String toString(){
+    var out = _number.toString();
+    _reses.forEach((r)=> out += ", "+r.value.toString()+" "+r.name);
+    return out;
+  }
 }
 
 class Result{
