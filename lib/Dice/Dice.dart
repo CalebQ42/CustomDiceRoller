@@ -1,7 +1,8 @@
-import 'package:customdiceroller/CustVars/JsonSavable.dart';
-import 'package:customdiceroller/Dice/Sides.dart';
-import 'package:customdiceroller/Dice/DiceResults.dart';
 import 'dart:math';
+
+import 'package:customdiceroller/CustVars/JsonSavable.dart';
+import 'package:customdiceroller/Dice/DiceResults.dart';
+import 'package:customdiceroller/Dice/Sides.dart';
 
 class Die extends JsonSavable{
   static String fileExtension = ".die";
@@ -15,7 +16,7 @@ class Die extends JsonSavable{
   List<JsonSavable> sides;
   String _name;
 
-  Die([this._name]){
+  Die([this._name = "New Die"]){
     sides = new List<JsonSavable>();
   }
   Die.withSides([this._name,this.sides]);
@@ -36,17 +37,25 @@ class Die extends JsonSavable{
   //TODO: driveFile
   //TODO: delete
   //TODO: rename
-  //TODO: renameNoFileMove
+  void renameNoFileMove(String name){
+    _name = name;
+  }
   String getName() => _name;
 }
 
 class Dice extends JsonSavable{
   static var fileExtension = ".dice";
+  static Dice numberDice(int number,int sides){
+    var d = Dice(number.toString()+"d"+sides.toString());
+    for(var i = 0;i<number;i++)
+      d.dice.add(Die.numberDie(sides));
+    return d;
+  }
 
   List<Die> dice;
   String _name;
 
-  Dice(this._name){
+  Dice([this._name = "New Dice"]){
     dice = new List<Die>();
   }
   Dice.withDice(this._name,this.dice);
@@ -82,6 +91,8 @@ class Dice extends JsonSavable{
   //TODO: driveFile
   //TODO: delete
   //TODO: rename
-  //TODO: renameNoFileMove
+  void renameNoFileMove(String name){
+    _name = name;
+  }
   String getName() => _name;
 }

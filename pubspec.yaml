@@ -7,6 +7,9 @@ dependencies:
 
   firebase_core: "^0.2.2"
   firebase_analytics: "^0.3.1"
+  firebase_messaging: "^0.2.4"
+  shared_preferences: "^0.4.1"
+  flutter_fab_dialer: "^0.0.4"
 
 dev_dependencies:
   flutter_test:

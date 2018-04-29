@@ -14,11 +14,33 @@ class DiceStart extends StatelessWidget{
       home: new Scaffold(
         drawer: new Drawer(),
         appBar: new AppBar(
-          title: new Text("Custom Dice Roller")
+          title: new Text("Custom Dice Roller"),
+          actions:[
+            new PopupMenuButton(
+              itemBuilder: (context)=>[
+                PopupMenuItem(
+                  value: "G+",
+                  child: const Text("G+ Community")
+                ),
+                PopupMenuItem(
+                  value: "Translate",
+                  child: const Text("Help Translate!")
+                )
+              ],
+              onSelected:(t){
+                var txt = t as String;
+                switch(txt){
+                  case "G+":
+                    //TODO: Find not brokne thing
+                    break;
+                  case "Translate":
+                    //TODO: Find not brokne thing
+                    break;
+                }
+              }
+            )
+          ]
         ),
-        body: new Center(
-          child: new Text("Hello World")
-        )
       )
     );
   }
