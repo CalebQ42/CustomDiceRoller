@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'dart:math';
 
+import 'package:customdiceroller/CDR.dart';
 import 'package:customdiceroller/CustVars/JsonSavable.dart';
 import 'package:customdiceroller/Dice/DiceResults.dart';
 import 'package:customdiceroller/Dice/Sides.dart';
@@ -20,7 +22,7 @@ class Die extends JsonSavable{
     sides = new List<JsonSavable>();
   }
   Die.withSides([this._name,this.sides]);
-  Die.fromJson(Map<String,dynamic> mp){load(mp);}
+  Die.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
   JsonSavable clone() => Die.withSides(_name,new List<JsonSavable>.from(sides));
   void load(Map<String, dynamic> mp) {
@@ -33,10 +35,19 @@ class Die extends JsonSavable{
   SimpleSide getSimple(int i) => sides[i];
   int rollIndex() => new Random().nextInt(sides.length);
   String toString() => _name + " " + sides.toString();
-  //TODO: localLocation
+  String localLocation(CDR cdr) => cdr.dir + "/" + _name.replaceAll(" ", "_")+fileExtension;
   //TODO: driveFile
-  //TODO: delete
-  //TODO: rename
+  void delete(CDR cdr) => new File(localLocation(cdr)).deleteSync();
+  void rename (String newName, CDR cdr){
+    while(saving){
+      sleep(new Duration(milliseconds: 200));
+    }
+    saving = true;
+    new File(localLocation(cdr));
+    _name = newName;
+    saveJson(new File(localLocation(cdr)));
+    saving = false;
+  }
   void renameNoFileMove(String name){
     _name = name;
   }
@@ -59,7 +70,7 @@ class Dice extends JsonSavable{
     dice = new List<Die>();
   }
   Dice.withDice(this._name,this.dice);
-  Dice.fromJson(Map<String,dynamic> mp){load(mp);}
+  Dice.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
   JsonSavable clone() => Dice.withDice(_name,new List<Die>.from(dice));
   void load(Map<String, dynamic> mp) {
@@ -87,10 +98,19 @@ class Dice extends JsonSavable{
     });
     return dr;
   }
-  //TODO: localLocation
+  String localLocation(CDR cdr) => cdr.dir + "/" + _name.replaceAll(" ", "_")+fileExtension;
   //TODO: driveFile
-  //TODO: delete
-  //TODO: rename
+  void delete(CDR cdr) => new File(localLocation(cdr)).deleteSync();
+  void rename (String newName, CDR cdr){
+    while(saving){
+      sleep(new Duration(milliseconds: 200));
+    }
+    saving = true;
+    new File(localLocation(cdr));
+    _name = newName;
+    saveJson(new File(localLocation(cdr)));
+    saving = false;
+  }
   void renameNoFileMove(String name){
     _name = name;
   }

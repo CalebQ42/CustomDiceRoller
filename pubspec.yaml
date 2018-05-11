@@ -5,11 +5,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-  firebase_core: "^0.2.2"
-  firebase_analytics: "^0.3.1"
-  firebase_messaging: "^0.2.4"
+  firebase_core: "^0.2.3"
+  firebase_analytics: "^0.3.3"
+  firebase_messaging: "^0.2.5"
   shared_preferences: "^0.4.1"
-  flutter_fab_dialer: "^0.0.4"
+  flutter_fab_dialer: "^0.0.5"
+  url_launcher: "^3.0.0"
+  path_provider: "^0.4.0"
 
 dev_dependencies:
   flutter_test:

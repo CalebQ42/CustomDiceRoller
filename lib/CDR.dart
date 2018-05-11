@@ -1,4 +1,9 @@
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:customdiceroller/Dice/Dice.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CDR{
@@ -6,6 +11,17 @@ class CDR{
   String dir;
   List<Die> _dieMaster;
   List<Dice> _diceMaster;
+
+  Future<void> initialize() async {
+    var dir = await getApplicationDocumentsDirectory();
+    this.dir = dir.path.substring(0,dir.path.indexOf("app_flutter"))+"Dice";
+    var prefs = await SharedPreferences.getInstance();
+    this.prefs = prefs;
+    var dirDir = new Directory(this.dir);
+    if(!dirDir.existsSync())
+      dirDir.create(recursive: true);
+    loadBoth();
+  }
 
   List<Die> getDies(String str){
     _dieMaster.sort((a,b)=> a.getName().compareTo(b.getName()));
@@ -15,7 +31,7 @@ class CDR{
   }
   void removeDieAt(String str, int i){
     var d = getDies(str)[i];
-//    d.delete();
+    d.delete(this);
     _dieMaster.remove(d);
   }
   Die addNewDie(){
@@ -30,6 +46,26 @@ class CDR{
   bool hasConflictDie(String name){
     return _dieMaster.any((d)=>d.getName() == name);
   }
+  void loadDie(){
+    _dieMaster = new List();
+    new Directory(dir).listSync().forEach((fse){
+      if(fse.path.endsWith(".die")){
+        _dieMaster.add(new Die.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));
+      }
+    });
+  }
+
+  void loadBoth(){
+    _diceMaster = new List();
+    _dieMaster = new List();
+    new Directory(dir).listSync().forEach((fse){
+      if(fse.path.endsWith(".dice")){
+        _diceMaster.add(new Dice.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));
+      }else if(fse.path.endsWith(".die")){
+        _dieMaster.add(new Die.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));
+      }
+    });
+  }
 
   List<Dice> getDice(String str){
     _diceMaster.sort((a,b)=>a.getName().compareTo(b.getName()));
@@ -38,8 +74,8 @@ class CDR{
     return new List.of(_diceMaster.where((d)=>d.getName().contains(str)));
   }
   void removeDiceAt(String str,int i){
-    var d = getDice(str);
-//    d.delete();
+    var d = getDice(str)[i];
+    d.delete(this);
     _diceMaster.remove(d);
   }
   Dice addNewDice(){
@@ -53,5 +89,13 @@ class CDR{
   }
   bool hasConflictDice(String name){
     return _diceMaster.any((d)=>d.getName()==name);
+  }
+  void loadDice(){
+    _diceMaster = new List();
+    new Directory(dir).listSync().forEach((fse){
+      if(fse.path.endsWith(".dice")){
+        _diceMaster.add(new Dice.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));
+      }
+    });
   }
 }

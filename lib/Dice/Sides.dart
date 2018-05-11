@@ -26,7 +26,7 @@ class ComplexSide extends JsonSavable{
   List<ComplexSidePart> parts = new List<ComplexSidePart>();
 
   ComplexSide({this.number = 0,this.parts});
-  ComplexSide.fromJson(Map<String,dynamic> mp){load(mp);}
+  ComplexSide.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
   JsonSavable clone() => ComplexSide(number:number,parts:new List<ComplexSidePart>.from(parts));
   void load(Map<String, dynamic> mp) {
@@ -51,7 +51,7 @@ class ComplexSidePart extends JsonSavable{
   int value;
 
   ComplexSidePart({this.name = "",this.value = 0});
-  ComplexSidePart.fromJson(Map<String,dynamic> mp){load(mp);}
+  ComplexSidePart.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
   JsonSavable clone() => ComplexSidePart(name:name,value:value);
   void load(Map<String, dynamic> mp){
