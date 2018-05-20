@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:customdiceroller/Dice/Dice.dart';
+import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,12 +12,13 @@ class CDR{
   String dir;
   List<Die> _dieMaster;
   List<Dice> _diceMaster;
+  PackageInfo packageInfo;
 
   Future<void> initialize() async {
     var dir = await getApplicationDocumentsDirectory();
     this.dir = dir.path.substring(0,dir.path.indexOf("app_flutter"))+"Dice";
-    var prefs = await SharedPreferences.getInstance();
-    this.prefs = prefs;
+    this.prefs = await SharedPreferences.getInstance();
+    this.packageInfo = await PackageInfo.fromPlatform();
     var dirDir = new Directory(this.dir);
     if(!dirDir.existsSync())
       dirDir.create(recursive: true);

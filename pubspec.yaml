@@ -5,13 +5,15 @@ dependencies:
   flutter:
     sdk: flutter
 
+  cupertino_icons: "^0.1.2"
   firebase_core: "^0.2.3"
   firebase_analytics: "^0.3.3"
   firebase_messaging: "^0.2.5"
   shared_preferences: "^0.4.1"
   flutter_fab_dialer: "^0.0.5"
-  url_launcher: "^3.0.0"
+  url_launcher: "^3.0.1"
   path_provider: "^0.4.0"
+  package_info: "^0.3.1"
 
 dev_dependencies:
   flutter_test:
