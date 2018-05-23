@@ -13,15 +13,20 @@ class Formula extends StatelessWidget{
         title: new Label("Dice Formula")
       ).build(context) as PreferredSizeWidget,
       drawer: new MyNavDrawer(context),
-      body: new Center(
-        child: new Label("Formula"),
+      body: new Column(
+        children:[
+          new TextField(
+          )
+        ]
       ),
       floatingActionButton: new FloatingActionButton(
         child: new Transform.rotate(
           angle: 45.0,
           child: const Icon(Icons.casino)
         ),
-        onPressed: null
+        onPressed: (){
+          lbl.setText("FAB Pressed");
+        }
       ),
     );
   }
