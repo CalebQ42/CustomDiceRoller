@@ -14,8 +14,36 @@ class Formula extends StatelessWidget{
       ).build(context) as PreferredSizeWidget,
       drawer: new MyNavDrawer(context),
       body: new Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children:[
-          new TextField(
+          new Container(
+            alignment: Alignment.centerRight,
+            padding: EdgeInsets.all(5.0),
+            child: new Text("Blah"),
+          ),
+          new Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              new ButtonBar(children: <Widget>[
+                new FlatButton(child: const Text("1"),
+                onPressed:(){
+                  print("Yo");
+                },),
+                new FlatButton(child: const Text("2"),
+                onPressed:(){
+                  print("Yo");
+                }),
+                new FlatButton(child: const Text("3"),
+                onPressed:(){
+                  print("Yo");
+                })
+              ],
+              alignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,)
+            ],
           )
         ]
       ),
@@ -25,10 +53,9 @@ class Formula extends StatelessWidget{
           child: const Icon(Icons.casino)
         ),
         onPressed: (){
-          lbl.setText("FAB Pressed");
+          print("Blah Blah");
         }
       ),
     );
   }
-
 }

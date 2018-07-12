@@ -100,6 +100,7 @@ class MyNavDrawer extends Drawer{
         ),
         new ListTile(
           leading: new Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [const Icon(Icons.casino)]
           ),
@@ -113,7 +114,7 @@ class MyNavDrawer extends Drawer{
           leading: new FittedBox(
             fit: BoxFit.scaleDown,
             alignment: Alignment.center,
-            child: new  Column(
+            child: new Column(
               children:[
                 new Row(
                   children: <Widget>[
@@ -137,8 +138,9 @@ class MyNavDrawer extends Drawer{
         ),
         new ListTile(
           leading: new Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [const Icon(Icons.functions)]
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [const Icon(Icons.functions)]
           ),
           title: new Text("Formula"),
           onTap:(){
@@ -149,6 +151,7 @@ class MyNavDrawer extends Drawer{
         new Divider(),
         new ListTile(
           leading: new Row(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [const Icon(Icons.settings)]
           ),

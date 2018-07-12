@@ -13,7 +13,7 @@ class SimpleSide extends JsonSavable{
   Map<String, dynamic> toJson() => {"value":_value};
   int intSide() => int.parse(_value);
   String stringSide() => _value;
-  bool isInt() => int.parse(_value,onError: (source) => null) != null;
+  bool isInt() => int.parse(_value) != null;
   void setString(String side) => _value = side;
   void setInt(int side)=> _value = side.toString();
   String toString()=>_value;
