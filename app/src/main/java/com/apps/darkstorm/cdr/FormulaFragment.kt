@@ -1,9 +1,9 @@
 package com.apps.darkstorm.cdr
 
 import android.app.AlertDialog
-import android.app.Fragment
 import android.content.res.Configuration
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -16,10 +16,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import com.apps.darkstorm.cdr.custVars.Adapters
 import com.apps.darkstorm.cdr.dice.DiceFormula
-import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.support.v4.act
+import org.jetbrains.anko.support.v4.toast
 
 class FormulaFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -27,14 +27,13 @@ class FormulaFragment : Fragment() {
             inflater.inflate(R.layout.formula_fragment, container, false)
 
     override fun onConfigurationChanged(newConfig: Configuration?) {
-        super.onConfigurationChanged(newConfig)
-        var remake = false
         if(newConfig?.orientation != origOrientation)
-            fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment.newInstance(disp.text.toString())).commit()
+            fragmentManager?.beginTransaction()?.replace(R.id.content_main,FormulaFragment.newInstance(disp.text.toString()))?.commit()
+        super.onConfigurationChanged(newConfig)
     }
 
     var startText = ""
-    lateinit var disp: EditText
+    private lateinit var disp: EditText
     private var origOrientation = 0
 
     override fun onViewCreated(v: View, savedInstanceState: Bundle?) {
@@ -63,10 +62,11 @@ class FormulaFragment : Fragment() {
             val view = LayoutInflater.from(act).inflate(R.layout.recycle,null)
             b.setView(view)
             val rec = view as RecyclerView
-            b.setNegativeButton(android.R.string.cancel,{_,_->})
+            b.setNegativeButton(android.R.string.cancel) { _, _->}
             rec.layoutManager = LinearLayoutManager(act)
             val d = b.show()
-            rec.adapter = Adapters.DieListAdapter(act.application as CDR,false,{die->
+            @Suppress("MoveLambdaOutsideParentheses")
+            rec.adapter = Adapters.DieListAdapter(act.application as CDR,false, { die->
                 disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"{Die:" + die.getName() + "}")
                 d.cancel()
             })
@@ -76,10 +76,11 @@ class FormulaFragment : Fragment() {
             val view = LayoutInflater.from(act).inflate(R.layout.recycle,null)
             b.setView(view)
             val rec = view as RecyclerView
-            b.setNegativeButton(android.R.string.cancel,{_,_->})
+            b.setNegativeButton(android.R.string.cancel) { _, _->}
             rec.layoutManager = LinearLayoutManager(act)
             val d = b.show()
-            rec.adapter = Adapters.DiceGroupListAdapter(act.application as CDR,false,{dice->
+            @Suppress("MoveLambdaOutsideParentheses")
+            rec.adapter = Adapters.DiceGroupListAdapter(act.application as CDR,false, { dice->
                 disp.text.delete(disp.selectionStart,disp.selectionEnd).insert(disp.selectionStart,"{Group:" + dice.getName() + "}")
                 d.cancel()
             })
@@ -143,12 +144,12 @@ class FormulaFragment : Fragment() {
                 }
             }
         }
-        (act.application as CDR).fab.setStatic(R.drawable.die_roll,{
+        (act.application as CDR).fab.setStatic(R.drawable.die_roll) {
             if(disp.text.toString() == "")
                 toast(getString(R.string.empty_formula))
             else
-                DiceFormula.solve(disp.text.toString(),act.application as CDR).showDialog(activity,getString(R.string.invalid_formula))
-        })
+                DiceFormula.solve(disp.text.toString(),act.application as CDR).showDialog(act,getString(R.string.invalid_formula))
+        }
     }
     companion object {
         fun newInstance(str: String): FormulaFragment{

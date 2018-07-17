@@ -139,28 +139,28 @@ data class ComplexSide(var number: Int = 0,var parts: MutableList<ComplexSidePar
                 val number = -1
                 val part = 0
             }
-            override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
                 val out = if(viewType == EditItemAdapter.number)
-                    ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.side_complex_number, parent, false))
+                    ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.side_complex_number, parent, false))
                 else
-                    ViewHolder(LayoutInflater.from(parent?.context).inflate(R.layout.side_complex_part, parent, false))
+                    ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.side_complex_part, parent, false))
                 val np = out.v.find<NumberPicker>(R.id.numberPicker)
                 np.minValue = 0
                 np.maxValue = 10
                 return out
             }
-            override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-                holder?.v?.find<NumberPicker>(R.id.numberPicker)?.setOnValueChangedListener { _, _, p2 ->
+            override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+                holder.v.find<NumberPicker>(R.id.numberPicker).setOnValueChangedListener { _, _, p2 ->
                     if(holder.adapterPosition==0)
                         c.number = p2
                     else
                         c.parts[position - 1].value = p2
                 }
                 if(position==0)
-                    holder?.v?.find<NumberPicker>(R.id.numberPicker)?.value = c.number
+                    holder.v.find<NumberPicker>(R.id.numberPicker).value = c.number
                 else {
-                    holder?.v?.find<NumberPicker>(R.id.numberPicker)?.value = c.parts[position - 1].value
-                    val edit = holder?.v?.find<EditText>(R.id.editText)!!
+                    holder.v.find<NumberPicker>(R.id.numberPicker).value = c.parts[position - 1].value
+                    val edit = holder.v.find<EditText>(R.id.editText)
                     edit.setText(c.parts[position-1].name)
                     edit.addTextChangedListener(object: TextWatcher{
                         override fun afterTextChanged(p0: Editable?) {

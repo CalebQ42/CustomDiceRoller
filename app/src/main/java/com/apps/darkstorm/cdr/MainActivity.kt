@@ -42,11 +42,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         nav_view.setNavigationItemSelectedListener(this)
         (application as CDR).fab = FloatingActionMenu(find<CoordinatorLayout>(R.id.coord))
         when((application as CDR).prefs.getInt(getString(R.string.default_section_key),0)){
-            0->fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
+            0->supportFragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
                     .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-            1->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+            1->supportFragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
                     .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
-            2->fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+            2->supportFragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
         }
     }
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             if (drawer.isDrawerOpen(GravityCompat.START))
                 drawer.closeDrawer(GravityCompat.START)
             else {
-                val cur = fragmentManager.findFragmentById(R.id.content_main)
+                val cur = supportFragmentManager.findFragmentById(R.id.content_main)
                 if(cur != null){
                     if (cur.childFragmentManager.backStackEntryCount > 0)
                         cur.childFragmentManager.popBackStack()
@@ -91,38 +91,38 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        val cur = fragmentManager.findFragmentById(R.id.content_main)
+        val cur = supportFragmentManager.findFragmentById(R.id.content_main)
         when (item.itemId) {
             R.id.formula ->{
                 if(cur is FormulaFragment)
-                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
                 else
-                    fragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,FormulaFragment())
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("formula").commit()
             }
             R.id.settings->{
                 if(cur is SettingsFragment)
-                    fragmentManager.beginTransaction().replace(R.id.content_main,SettingsFragment())
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,SettingsFragment())
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
                 else
-                    fragmentManager.beginTransaction().replace(R.id.content_main,SettingsFragment())
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,SettingsFragment())
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("settings").commit()
             }
             R.id.die->{
                 if(cur is ListFragment && !cur.dice)
-                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
                 else
-                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(false))
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("die").commit()
             }
             R.id.dice->{
                 if(cur is ListFragment && cur.dice)
-                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).commit()
                 else
-                    fragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
+                    supportFragmentManager.beginTransaction().replace(R.id.content_main,ListFragment.newInstance(true))
                             .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("die").commit()
             }
         }

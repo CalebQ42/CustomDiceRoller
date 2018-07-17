@@ -43,7 +43,7 @@ class SplashScreen : AppCompatActivity() {
                 if (resultCode == Activity.RESULT_OK){
                     (application as CDR).dc = Drive.getDriveClient(applicationContext,GoogleSignIn.getLastSignedInAccount(application)!!)
                     (application as CDR).drc = Drive.getDriveResourceClient(applicationContext,GoogleSignIn.getLastSignedInAccount(application)!!)
-                    (application as CDR).sync({finish()})
+                    (application as CDR).sync {finish()}
                 }else {
                     startActivityForResult((application as CDR).gsi.signInIntent,0)
                     finish()

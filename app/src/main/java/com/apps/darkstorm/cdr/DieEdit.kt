@@ -2,9 +2,9 @@ package com.apps.darkstorm.cdr
 
 import android.annotation.SuppressLint
 import android.app.AlertDialog
-import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -19,10 +19,10 @@ import com.apps.darkstorm.cdr.dice.ComplexSide
 import com.apps.darkstorm.cdr.dice.Dice
 import com.apps.darkstorm.cdr.dice.Die
 import com.apps.darkstorm.cdr.dice.SimpleSide
-import org.jetbrains.anko.act
 import org.jetbrains.anko.find
-import org.jetbrains.anko.longToast
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.support.v4.act
+import org.jetbrains.anko.support.v4.longToast
+import org.jetbrains.anko.support.v4.toast
 
 class DieEdit: Fragment(){
     lateinit var die: Die
@@ -31,8 +31,8 @@ class DieEdit: Fragment(){
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
-            inflater?.inflate(R.layout.edit,container,false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) =
+            inflater.inflate(R.layout.edit,container,false)!!
     override fun onResume() {
         super.onResume()
         if(dice == null)
@@ -64,16 +64,12 @@ class DieEdit: Fragment(){
                 }
                 else->super.onOptionsItemSelected(item)
             }
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        if (view == null)
-            return
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         act.find<Toolbar>(R.id.toolbar).title = die.getName()
-
         val rec = view.find<RecyclerView>(R.id.recycler)
         rec.layoutManager = LinearLayoutManager(act)
         val adap = SidesAdapter()
         rec.adapter = adap
-
         val menuItems = mutableListOf(FloatingActionMenu.FloatingMenuItem(R.drawable.add_box,{
             SimpleSide.edit(act,object: OnEditDialogClose(){
                 override fun onOk() {
@@ -91,15 +87,13 @@ class DieEdit: Fragment(){
     }
 
     inner class SidesAdapter: RecyclerView.Adapter<Adapters.SimpleHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = if(viewType == nameCard)
-                Adapters.SimpleHolder(LayoutInflater.from(parent?.context).inflate(R.layout.name_card,parent,false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = if(viewType == nameCard)
+                Adapters.SimpleHolder(LayoutInflater.from(parent.context).inflate(R.layout.name_card,parent,false))
             else
-                Adapters.SimpleHolder(LayoutInflater.from(parent?.context).inflate(R.layout.sides_layout,parent,false))
+                Adapters.SimpleHolder(LayoutInflater.from(parent.context).inflate(R.layout.sides_layout,parent,false))
         override fun getItemCount() = die.sides.size + 1
         @SuppressLint("SetTextI18n")
-        override fun onBindViewHolder(holder: Adapters.SimpleHolder?, position: Int) {
-            if(holder == null)
-                return
+        override fun onBindViewHolder(holder: Adapters.SimpleHolder, position: Int) {
             if(position == 0){
                 holder.v.findViewById<TextView>(R.id.name).text = die.getName()
                 holder.v.setOnClickListener {
@@ -109,7 +103,7 @@ class DieEdit: Fragment(){
                     val edit = v.find<EditText>(R.id.editText)
                     (v as TextInputLayout).hint = getString(R.string.rename_dialog)
                     edit.text.insert(0,die.getName())
-                    val d = b.setPositiveButton(android.R.string.ok,{_,_ -> }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                    val d = b.setPositiveButton(android.R.string.ok) { _, _ -> }.setNegativeButton(android.R.string.cancel) { _, _->}.show()
                     d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                         if(dice != null){
                             die.renameNoFileMove(edit.text.toString())
@@ -123,12 +117,12 @@ class DieEdit: Fragment(){
                             } else if ((act.application as CDR).hasConflictDie(edit.text.toString())) {
                                 val build = AlertDialog.Builder(act)
                                 build.setMessage(R.string.overwrite_warning_die)
-                                build.setPositiveButton(android.R.string.ok, { _, _ ->
+                                build.setPositiveButton(android.R.string.ok) { _, _ ->
                                     die.rename(edit.text.toString(), act.application as CDR)
                                     holder.v.findViewById<TextView>(R.id.name).text = die.getName()
                                     (act.application as CDR).reloadDieMaster()
                                     d.cancel()
-                                }).setNegativeButton(android.R.string.cancel, { _, _ -> }).show()
+                                }.setNegativeButton(android.R.string.cancel) { _, _ -> }.show()
                             } else {
                                 die.rename(edit.text.toString(), act.application as CDR)
                                 holder.v.findViewById<TextView>(R.id.name).text = die.getName()
@@ -181,10 +175,10 @@ class DieEdit: Fragment(){
             holder.v.setOnLongClickListener {
                 val b = AlertDialog.Builder(act)
                 b.setMessage(R.string.delete_confirmation)
-                b.setPositiveButton(android.R.string.yes,{_,_->
+                b.setPositiveButton(android.R.string.yes) { _, _->
                     die.sides.removeAt(holder.adapterPosition-1)
                     this.notifyItemRemoved(holder.adapterPosition-1)
-                }).setNegativeButton(android.R.string.no,{_,_->}).show()
+                }.setNegativeButton(android.R.string.no) { _, _->}.show()
                 true
             }
         }

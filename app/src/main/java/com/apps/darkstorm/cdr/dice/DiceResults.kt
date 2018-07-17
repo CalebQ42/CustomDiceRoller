@@ -114,22 +114,19 @@ class DiceResults {
     }
 
     inner class ResultsAdap(private val a: Activity): RecyclerView.Adapter<ResultsAdap.ViewHolder>(){
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            if (holder != null) {
-                holder.v.findViewById<TextView>(R.id.label).text = reses[position].name
-                holder.v.findViewById<TextView>(R.id.number).text = reses[position].value.toString()
-            }
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.v.findViewById<TextView>(R.id.label).text = reses[position].name
+            holder.v.findViewById<TextView>(R.id.number).text = reses[position].value.toString()
         }
         override fun getItemCount() = reses.size
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_part,parent,false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_part,parent,false))
         inner class ViewHolder(val v: View): RecyclerView.ViewHolder(v)
     }
 
     inner class ResultsListAdap(private val a: Activity): RecyclerView.Adapter<ResultsListAdap.ViewHolder>(){
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_ind_simple,parent,false))
-        override fun onBindViewHolder(holder: ViewHolder?, position: Int) {
-            if (holder != null)
-                holder.v.findViewById<TextView>(R.id.text).text = resList[position].toString()
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(a.layoutInflater.inflate(R.layout.results_ind_simple,parent,false))
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            holder.v.findViewById<TextView>(R.id.text).text = resList[position].toString()
         }
         override fun getItemCount() = resList.size
         inner class ViewHolder(val v: View): RecyclerView.ViewHolder(v)

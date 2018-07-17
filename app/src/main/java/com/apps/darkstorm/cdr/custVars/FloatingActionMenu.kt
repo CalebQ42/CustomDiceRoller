@@ -17,7 +17,7 @@ class FloatingActionMenu(val root: ViewGroup) {
     var items = mutableListOf<FloatingMenuItem>()
     var open: onOpenClose? = null
     var close: onOpenClose? = null
-    var isMenu = false
+    private var isMenu = false
     var isOpen = false
     var rotation: Float = 45f
     init{
@@ -39,13 +39,13 @@ class FloatingActionMenu(val root: ViewGroup) {
         this.rotation = rotationAmount
         fab.hide(object: FloatingActionButton.OnVisibilityChangedListener(){
             override fun onHidden(fab: FloatingActionButton?) {
-                changeImage(pictureResource,{openMenu()},{
+                changeImage(pictureResource,{openMenu()}) {
                     for(i in items){
                         val v = LayoutInflater.from(root.context).inflate(R.layout.fam_item,root,false)
                         i.linkToItem(v,{closeMenu()})
                         root.addView(i.linkedItem)
                     }
-                })
+                }
             }
         })
         isMenu = true

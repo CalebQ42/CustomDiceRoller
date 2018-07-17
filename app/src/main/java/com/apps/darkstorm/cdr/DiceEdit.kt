@@ -1,9 +1,9 @@
 package com.apps.darkstorm.cdr
 
 import android.app.AlertDialog
-import android.app.Fragment
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -15,9 +15,9 @@ import com.apps.darkstorm.cdr.custVars.Adapters
 import com.apps.darkstorm.cdr.custVars.FloatingActionMenu
 import com.apps.darkstorm.cdr.dice.Dice
 import com.apps.darkstorm.cdr.dice.Die
-import org.jetbrains.anko.act
 import org.jetbrains.anko.find
-import org.jetbrains.anko.longToast
+import org.jetbrains.anko.support.v4.act
+import org.jetbrains.anko.support.v4.longToast
 
 class DiceEdit : Fragment(){
     lateinit var dice: Dice
@@ -25,8 +25,8 @@ class DiceEdit : Fragment(){
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
-            inflater?.inflate(R.layout.edit,container,false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.edit,container,false)
     override fun onResume() {
         super.onResume()
         dice.startEditing({cdr: CDR -> dice.localLocation(cdr)},act.application as CDR)
@@ -46,9 +46,7 @@ class DiceEdit : Fragment(){
                 }
                 else->super.onOptionsItemSelected(item)
             }
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
-        if (view == null)
-            return
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val rec = view.find<RecyclerView>(R.id.recycler)
         rec.layoutManager = LinearLayoutManager(act)
         val adap = DiesAdapter()
@@ -60,13 +58,14 @@ class DiceEdit : Fragment(){
             b.setView(v)
             val recB = v as RecyclerView
             recB.layoutManager = LinearLayoutManager(act)
-            val dialog = b.setNegativeButton(android.R.string.cancel,{_,_->})
-                    .setNeutralButton(R.string.new_die,{ _, _->
+            val dialog = b.setNegativeButton(android.R.string.cancel) { _, _->}
+                    .setNeutralButton(R.string.new_die) { _, _->
                         val d = Die()
                         d.renameNoFileMove(getString(R.string.new_die))
                         dice.dice.add(d)
                         adap.notifyItemInserted(dice.dice.size)
-                    }).show()
+                    }.show()
+            @Suppress("MoveLambdaOutsideParentheses")
             recB.adapter = Adapters.DieListAdapter(act.application as CDR,false,{d->
                 dice.dice.add(d.copy())
                 adap.notifyItemInserted(dice.dice.size)
@@ -81,7 +80,7 @@ class DiceEdit : Fragment(){
             (v as TextInputLayout).hint = getString(R.string.dice_number)
             editNumber.inputType = InputType.TYPE_CLASS_NUMBER
             editNumber.text.insert(0,"1")
-            b.setPositiveButton(android.R.string.ok,{_,_ ->
+            b.setPositiveButton(android.R.string.ok) { _, _ ->
                 if(editNumber.text.toString() != ""){
                     val b = AlertDialog.Builder(act)
                     val v = LayoutInflater.from(act).inflate(R.layout.dialog_simple_side,null)
@@ -89,7 +88,7 @@ class DiceEdit : Fragment(){
                     val editSides = v.find<EditText>(R.id.editText)
                     (v as TextInputLayout).hint = getString(R.string.side_number)
                     editSides.inputType = InputType.TYPE_CLASS_NUMBER
-                    b.setPositiveButton(android.R.string.ok,{_,_ ->
+                    b.setPositiveButton(android.R.string.ok) { _, _ ->
                         if(editSides.text.toString() != ""){
                             for(d in Dice.numberDice(editNumber.text.toString().toInt(),editSides.text.toString().toInt()).dice) {
                                 d.renameNoFileMove("d" + editSides.text.toString())
@@ -97,24 +96,22 @@ class DiceEdit : Fragment(){
                             }
                             adap.notifyItemRangeInserted(dice.dice.size-editNumber.text.toString().toInt()-1,dice.dice.size-1)
                         }
-                    }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                    }.setNegativeButton(android.R.string.cancel) { _, _->}.show()
                 }
-            }).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+            }.setNegativeButton(android.R.string.cancel) { _, _->}.show()
         }, getString(R.string.number_die)))
         (act.application as CDR).fab.setMenu(menuItems)
     }
 
     inner class DiesAdapter : RecyclerView.Adapter<Adapters.SimpleHolder>(){
         override fun getItemCount() = dice.dice.size + 1
-        override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): Adapters.SimpleHolder {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Adapters.SimpleHolder {
             return if(viewType == normalCard)
-                Adapters.SimpleHolder(LayoutInflater.from(parent?.context).inflate(R.layout.dice_die_list_item, parent, false))
+                Adapters.SimpleHolder(LayoutInflater.from(parent.context).inflate(R.layout.dice_die_list_item, parent, false))
             else
-                Adapters.SimpleHolder(LayoutInflater.from(parent?.context).inflate(R.layout.name_card, parent, false))
+                Adapters.SimpleHolder(LayoutInflater.from(parent.context).inflate(R.layout.name_card, parent, false))
         }
-        override fun onBindViewHolder(holder: Adapters.SimpleHolder?, position: Int) {
-            if(holder == null)
-                return
+        override fun onBindViewHolder(holder: Adapters.SimpleHolder, position: Int) {
             if(holder.itemViewType == nameCard){
                 holder.v.findViewById<TextView>(R.id.name).text = dice.getName()
                 holder.v.setOnClickListener {
@@ -124,7 +121,7 @@ class DiceEdit : Fragment(){
                     val edit = v.find<EditText>(R.id.editText)
                     (v as TextInputLayout).hint = getString(R.string.rename_dialog)
                     edit.text.insert(0,dice.getName())
-                    val d = b.setPositiveButton(android.R.string.ok,{_,_ ->}).setNegativeButton(android.R.string.cancel,{_,_->}).show()
+                    val d = b.setPositiveButton(android.R.string.ok) { _, _ ->}.setNegativeButton(android.R.string.cancel) { _, _->}.show()
                     d.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                         if(edit.text.toString() == dice.getName())
                             d.cancel()
@@ -133,11 +130,11 @@ class DiceEdit : Fragment(){
                         } else if ((act.application as CDR).hasConflictGroup(edit.text.toString())) {
                             val build = AlertDialog.Builder(act)
                             build.setMessage(R.string.overwrite_warning_group)
-                            build.setPositiveButton(android.R.string.ok, { _, _ ->
+                            build.setPositiveButton(android.R.string.ok) { _, _ ->
                                 dice.rename(edit.text.toString(), act.application as CDR)
                                 holder.v.findViewById<TextView>(R.id.name).text = dice.getName()
                                 d.cancel()
-                            }).setNegativeButton(android.R.string.cancel, { _, _ -> }).show()
+                            }.setNegativeButton(android.R.string.cancel) { _, _ -> }.show()
                         } else {
                             dice.rename(edit.text.toString(), act.application as CDR)
                             holder.v.findViewById<TextView>(R.id.name).text = dice.getName()
@@ -154,16 +151,16 @@ class DiceEdit : Fragment(){
             txt.removeSuffix("\n")
             holder.v.findViewById<TextView>(R.id.sides)?.text = txt
             holder.v.setOnClickListener {
-                fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance(dice.dice[holder.adapterPosition-1],dice))
-                        .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
+                fragmentManager?.beginTransaction()?.replace(R.id.content_main,DieEdit.newInstance(dice.dice[holder.adapterPosition-1],dice))?.
+                        setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out)?.addToBackStack("Editing")?.commit()
             }
             holder.v.setOnLongClickListener {
                 val b = AlertDialog.Builder(act)
                 b.setMessage(R.string.delete_confirmation)
-                b.setPositiveButton(android.R.string.yes,{_,_->
+                b.setPositiveButton(android.R.string.yes) { _, _->
                     dice.dice.removeAt(holder.adapterPosition-1)
                     this.notifyItemRemoved(holder.adapterPosition)
-                }).setNegativeButton(android.R.string.no,{_,_->}).show()
+                }.setNegativeButton(android.R.string.no) { _, _->}.show()
                 true
             }
         }
@@ -173,8 +170,8 @@ class DiceEdit : Fragment(){
             else
                 normalCard
         }
-        val nameCard = -1
-        val normalCard = 1
+        private val nameCard = -1
+        private val normalCard = 1
     }
     companion object {
         fun newInstance(dice: Dice): DiceEdit {

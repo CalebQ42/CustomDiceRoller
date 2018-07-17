@@ -1,17 +1,17 @@
 package com.apps.darkstorm.cdr
 
 import android.app.AlertDialog
-import android.app.Fragment
 import android.os.Bundle
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.*
 import android.widget.SearchView
 import com.apps.darkstorm.cdr.custVars.Adapters
-import org.jetbrains.anko.act
 import org.jetbrains.anko.appcompat.v7.titleResource
 import org.jetbrains.anko.find
+import org.jetbrains.anko.support.v4.act
 
 class ListFragment: Fragment(){
     var dice = false
@@ -20,10 +20,10 @@ class ListFragment: Fragment(){
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) =
-            inflater?.inflate(R.layout.recycler_fragment,container,false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.recycler_fragment,container,false)
 
-    override fun onViewCreated(view: View?, savedInstanceState: Bundle?) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val toolbar = act.find<Toolbar>(R.id.toolbar)
         if(dice)
             toolbar.titleResource = R.string.dice_group_nav_drawer
@@ -31,37 +31,37 @@ class ListFragment: Fragment(){
             toolbar.titleResource = R.string.die_nav_drawer
         (act.application as CDR).fab.setStatic(R.drawable.add){
             if(dice)
-                fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
+                fragmentManager!!.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance((act.application as CDR).addNewGroup()))
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("New Group").commit()
             else
-                fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
+                fragmentManager!!.beginTransaction().replace(R.id.content_main,DieEdit.newInstance((act.application as CDR).addNewDie()))
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("New Die").commit()
         }
-        recycle = view?.find(R.id.recycler)!!
+        recycle = view.find(R.id.recycler)
         recycle.adapter = if(dice)
             Adapters.DiceGroupListAdapter(act.application as CDR,true,{ d ->
-                fragmentManager.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance(d))
+                fragmentManager!!.beginTransaction().replace(R.id.content_main,DiceEdit.newInstance(d))
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
-            },{_,str,i->
+            }) { _, str, i->
                 val b = AlertDialog.Builder(act)
                 b.setMessage(R.string.delete_confirmation)
-                b.setPositiveButton(android.R.string.yes,{_,_->
+                b.setPositiveButton(android.R.string.yes) { _, _->
                     (act.application as CDR).removeDiceAt(str,i)
                     recycle.adapter.notifyItemRemoved(i)
-                }).setNegativeButton(android.R.string.no,{_,_->}).show()
-            })
+                }.setNegativeButton(android.R.string.no) { _, _->}.show()
+            }
         else
             Adapters.DieListAdapter(act.application as CDR,true,{ d ->
-                fragmentManager.beginTransaction().replace(R.id.content_main,DieEdit.newInstance(d))
+                fragmentManager!!.beginTransaction().replace(R.id.content_main,DieEdit.newInstance(d))
                         .setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out).addToBackStack("Editing").commit()
-            },{_,str,i->
+            }) { _, str, i->
                 val b = AlertDialog.Builder(act)
                 b.setMessage(R.string.delete_confirmation)
-                b.setPositiveButton(android.R.string.yes,{_,_->
+                b.setPositiveButton(android.R.string.yes) { _, _->
                     (act.application as CDR).removeDieAt(str,i)
                     recycle.adapter.notifyItemRemoved(i)
-                }).setNegativeButton(android.R.string.no,{_,_->}).show()
-            })
+                }.setNegativeButton(android.R.string.no) { _, _->}.show()
+            }
         val linlay = LinearLayoutManager(act)
         linlay.orientation = LinearLayoutManager.VERTICAL
         recycle.layoutManager = linlay
