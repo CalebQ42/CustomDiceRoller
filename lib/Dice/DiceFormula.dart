@@ -4,6 +4,7 @@ import 'package:customdiceroller/Dice/DiceResults.dart';
 
 class DiceFormula{
   static DiceResults solve(String str,CDR cdr){
+    str = str.toLowerCase();
     var dr = new DiceResults();
     var last = 0;
     var problem = false;

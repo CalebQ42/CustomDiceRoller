@@ -44,7 +44,9 @@ class DiceResults{
   bool isNumOnly() => resList.length == 0;
   //TODO: showDialog
   //TODO: showCombinedDialog
-  //TODO: showIndividualDialog
+  void showIndividualDialog(){
+    var dia = new AlertDialog()
+  }
   String toString(){
     var out = _number.toString();
     _reses.forEach((r)=> out += ", "+r.value.toString()+" "+r.name);

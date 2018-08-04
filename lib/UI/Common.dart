@@ -50,9 +50,6 @@ class MyAppBar extends StatelessWidget{
       preferredSize: appBar.preferredSize
     );
   }
-  void setTitle(String title){
-    this.title.setText(title);
-  }
 }
 
 //class MyAppBar extends AppBar{

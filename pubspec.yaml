@@ -11,7 +11,7 @@ dependencies:
   firebase_messaging: "^1.0.3"
   shared_preferences: "^0.4.2"
   flutter_fab_dialer: "^0.0.5"
-  url_launcher: "^3.0.2"
+  url_launcher: "^3.0.3"
   path_provider: "^0.4.1"
   package_info: "^0.3.2"
 

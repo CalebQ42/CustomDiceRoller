@@ -10,8 +10,9 @@ class Die extends JsonSavable{
   static String fileExtension = ".die";
   static Die numberDie(int sides){
     var d = Die("d"+sides.toString());
-    for(int i = 1;i<=i;i++)
+    for(int i = 1;i<=sides;i++){
       d.sides.add(SimpleSide(i.toString()));
+    }
     return d;
   }
 

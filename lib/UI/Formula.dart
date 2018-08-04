@@ -1,6 +1,7 @@
 import 'package:customdiceroller/CDR.dart';
 import 'package:customdiceroller/CustVars/Widgets/Label.dart';
 import 'package:customdiceroller/UI/Common.dart';
+import 'package:customdiceroller/Dice/DiceFormula.dart';
 import 'package:flutter/material.dart';
 
 class Formula extends StatelessWidget{
@@ -13,49 +14,202 @@ class Formula extends StatelessWidget{
         title: new Label("Dice Formula")
       ).build(context) as PreferredSizeWidget,
       drawer: new MyNavDrawer(context),
-      body: new Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children:[
-          new Container(
-            alignment: Alignment.centerRight,
-            padding: EdgeInsets.all(5.0),
-            child: new Text("Blah"),
-          ),
-          new Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              new ButtonBar(children: <Widget>[
-                new FlatButton(child: const Text("1"),
-                onPressed:(){
-                  print("Yo");
-                },),
-                new FlatButton(child: const Text("2"),
-                onPressed:(){
-                  print("Yo");
-                }),
-                new FlatButton(child: const Text("3"),
-                onPressed:(){
-                  print("Yo");
-                })
-              ],
-              alignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,)
+      body: new FormulaView(cdr)
+    );
+  }
+}
+
+class FormulaView extends StatefulWidget{
+  final CDR cdr;
+  FormulaView(this.cdr);
+  State<FormulaView> createState() => new FormulaState(cdr);
+}
+
+class FormulaState extends State<FormulaView>{
+  String display = "";
+  final CDR cdr;
+  FormulaState(this.cdr);
+  Widget build(BuildContext context){
+    return new Column(
+      children: <Widget>[
+        new Spacer(flex:1),
+        new Expanded(
+          flex:1, 
+          child: new Row(
+            children: <Widget>[
+              new Expanded(
+                child: new Align(
+                  alignment: Alignment.centerRight,
+                  child: new Text(display,
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+                )
+              ),
+              new InkResponse(
+                child: new Center(
+                  child: new Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: new InkResponse(
+                      child: const Icon(Icons.backspace)
+                    ),
+                  )
+                ),
+                onTap: (){delete();}
+              )
             ],
           )
-        ]
-      ),
-      floatingActionButton: new FloatingActionButton(
-        child: new Transform.rotate(
-          angle: 45.0,
-          child: const Icon(Icons.casino)
         ),
-        onPressed: (){
-          print("Blah Blah");
-        }
-      ),
+        new Keypad(this,cdr),
+        new Spacer(flex:1)
+      ],
+    );
+  }
+  void changeDisplay(String newText){
+    setState(()=>display=newText);
+  }
+  void addToDisplay(String text){
+    setState(()=>display+=text);
+  }
+  void delete(){
+    setState(()=>display=display.substring(0,display.length-1));
+  }
+  void clear(){
+    setState(()=>display="");
+  }
+}
+
+class Keypad extends StatelessWidget{
+  final FormulaState formulaState;
+  final CDR cdr;
+  Keypad(this.formulaState,this.cdr);
+  Widget build(BuildContext context){
+    return Expanded(
+      flex:5,
+      child: new Column(
+        children: <Widget>[
+          new Expanded(
+            flex:1,
+            child: new Row(
+              children: <Widget>[
+                new KeypadButton(1,"Add Die",
+                  (){print("Add Die");}
+                ),
+                new KeypadButton(1,"Add Group",
+                  (){print("Add Group");}
+                ),
+                new KeypadButton(1,"Clear",
+                  (){formulaState.clear();}
+                )
+              ],
+            )
+          ),
+          new Expanded(
+            flex:4,
+            child: new Row(
+              children: <Widget>[
+                new Expanded(
+                  flex:1,
+                  child: new Column(
+                    children: <Widget>[
+                      new KeypadButton(1,"1",
+                        (){formulaState.addToDisplay("1");}
+                      ),
+                      new KeypadButton(1,"4",
+                        (){formulaState.addToDisplay("4");}
+                      ),
+                      new KeypadButton(1,"7",
+                        (){formulaState.addToDisplay("7");}
+                      ),
+                    ],
+                  )
+                ),
+                new Expanded(
+                  flex:1,
+                  child: new Column(
+                    children: <Widget>[
+                      new KeypadButton(1,"2",
+                        (){formulaState.addToDisplay("2");}
+                      ),
+                      new KeypadButton(1,"5",
+                        (){formulaState.addToDisplay("5");}
+                      ),
+                      new KeypadButton(1,"8",
+                        (){formulaState.addToDisplay("8");}
+                      ),
+                    ],
+                  )
+                ),
+                new Expanded(
+                  flex:1,
+                  child: new Column(
+                    children: <Widget>[
+                      new KeypadButton(1,"3",
+                        (){formulaState.addToDisplay("3");}
+                      ),
+                      new KeypadButton(1,"6",
+                        (){formulaState.addToDisplay("6");}
+                      ),
+                      new KeypadButton(1,"9",
+                        (){formulaState.addToDisplay("9");}
+                      ),
+                    ],
+                  )
+                ),
+                new Expanded(
+                  flex:1,
+                  child: new Column(
+                    children: <Widget>[
+                      new KeypadButton(1,"+",
+                        (){formulaState.addToDisplay("+");}
+                      ),
+                      new KeypadButton(1,"-",
+                        (){formulaState.addToDisplay("-");}
+                      ),
+                    ],
+                  )
+                )
+              ],
+            )
+          ),
+          new Expanded(
+            flex:1,
+            child: new Row(
+              children: <Widget>[
+                new KeypadButton(1,"0",
+                  (){formulaState.addToDisplay("0");}
+                ),
+                new KeypadButton(1,"D",
+                  (){formulaState.addToDisplay("D");}
+                )
+              ],
+            )
+          ),
+          new KeypadButton(1,"Roll",(){
+            print("Hello");
+            var hi = DiceFormula.solve(formulaState.display,cdr);
+            print(hi.getNum());
+          })
+        ],
+      )
+    );
+  }
+}
+
+class KeypadButton extends StatelessWidget{
+  final int flex;
+  final String text;
+  final VoidCallback onClick;
+  KeypadButton(this.flex, this.text, this.onClick);
+  Widget build(BuildContext context){
+    return Expanded(
+      flex: flex,
+      child: new InkResponse(
+        highlightShape: BoxShape.rectangle,
+        onTap: onClick,
+        child: new Center(
+          child: new Text(text)
+        )
+      )
     );
   }
 }
