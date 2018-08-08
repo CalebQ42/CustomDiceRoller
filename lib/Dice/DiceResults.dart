@@ -1,3 +1,8 @@
+import 'package:flutter/material.dart';
+
+import 'package:customdiceroller/CDR.dart';
+import 'package:customdiceroller/Preferences.dart';
+
 class DiceResults{
   int _number = 0;
   List<Result> _reses = new List<Result>();
@@ -42,10 +47,39 @@ class DiceResults{
     });
   }
   bool isNumOnly() => resList.length == 0;
-  //TODO: showDialog
-  //TODO: showCombinedDialog
-  void showIndividualDialog(){
-    var dia = new AlertDialog()
+  void showResultDialog(BuildContext bc,CDR cdr, String problemMessage){
+    if(cdr.prefs.getBool(Preferences.individualResults)){
+      showIndividualDialog(bc);
+    }else{
+      showCombinedDialog(bc);
+    }
+  }
+  void showCombinedDialog(BuildContext bc){}
+  void showIndividualDialog(BuildContext bc){
+    showDialog(
+      context: bc,
+      builder: (bc){
+        new AlertDialog(
+          content: new ListView.builder(
+            itemCount: resList.length,
+            itemBuilder: (bc,i)=>new Text(resList[i].toString()),
+          ),
+          actions: [
+            new FlatButton(
+              child: new Text("Combined"),
+              onPressed: (){
+                Navigator.pop(bc);
+                showCombinedDialog(bc);
+              }
+            ),
+            new FlatButton(
+              child: new Text("Cancel"),
+              onPressed: ()=> Navigator.pop(bc)
+            )
+          ]
+        );
+      }
+    );
   }
   String toString(){
     var out = _number.toString();

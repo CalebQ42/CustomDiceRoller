@@ -85,111 +85,114 @@ class Keypad extends StatelessWidget{
   Widget build(BuildContext context){
     return Expanded(
       flex:5,
-      child: new Column(
-        children: <Widget>[
-          new Expanded(
-            flex:1,
-            child: new Row(
-              children: <Widget>[
-                new KeypadButton(1,"Add Die",
-                  (){print("Add Die");}
-                ),
-                new KeypadButton(1,"Add Group",
-                  (){print("Add Group");}
-                ),
-                new KeypadButton(1,"Clear",
-                  (){formulaState.clear();}
-                )
-              ],
-            )
-          ),
-          new Expanded(
-            flex:4,
-            child: new Row(
-              children: <Widget>[
-                new Expanded(
-                  flex:1,
-                  child: new Column(
-                    children: <Widget>[
-                      new KeypadButton(1,"1",
-                        (){formulaState.addToDisplay("1");}
-                      ),
-                      new KeypadButton(1,"4",
-                        (){formulaState.addToDisplay("4");}
-                      ),
-                      new KeypadButton(1,"7",
-                        (){formulaState.addToDisplay("7");}
-                      ),
-                    ],
+      child: Container(
+        color: Theme.of(context).cardColor,
+        child: new Column(
+          children: <Widget>[
+            new Expanded(
+              flex:1,
+              child: new Row(
+                children: <Widget>[
+                  new KeypadButton(1,"Add Die",
+                    (){print("Add Die");}
+                  ),
+                  new KeypadButton(1,"Add Group",
+                    (){print("Add Group");}
+                  ),
+                  new KeypadButton(1,"Clear",
+                    (){formulaState.clear();}
                   )
-                ),
-                new Expanded(
-                  flex:1,
-                  child: new Column(
-                    children: <Widget>[
-                      new KeypadButton(1,"2",
-                        (){formulaState.addToDisplay("2");}
-                      ),
-                      new KeypadButton(1,"5",
-                        (){formulaState.addToDisplay("5");}
-                      ),
-                      new KeypadButton(1,"8",
-                        (){formulaState.addToDisplay("8");}
-                      ),
-                    ],
+                ],
+              )
+            ),
+            new Expanded(
+              flex:4,
+              child: new Row(
+                children: <Widget>[
+                  new Expanded(
+                    flex:1,
+                    child: new Column(
+                      children: <Widget>[
+                        new KeypadButton(1,"1",
+                          (){formulaState.addToDisplay("1");}
+                        ),
+                        new KeypadButton(1,"4",
+                          (){formulaState.addToDisplay("4");}
+                        ),
+                        new KeypadButton(1,"7",
+                          (){formulaState.addToDisplay("7");}
+                        ),
+                      ],
+                    )
+                  ),
+                  new Expanded(
+                    flex:1,
+                    child: new Column(
+                      children: <Widget>[
+                        new KeypadButton(1,"2",
+                          (){formulaState.addToDisplay("2");}
+                        ),
+                        new KeypadButton(1,"5",
+                          (){formulaState.addToDisplay("5");}
+                        ),
+                        new KeypadButton(1,"8",
+                          (){formulaState.addToDisplay("8");}
+                        ),
+                      ],
+                    )
+                  ),
+                  new Expanded(
+                    flex:1,
+                    child: new Column(
+                      children: <Widget>[
+                        new KeypadButton(1,"3",
+                          (){formulaState.addToDisplay("3");}
+                        ),
+                        new KeypadButton(1,"6",
+                          (){formulaState.addToDisplay("6");}
+                        ),
+                        new KeypadButton(1,"9",
+                          (){formulaState.addToDisplay("9");}
+                        ),
+                      ],
+                    )
+                  ),
+                  new Expanded(
+                    flex:1,
+                    child: new Column(
+                      children: <Widget>[
+                        new KeypadButton(1,"+",
+                          (){formulaState.addToDisplay("+");}
+                        ),
+                        new KeypadButton(1,"-",
+                          (){formulaState.addToDisplay("-");}
+                        ),
+                      ],
+                    )
                   )
-                ),
-                new Expanded(
-                  flex:1,
-                  child: new Column(
-                    children: <Widget>[
-                      new KeypadButton(1,"3",
-                        (){formulaState.addToDisplay("3");}
-                      ),
-                      new KeypadButton(1,"6",
-                        (){formulaState.addToDisplay("6");}
-                      ),
-                      new KeypadButton(1,"9",
-                        (){formulaState.addToDisplay("9");}
-                      ),
-                    ],
+                ],
+              )
+            ),
+            new Expanded(
+              flex:1,
+              child: new Row(
+                children: <Widget>[
+                  new KeypadButton(1,"0",
+                    (){formulaState.addToDisplay("0");}
+                  ),
+                  new KeypadButton(1,"D",
+                    (){formulaState.addToDisplay("D");}
                   )
-                ),
-                new Expanded(
-                  flex:1,
-                  child: new Column(
-                    children: <Widget>[
-                      new KeypadButton(1,"+",
-                        (){formulaState.addToDisplay("+");}
-                      ),
-                      new KeypadButton(1,"-",
-                        (){formulaState.addToDisplay("-");}
-                      ),
-                    ],
-                  )
-                )
-              ],
-            )
-          ),
-          new Expanded(
-            flex:1,
-            child: new Row(
-              children: <Widget>[
-                new KeypadButton(1,"0",
-                  (){formulaState.addToDisplay("0");}
-                ),
-                new KeypadButton(1,"D",
-                  (){formulaState.addToDisplay("D");}
-                )
-              ],
-            )
-          ),
-          new KeypadButton(1,"Roll",(){
-            print("Hello");
-            var hi = DiceFormula.solve(formulaState.display,cdr);
-            print(hi.getNum());
-          })
-        ],
+                ],
+              )
+            ),
+            new KeypadButton(1,"Roll",(){
+              print("Hello");
+              var hi = DiceFormula.solve(formulaState.display,cdr);
+              print(hi.getNum());
+            })
+          ],
+        ),
       )
     );
   }

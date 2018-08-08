@@ -1,8 +1,8 @@
 import 'package:customdiceroller/CDR.dart';
+import 'package:customdiceroller/Preferences.dart';
 import 'package:customdiceroller/UI/Dice.dart';
 import 'package:customdiceroller/UI/Formula.dart';
 import 'package:flutter/material.dart';
-
 
 void main(){
   var cdr = new CDR();
@@ -25,7 +25,7 @@ class DiceStart extends StatelessWidget{
         color: Colors.deepPurple,
         routes:{
           "/":(bc){
-            switch(cdr.prefs.getString("default")){
+            switch(cdr.prefs.getString(Preferences.defaultRoute)){
               case "dice": return new Dice(cdr,bc);
               default: return new Formula(cdr,bc);
             }

@@ -6,9 +6,9 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: "^0.1.2"
-  firebase_core: "^0.2.4"
-  firebase_analytics: "^1.0.1"
-  firebase_messaging: "^1.0.3"
+  firebase_core: "^0.2.5"
+  firebase_analytics: "^1.0.2"
+  firebase_messaging: "^1.0.4"
   shared_preferences: "^0.4.2"
   flutter_fab_dialer: "^0.0.5"
   url_launcher: "^3.0.3"
