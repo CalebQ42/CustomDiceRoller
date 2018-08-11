@@ -10,7 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
 
-import 'package:customdiceroller/CustVars/selectableText.dart';
+import 'selectable_text.dart';
 
 export 'package:flutter/services.dart' show TextInputType, TextInputAction, TextCapitalization;
 
@@ -37,11 +37,11 @@ export 'package:flutter/services.dart' show TextInputType, TextInputAction, Text
 /// extra padding introduced by the decoration to save space for the labels.
 ///
 /// If [decoration] is non-null (which is the default), the text field requires
-/// one of its ancestors to be a [Material] widget. When the [SelectableTextField] is
+/// one of its ancestors to be a [Material] widget. When the [SelectableField] is
 /// tapped an ink splash that paints on the material is triggered, see
 /// [ThemeData.splashFactory].
 ///
-/// To integrate the [SelectableTextField] into a [Form] with other [FormField] widgets,
+/// To integrate the [SelectableField] into a [Form] with other [FormField] widgets,
 /// consider using [TextFormField].
 ///
 /// See also:
@@ -50,11 +50,11 @@ export 'package:flutter/services.dart' show TextInputType, TextInputAction, Text
 ///  * [TextFormField], which integrates with the [Form] widget.
 ///  * [InputDecorator], which shows the labels and other visual elements that
 ///    surround the actual text editing widget.
-///  * [EditableText], which is the raw text editing control at the heart of a
-///    [SelectableTextField]. (The [EditableText] widget is rarely used directly unless
+///  * [SelectableText], which is the raw text editing control at the heart of a
+///    [SelectableField]. (The [SelectableText] widget is rarely used directly unless
 ///    you are implementing an entirely different design language, such as
 ///    Cupertino.)
-class SelectableTextField extends StatefulWidget {
+class SelectableField extends StatefulWidget {
   /// Creates a Material Design text field.
   ///
   /// If [decoration] is non-null (which is the default), the text field requires
@@ -75,7 +75,7 @@ class SelectableTextField extends StatefulWidget {
   /// [maxLength] is set, a character counter will be displayed below the
   /// field, showing how many characters have been entered and how many are
   /// allowed. After [maxLength] characters have been input, additional input
-  /// is ignored, unless [maxLengthEnforced] is set to false. The SelectableTextField
+  /// is ignored, unless [maxLengthEnforced] is set to false. The SelectableField
   /// enforces the length with a [LengthLimitingTextInputFormatter], which is
   /// evaluated after the supplied [inputFormatters], if any. The [maxLength]
   /// value must be either null or greater than zero.
@@ -91,13 +91,14 @@ class SelectableTextField extends StatefulWidget {
   ///
   ///  * [maxLength], which discusses the precise meaning of "number of
   ///    characters" and how it may differ from the intuitive meaning.
-  const SelectableTextField({
+  const SelectableField({
     Key key,
     this.controller,
     this.focusNode,
     this.decoration = const InputDecoration(),
     TextInputType keyboardType = TextInputType.text,
     this.textInputAction = TextInputAction.done,
+    this.textCapitalization = TextCapitalization.none,
     this.style,
     this.textAlign = TextAlign.start,
     this.autofocus = false,
@@ -160,6 +161,19 @@ class SelectableTextField extends StatefulWidget {
   /// Defaults to [TextInputAction.done]. Must not be null.
   final TextInputAction textInputAction;
 
+  /// Configures how the platform keyboard will select an uppercase or
+  /// lowercase keyboard.
+  ///
+  /// Only supports text keyboards, other keyboard types will ignore this
+  /// configuration. Capitalization is locale-aware.
+  ///
+  /// Defaults to [TextCapitalization.none]. Must not be null.
+  ///
+  /// See also:
+  ///
+  ///   * [TextCapitalization], for a description of each capitalization behavior.
+  final TextCapitalization textCapitalization;
+
   /// The style to use for the text being edited.
   ///
   /// This text style is also used as the base style for the [decoration].
@@ -211,7 +225,7 @@ class SelectableTextField extends StatefulWidget {
   /// If set, a character counter will be displayed below the
   /// field, showing how many characters have been entered and how many are
   /// allowed. After [maxLength] characters have been input, additional input
-  /// is ignored, unless [maxLengthEnforced] is set to false. The SelectableTextField
+  /// is ignored, unless [maxLengthEnforced] is set to false. The SelectableField
   /// enforces the length with a [LengthLimitingTextInputFormatter], which is
   /// evaluated after the supplied [inputFormatters], if any.
   ///
@@ -227,7 +241,7 @@ class SelectableTextField extends StatefulWidget {
   ///
   /// ## Limitations
   ///
-  /// The SelectableTextField does not currently count Unicode grapheme clusters (i.e.
+  /// The SelectableField does not currently count Unicode grapheme clusters (i.e.
   /// characters visible to the user), it counts Unicode scalar values, which
   /// leaves out a number of useful possible characters (like many emoji and
   /// composed characters), so this will be inaccurate in the presence of those
@@ -291,7 +305,7 @@ class SelectableTextField extends StatefulWidget {
   /// Formatters are run in the provided order when the text input changes.
   final List<TextInputFormatter> inputFormatters;
 
-  /// If false the SelectableTextField is "disabled": it ignores taps and its
+  /// If false the textfield is "disabled": it ignores taps and its
   /// [decoration] is rendered in grey.
   ///
   /// If non-null this property overrides the [decoration]'s
@@ -317,18 +331,18 @@ class SelectableTextField extends StatefulWidget {
   /// If unset, defaults to the brightness of [ThemeData.primaryColorBrightness].
   final Brightness keyboardAppearance;
 
-  /// Configures padding to edges surrounding a [Scrollable] when the SelectableTextField scrolls into view.
+  /// Configures padding to edges surrounding a [Scrollable] when the Textfield scrolls into view.
   ///
   /// When this widget receives focus and is not completely visible (for example scrolled partially
   /// off the screen or overlapped by the keyboard)
   /// then it will attempt to make itself visible by scrolling a surrounding [Scrollable], if one is present.
-  /// This value controls how far from the edges of a [Scrollable] the SelectableTextField will be positioned after the scroll.
+  /// This value controls how far from the edges of a [Scrollable] the SelectableField will be positioned after the scroll.
   ///
   /// Defaults to EdgeInserts.all(20.0).
   final EdgeInsets scrollPadding;
 
   @override
-  _SelectableTextFieldState createState() => new _SelectableTextFieldState();
+  _SelectableFieldState createState() => new _SelectableFieldState();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
@@ -347,8 +361,8 @@ class SelectableTextField extends StatefulWidget {
   }
 }
 
-class _SelectableTextFieldState extends State<SelectableTextField> with AutomaticKeepAliveClientMixin {
-  final GlobalKey<SelectableTextState> _editableTextKey = new GlobalKey<SelectableTextState>();
+class _SelectableFieldState extends State<SelectableField> with AutomaticKeepAliveClientMixin {
+  final GlobalKey<SelectableTextState> _selectableTextKey = new GlobalKey<SelectableTextState>();
 
   Set<InteractiveInkFeature> _splashes;
   InteractiveInkFeature _currentSplash;
@@ -394,7 +408,7 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
   }
 
   @override
-  void didUpdateWidget(SelectableTextField oldWidget) {
+  void didUpdateWidget(SelectableField oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.controller == null && oldWidget.controller != null)
       _controller = new TextEditingController.fromValue(oldWidget.controller.value);
@@ -413,6 +427,10 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
     super.dispose();
   }
 
+  void _requestKeyboard() {
+    _selectableTextKey.currentState?.requestKeyboard();
+  }
+
   void _handleSelectionChanged(TextSelection selection, SelectionChangedCause cause) {
     if (cause == SelectionChangedCause.longPress)
       Feedback.forLongPress(context);
@@ -420,8 +438,8 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
 
   InteractiveInkFeature _createInkFeature(TapDownDetails details) {
     final MaterialInkController inkController = Material.of(context);
-    final BuildContext editableContext = _editableTextKey.currentContext;
-    final RenderBox referenceBox = InputDecorator.containerOf(editableContext) ?? editableContext.findRenderObject();
+    final BuildContext selectableContext = _selectableTextKey.currentContext;
+    final RenderBox referenceBox = InputDecorator.containerOf(selectableContext) ?? selectableContext.findRenderObject();
     final Offset position = referenceBox.globalToLocal(details.globalPosition);
     final Color color = Theme.of(context).splashColor;
 
@@ -450,7 +468,7 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
     return splash;
   }
 
-  RenderEditable get _renderEditable => _editableTextKey.currentState.renderEditable;
+  RenderEditable get _renderEditable => _selectableTextKey.currentState.renderEditable;
 
   void _handleTapDown(TapDownDetails details) {
     _renderEditable.handleTapDown(details);
@@ -459,6 +477,7 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
 
   void _handleTap() {
     _renderEditable.handleTap();
+    _requestKeyboard();
     _confirmCurrentSplash();
   }
 
@@ -521,11 +540,12 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
 
     Widget child = new RepaintBoundary(
       child: new SelectableText(
-        key: _editableTextKey,
+        key: _selectableTextKey,
         controller: controller,
         focusNode: focusNode,
         keyboardType: widget.keyboardType,
         textInputAction: widget.textInputAction,
+        textCapitalization: widget.textCapitalization,
         style: style,
         textAlign: widget.textAlign,
         autofocus: widget.autofocus,
@@ -544,7 +564,7 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
         rendererIgnoresPointer: true,
         cursorWidth: widget.cursorWidth,
         cursorRadius: widget.cursorRadius,
-        cursorColor: widget.cursorColor ?? Theme.of(context).textSelectionColor,
+        cursorColor: widget.cursorColor ?? Theme.of(context).cursorColor,
         scrollPadding: widget.scrollPadding,
         keyboardAppearance: keyboardAppearance,
       ),
@@ -571,6 +591,7 @@ class _SelectableTextFieldState extends State<SelectableTextField> with Automati
       onTap: () {
         if (!_effectiveController.selection.isValid)
           _effectiveController.selection = new TextSelection.collapsed(offset: _effectiveController.text.length);
+        _requestKeyboard();
       },
       child: new IgnorePointer(
         ignoring: !(widget.enabled ?? widget.decoration?.enabled ?? true),

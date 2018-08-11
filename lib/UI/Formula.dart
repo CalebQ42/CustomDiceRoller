@@ -2,9 +2,9 @@ import 'package:customdiceroller/CDR.dart';
 import 'package:customdiceroller/CustVars/Widgets/Label.dart';
 import 'package:customdiceroller/UI/Common.dart';
 import 'package:customdiceroller/Dice/DiceFormula.dart';
-import 'package:flutter/material.dart';
+import 'package:customdiceroller/CustVars/selectable_field.dart';
 
-import 'package:customdiceroller/CustVars/selectableText.dart';
+import 'package:flutter/material.dart';
 
 class Formula extends StatelessWidget{
   final CDR cdr;
@@ -32,24 +32,28 @@ class FormulaState extends State<FormulaView>{
   final CDR cdr;
   FormulaState(this.cdr);
   Widget build(BuildContext context){
+    display.addListener((){
+      display.selection = display.value.selection;
+    });
     return new Column(
       children: <Widget>[
         new Spacer(flex:1),
         new Expanded(
           flex:1, 
-          child:/* new Ink(
+          child: new Ink(
             color: Theme.of(context).cardColor.withAlpha(150),
-            child: */new Row(
+            child: new Row(
               children: <Widget>[
                 new Expanded(
                   child: new Align(
                     alignment: Alignment.centerRight,
-                    child: new SelectableText(
-                      style: Theme.of(context).textTheme.subhead,
-                      focusNode: new FocusNode(),
-                      cursorColor: Theme.of(context).textSelectionColor,
-                      controller: display,
-                      textAlign: TextAlign.end,
+                    child: new Padding(
+                      padding: new EdgeInsets.only(left:40.0),
+                      child: new SelectableField(
+                        style: Theme.of(context).textTheme.title,
+                        cursorColor: Theme.of(context).textSelectionColor,
+                        controller: display,
+                      ),
                     )
                   )
                 ),
@@ -65,6 +69,7 @@ class FormulaState extends State<FormulaView>{
               ],
             ),
           ),
+        ),
         new Keypad(this,cdr),
         new Spacer(flex:1)
       ],
@@ -74,15 +79,61 @@ class FormulaState extends State<FormulaView>{
     display.text = newText;
   }
   void addToDisplay(String text){
+    var cursorPos = display.selection;
     if(display.selection.baseOffset==-1){
       display.text += text;
     }else{
       display.text = display.text.substring(0,display.selection.baseOffset)+text+display.text.substring(display.selection.extentOffset);
     }
-    display.selection = display.value.selection;
+    if (cursorPos.start > display.text.length) {
+      cursorPos = new TextSelection.fromPosition(
+          new TextPosition(offset: display.text.length));
+    }else if(cursorPos.start!=-1){
+      if(cursorPos.isCollapsed){
+        cursorPos = cursorPos.copyWith(
+          baseOffset: cursorPos.baseOffset+1,
+          extentOffset: cursorPos.extentOffset+1
+        );
+      }else{
+        cursorPos = cursorPos.copyWith(
+          baseOffset: cursorPos.baseOffset+1,
+          extentOffset: cursorPos.baseOffset+1
+        );
+      }
+    }else if(cursorPos.start==-1){
+      cursorPos = cursorPos.copyWith(
+        baseOffset: 1,
+        extentOffset: 1
+      );
+    }
+    display.selection = cursorPos;
   }
   void delete(){
-    display.text.substring(0,display.text.length-1);
+    var cursorPos = display.selection;
+    if(display.selection.baseOffset==-1){
+      display.text = display.text.substring(0,display.text.length-1);
+    }else if(!display.selection.isCollapsed){
+      display.text = display.text.substring(0,display.selection.baseOffset)+display.text.substring(display.selection.extentOffset);
+    }else if(display.selection.baseOffset != 0){
+      display.text = display.text.substring(0,display.selection.baseOffset-1)+display.text.substring(display.selection.extentOffset);
+    }
+    if (cursorPos.start > display.text.length) {
+      cursorPos = new TextSelection.fromPosition(
+          new TextPosition(offset: display.text.length));
+    }else if(cursorPos.start!=-1){
+      if(cursorPos.isCollapsed){
+        cursorPos = cursorPos.copyWith(
+          baseOffset: cursorPos.baseOffset-1,
+          extentOffset: cursorPos.extentOffset-1
+        );
+      }else{
+        cursorPos = cursorPos.copyWith(
+          baseOffset: cursorPos.baseOffset,
+          extentOffset: cursorPos.baseOffset
+        );
+      }
+    }
+    display.selection = cursorPos;
   }
   void clear(){
     display.clear();

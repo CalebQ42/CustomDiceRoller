@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-
 import 'package:flutter/widgets.dart';
 
 export 'package:flutter/services.dart' show TextEditingValue, TextSelection, TextInputType;
@@ -24,27 +23,6 @@ const Duration _kCursorBlinkHalfPeriod = Duration(milliseconds: 500);
 // is shown in an obscured text field.
 const int _kObscureShowLatestCharCursorTicks = 3;
 
-/// A controller for an editable text field.
-///
-/// Whenever the user modifies a text field with an associated
-/// [TextEditingController], the text field updates [value] and the controller
-/// notifies its listeners. Listeners can then read the [text] and [selection]
-/// properties to learn what the user has typed or how the selection has been
-/// updated.
-///
-/// Similarly, if you modify the [text] or [selection] properties, the text
-/// field will be notified and will update itself appropriately.
-///
-/// A [TextEditingController] can also be used to provide an initial value for a
-/// text field. If you build a text field with a controller that already has
-/// [text], the text field will use that text as its initial value.
-///
-/// See also:
-///
-///  * [TextField], which is a Material Design text field that can be controlled
-///    with a [TextEditingController].
-///  * [EditableText], which is a raw region of editable text that can be
-///    controlled with a [TextEditingController].
 /// A basic text input field.
 ///
 /// This widget interacts with the [TextInput] service to let the user edit the
@@ -121,6 +99,7 @@ class SelectableText extends StatefulWidget {
     this.selectionControls,
     TextInputType keyboardType,
     this.textInputAction = TextInputAction.done,
+    this.textCapitalization = TextCapitalization.none,
     this.onChanged,
     this.onEditingComplete,
     this.onSubmitted,
@@ -189,6 +168,19 @@ class SelectableText extends StatefulWidget {
   ///
   /// Defaults to the ambient [Directionality], if any.
   final TextDirection textDirection;
+
+  /// Configures how the platform keyboard will select an uppercase or
+  /// lowercase keyboard.
+  ///
+  /// Only supports text keyboards, other keyboard types will ignore this
+  /// configuration. Capitalization is locale-aware.
+  ///
+  /// Defaults to [TextCapitalization.none]. Must not be null.
+  ///
+  /// See also:
+  ///
+  ///   * [TextCapitalization], for a description of each capitalization behavior.
+  final TextCapitalization textCapitalization;
 
   /// Used to select a font when the same Unicode character can
   /// be rendered differently, depending on the locale.
@@ -332,12 +324,12 @@ class SelectableText extends StatefulWidget {
 }
 
 /// State for a [EditableText].
-class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver implements TextSelectionDelegate {
+class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveClientMixin, WidgetsBindingObserver implements TextInputClient, TextSelectionDelegate {
   Timer _cursorTimer;
   final ValueNotifier<bool> _showCursor = new ValueNotifier<bool>(false);
-  final GlobalKey _editableKey = new GlobalKey();
+  final GlobalKey _selectableKey = new GlobalKey();
 
-  // TextInputConnection _textInputConnection;
+  TextInputConnection _textInputConnection;
   TextSelectionOverlay _selectionOverlay;
 
   final ScrollController _scrollController = new ScrollController();
@@ -384,6 +376,8 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
   @override
   void dispose() {
     widget.controller.removeListener(_didChangeTextEditingValue);
+    // _closeInputConnectionIfNeeded();
+    // assert(!_hasInputConnection);
     _stopCursorTimer();
     assert(_cursorTimer == null);
     _selectionOverlay?.dispose();
@@ -410,7 +404,51 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
     _formatAndSetValue(value);
   }
 
+  @override
+  void performAction(TextInputAction action) {
+    switch (action) {
+      case TextInputAction.newline:
+        // Do nothing for a "newline" action: the newline is already inserted.
+        break;
+      case TextInputAction.done:
+      case TextInputAction.go:
+      case TextInputAction.send:
+      case TextInputAction.search:
+        // Take any actions necessary now that the user has completed editing.
+        if (widget.onEditingComplete != null) {
+          widget.onEditingComplete();
+        } else {
+          // Default behavior if the developer did not provide an
+          // onEditingComplete callback: Finalize editing and remove focus.
+          widget.controller.clearComposing();
+          widget.focusNode.unfocus();
+        }
+
+        // Invoke optional callback with the user's submitted content.
+        if (widget.onSubmitted != null)
+          widget.onSubmitted(_value.text);
+        break;
+      default:
+        if (widget.onEditingComplete != null) {
+          widget.onEditingComplete();
+        } else {
+          // Default behavior if the developer did not provide an
+          // onEditingComplete callback: Finalize editing, but don't give up
+          // focus because this keyboard action does not imply the user is done
+          // inputting information.
+          widget.controller.clearComposing();
+        }
+
+        // Invoke optional callback with the user's submitted content.
+        if (widget.onSubmitted != null)
+          widget.onSubmitted(_value.text);
+        break;
+    }
+  }
+
   void _updateRemoteEditingValueIfNeeded() {
+    // if (!_hasInputConnection)
+    //   return;
     final TextEditingValue localValue = _value;
     if (localValue == _lastKnownRemoteTextEditingValue)
       return;
@@ -459,6 +497,7 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
   //             inputAction: widget.keyboardType == TextInputType.multiline
   //                 ? TextInputAction.newline
   //                 : widget.textInputAction,
+  //             textCapitalization: widget.textCapitalization,
   //         )
   //     )..setEditingState(localValue);
   //   }
@@ -473,14 +512,14 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
   //   }
   // }
 
-  // void _openOrCloseInputConnectionIfNeeded() {
-  //   if (_hasFocus && widget.focusNode.consumeKeyboardToken()) {
-  //     _openInputConnection();
-  //   } else if (!_hasFocus) {
-  //     _closeInputConnectionIfNeeded();
-  //     widget.controller.clearComposing();
-  //   }
-  // }
+  void _openOrCloseInputConnectionIfNeeded() {
+    /*if (_hasFocus && widget.focusNode.consumeKeyboardToken()) {
+      _openInputConnection();
+    } else */if (!_hasFocus) {
+      // _closeInputConnectionIfNeeded();
+      widget.controller.clearComposing();
+    }
+  }
 
   /// Express interest in interacting with the keyboard.
   ///
@@ -489,12 +528,13 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
   /// ask the focus system that it become focused. If successful in acquiring
   /// focus, the control will then attach to the keyboard and request that the
   /// keyboard become visible.
-  // void requestKeyboard() {
-  //   if (_hasFocus)
-  //     _openInputConnection();
-  //   else
-  //     FocusScope.of(context).requestFocus(widget.focusNode);
-  // }
+  void requestKeyboard() {
+    // if (_hasFocus)
+    //   _openInputConnection();
+    // else
+    if(!_hasFocus)
+      FocusScope.of(context).requestFocus(widget.focusNode);
+  }
 
   void _hideSelectionOverlayIfNeeded() {
     _selectionOverlay?.hide();
@@ -514,6 +554,10 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
 
   void _handleSelectionChanged(TextSelection selection, RenderEditable renderObject, SelectionChangedCause cause) {
     widget.controller.selection = selection;
+
+    // This will show the keyboard for all selection changes on the
+    // EditableWidget, not just changes triggered by user gestures.
+    requestKeyboard();
 
     _hideSelectionOverlayIfNeeded();
 
@@ -580,7 +624,7 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
           newCaretRect.right + widget.scrollPadding.right,
           newCaretRect.bottom + widget.scrollPadding.bottom
       );
-      _editableKey.currentContext.findRenderObject().showOnScreen(
+      _selectableKey.currentContext.findRenderObject().showOnScreen(
         rect: inflatedRect,
         duration: _caretAnimationDuration,
         curve: _caretAnimationCurve,
@@ -667,6 +711,7 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
   }
 
   void _handleFocusChanged() {
+    _openOrCloseInputConnectionIfNeeded();
     _startOrStopCursorTimerIfNeeded();
     _updateOrDisposeSelectionOverlayIfNeeded();
     if (_hasFocus) {
@@ -696,7 +741,7 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
   ///
   /// This property is typically used to notify the renderer of input gestures
   /// when [ignorePointer] is true. See [RenderEditable.ignorePointer].
-  RenderEditable get renderEditable => _editableKey.currentContext.findRenderObject();
+  RenderEditable get renderEditable => _selectableKey.currentContext.findRenderObject();
 
   @override
   TextEditingValue get textEditingValue => _value;
@@ -736,11 +781,11 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
             onCut: _hasFocus && controls?.canCut(this) == true ? () => controls.handleCut(this) : null,
             onPaste: _hasFocus && controls?.canPaste(this) == true ? () => controls.handlePaste(this) : null,
             child: new _Editable(
-              key: _editableKey,
+              key: _selectableKey,
               textSpan: buildTextSpan(),
               value: _value,
               cursorColor: widget.cursorColor,
-              showCursor: SelectableText.debugDeterministicCursor ? ValueNotifier<bool>(true) : _showCursor,
+              showCursor: EditableText.debugDeterministicCursor ? ValueNotifier<bool>(true) : _showCursor,
               hasFocus: _hasFocus,
               maxLines: widget.maxLines,
               selectionColor: widget.selectionColor,
