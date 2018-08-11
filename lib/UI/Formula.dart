@@ -4,6 +4,8 @@ import 'package:customdiceroller/UI/Common.dart';
 import 'package:customdiceroller/Dice/DiceFormula.dart';
 import 'package:flutter/material.dart';
 
+import 'package:customdiceroller/CustVars/selectableText.dart';
+
 class Formula extends StatelessWidget{
   final CDR cdr;
   final BuildContext context;
@@ -26,7 +28,7 @@ class FormulaView extends StatefulWidget{
 }
 
 class FormulaState extends State<FormulaView>{
-  String display = "";
+  var display = new TextEditingController();
   final CDR cdr;
   FormulaState(this.cdr);
   Widget build(BuildContext context){
@@ -35,46 +37,55 @@ class FormulaState extends State<FormulaView>{
         new Spacer(flex:1),
         new Expanded(
           flex:1, 
-          child: new Row(
-            children: <Widget>[
-              new Expanded(
-                child: new Align(
-                  alignment: Alignment.centerRight,
-                  child: new Text(display,
-                    style: Theme.of(context).textTheme.headline,
-                  ),
-                )
-              ),
-              new InkResponse(
-                child: new Center(
-                  child: new Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: new InkResponse(
-                      child: const Icon(Icons.backspace)
-                    ),
+          child:/* new Ink(
+            color: Theme.of(context).cardColor.withAlpha(150),
+            child: */new Row(
+              children: <Widget>[
+                new Expanded(
+                  child: new Align(
+                    alignment: Alignment.centerRight,
+                    child: new SelectableText(
+                      style: Theme.of(context).textTheme.subhead,
+                      focusNode: new FocusNode(),
+                      cursorColor: Theme.of(context).textSelectionColor,
+                      controller: display,
+                      textAlign: TextAlign.end,
+                    )
                   )
                 ),
-                onTap: (){delete();}
-              )
-            ],
-          )
-        ),
+                new InkResponse(
+                  child: new Center(
+                    child: new Padding(
+                      padding: EdgeInsets.all(10.0),
+                      child: const Icon(Icons.backspace)
+                    )
+                  ),
+                  onTap: (){delete();}
+                )
+              ],
+            ),
+          ),
         new Keypad(this,cdr),
         new Spacer(flex:1)
       ],
     );
   }
   void changeDisplay(String newText){
-    setState(()=>display=newText);
+    display.text = newText;
   }
   void addToDisplay(String text){
-    setState(()=>display+=text);
+    if(display.selection.baseOffset==-1){
+      display.text += text;
+    }else{
+      display.text = display.text.substring(0,display.selection.baseOffset)+text+display.text.substring(display.selection.extentOffset);
+    }
+    display.selection = display.value.selection;
   }
   void delete(){
-    setState(()=>display=display.substring(0,display.length-1));
+    display.text.substring(0,display.text.length-1);
   }
   void clear(){
-    setState(()=>display="");
+    display.clear();
   }
 }
 
@@ -85,7 +96,7 @@ class Keypad extends StatelessWidget{
   Widget build(BuildContext context){
     return Expanded(
       flex:5,
-      child: Container(
+      child: Ink(
         color: Theme.of(context).cardColor,
         child: new Column(
           children: <Widget>[
@@ -188,8 +199,8 @@ class Keypad extends StatelessWidget{
             ),
             new KeypadButton(1,"Roll",(){
               print("Hello");
-              var hi = DiceFormula.solve(formulaState.display,cdr);
-              print(hi.getNum());
+              var hi = DiceFormula.solve(formulaState.display.text,cdr);
+              hi.showResultDialog(context,cdr,"oops");
             })
           ],
         ),
@@ -207,7 +218,8 @@ class KeypadButton extends StatelessWidget{
     return Expanded(
       flex: flex,
       child: new InkResponse(
-        highlightShape: BoxShape.rectangle,
+        splashFactory: Theme.of(context).splashFactory,
+        containedInkWell: true,
         onTap: onClick,
         child: new Center(
           child: new Text(text)
