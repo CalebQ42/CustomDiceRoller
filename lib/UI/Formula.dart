@@ -2,14 +2,13 @@ import 'package:customdiceroller/CDR.dart';
 import 'package:customdiceroller/CustVars/Widgets/Label.dart';
 import 'package:customdiceroller/UI/Common.dart';
 import 'package:customdiceroller/Dice/DiceFormula.dart';
-import 'package:customdiceroller/CustVars/selectable_field.dart';
+import 'package:customdiceroller/CustVars/Widgets/selectable_field.dart';
 
 import 'package:flutter/material.dart';
 
 class Formula extends StatelessWidget{
   final CDR cdr;
-  final BuildContext context;
-  Formula(this.cdr, this.context);
+  Formula(this.cdr);
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new MyAppBar(
@@ -21,16 +20,10 @@ class Formula extends StatelessWidget{
   }
 }
 
-class FormulaView extends StatefulWidget{
+class FormulaView extends StatelessWidget{
+  final TextEditingController display = new TextEditingController();
   final CDR cdr;
   FormulaView(this.cdr);
-  State<FormulaView> createState() => new FormulaState(cdr);
-}
-
-class FormulaState extends State<FormulaView>{
-  var display = new TextEditingController();
-  final CDR cdr;
-  FormulaState(this.cdr);
   Widget build(BuildContext context){
     display.addListener((){
       display.selection = display.value.selection;
@@ -41,7 +34,7 @@ class FormulaState extends State<FormulaView>{
         new Expanded(
           flex:1, 
           child: new Ink(
-            color: Theme.of(context).cardColor.withAlpha(150),
+            color: Theme.of(context).cardColor.withAlpha(100),
             child: new Row(
               children: <Widget>[
                 new Expanded(
@@ -141,9 +134,9 @@ class FormulaState extends State<FormulaView>{
 }
 
 class Keypad extends StatelessWidget{
-  final FormulaState formulaState;
+  final FormulaView formulaView;
   final CDR cdr;
-  Keypad(this.formulaState,this.cdr);
+  Keypad(this.formulaView,this.cdr);
   Widget build(BuildContext context){
     return Expanded(
       flex:5,
@@ -162,7 +155,7 @@ class Keypad extends StatelessWidget{
                     (){print("Add Group");}
                   ),
                   new KeypadButton(1,"Clear",
-                    (){formulaState.clear();}
+                    (){formulaView.clear();}
                   )
                 ],
               )
@@ -176,13 +169,13 @@ class Keypad extends StatelessWidget{
                     child: new Column(
                       children: <Widget>[
                         new KeypadButton(1,"1",
-                          (){formulaState.addToDisplay("1");}
+                          (){formulaView.addToDisplay("1");}
                         ),
                         new KeypadButton(1,"4",
-                          (){formulaState.addToDisplay("4");}
+                          (){formulaView.addToDisplay("4");}
                         ),
                         new KeypadButton(1,"7",
-                          (){formulaState.addToDisplay("7");}
+                          (){formulaView.addToDisplay("7");}
                         ),
                       ],
                     )
@@ -192,13 +185,13 @@ class Keypad extends StatelessWidget{
                     child: new Column(
                       children: <Widget>[
                         new KeypadButton(1,"2",
-                          (){formulaState.addToDisplay("2");}
+                          (){formulaView.addToDisplay("2");}
                         ),
                         new KeypadButton(1,"5",
-                          (){formulaState.addToDisplay("5");}
+                          (){formulaView.addToDisplay("5");}
                         ),
                         new KeypadButton(1,"8",
-                          (){formulaState.addToDisplay("8");}
+                          (){formulaView.addToDisplay("8");}
                         ),
                       ],
                     )
@@ -208,13 +201,13 @@ class Keypad extends StatelessWidget{
                     child: new Column(
                       children: <Widget>[
                         new KeypadButton(1,"3",
-                          (){formulaState.addToDisplay("3");}
+                          (){formulaView.addToDisplay("3");}
                         ),
                         new KeypadButton(1,"6",
-                          (){formulaState.addToDisplay("6");}
+                          (){formulaView.addToDisplay("6");}
                         ),
                         new KeypadButton(1,"9",
-                          (){formulaState.addToDisplay("9");}
+                          (){formulaView.addToDisplay("9");}
                         ),
                       ],
                     )
@@ -224,10 +217,10 @@ class Keypad extends StatelessWidget{
                     child: new Column(
                       children: <Widget>[
                         new KeypadButton(1,"+",
-                          (){formulaState.addToDisplay("+");}
+                          (){formulaView.addToDisplay("+");}
                         ),
                         new KeypadButton(1,"-",
-                          (){formulaState.addToDisplay("-");}
+                          (){formulaView.addToDisplay("-");}
                         ),
                       ],
                     )
@@ -240,19 +233,31 @@ class Keypad extends StatelessWidget{
               child: new Row(
                 children: <Widget>[
                   new KeypadButton(1,"0",
-                    (){formulaState.addToDisplay("0");}
+                    (){formulaView.addToDisplay("0");}
                   ),
                   new KeypadButton(1,"D",
-                    (){formulaState.addToDisplay("D");}
+                    (){formulaView.addToDisplay("D");}
                   )
                 ],
               )
             ),
-            new KeypadButton(1,"Roll",(){
-              print("Hello");
-              var hi = DiceFormula.solve(formulaState.display.text,cdr);
-              hi.showResultDialog(context,cdr,"oops");
-            })
+            Expanded(
+              flex: 1,
+              child: new InkResponse(
+                splashFactory: Theme.of(context).splashFactory,
+                containedInkWell: true,
+                onTap: (){
+                  var hi = DiceFormula.solve(formulaView.display.text,cdr);
+                  hi.showResultDialog(context,cdr,"oops");
+                },
+                child: new Ink(
+                  color: Theme.of(context).accentColor.withOpacity(.5),
+                  child: new Center(
+                    child: new Text("Roll")
+                  )
+                )
+              )
+            )
           ],
         ),
       )

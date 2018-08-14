@@ -329,7 +329,7 @@ class SelectableTextState extends State<SelectableText> with AutomaticKeepAliveC
   final ValueNotifier<bool> _showCursor = new ValueNotifier<bool>(false);
   final GlobalKey _selectableKey = new GlobalKey();
 
-  TextInputConnection _textInputConnection;
+  // TextInputConnection _textInputConnection;
   TextSelectionOverlay _selectionOverlay;
 
   final ScrollController _scrollController = new ScrollController();

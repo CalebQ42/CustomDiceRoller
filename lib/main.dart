@@ -26,12 +26,12 @@ class DiceStart extends StatelessWidget{
         routes:{
           "/":(bc){
             switch(cdr.prefs.getString(Preferences.defaultRoute)){
-              case "dice": return new Dice(cdr,bc);
-              default: return new Formula(cdr,bc);
+              case "dice": return new Dice(cdr);
+              default: return new Formula(cdr);
             }
           },
-          "/formula":(bc)=> new Formula(cdr,bc),
-          "/dice":(bc)=>new Dice(cdr,bc)
+          "/formula":(bc)=> new Formula(cdr),
+          "/dice":(bc)=>new Dice(cdr)
         },
         home: null,
     );

@@ -1,25 +1,29 @@
 import 'dart:async';
 
-import 'package:customdiceroller/CustVars/Widgets/Label.dart';
 import 'package:flutter/material.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 class MyAppBar extends StatelessWidget{
-  final Label title;
+  final Widget title;
   final List<Widget> actions = new List<Widget>();
-  MyAppBar({this.title,List<Widget> additionalActions}){
+  final List<PopupMenuItem> popupActions = new List<PopupMenuItem>();
+  MyAppBar({this.title,List<Widget> additionalActions, List<PopupMenuItem> additionalPopupActions}){
     additionalActions ??= new List();
+    additionalPopupActions ??= new List();
+    List<PopupMenuItem> defPopup = [
+      PopupMenuItem(
+          value: "G+",
+          child: const Text("G+ Community")
+      ),
+      PopupMenuItem(
+          value: "Translate",
+          child: const Text("Help Translate!")
+      )
+    ];
+    additionalPopupActions.addAll(defPopup);
     var def = new PopupMenuButton(
-        itemBuilder: (context)=>[
-          PopupMenuItem(
-              value: "G+",
-              child: const Text("G+ Community")
-          ),
-          PopupMenuItem(
-              value: "Translate",
-              child: const Text("Help Translate!")
-          )
-        ],
+        itemBuilder: (context)=>additionalPopupActions,
         onSelected:(t){
           var txt = t;
           switch(txt){
