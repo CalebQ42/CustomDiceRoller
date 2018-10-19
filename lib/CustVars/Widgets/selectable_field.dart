@@ -463,6 +463,7 @@ class _SelectableFieldState extends State<SelectableField> with AutomaticKeepAli
       // TODO(hansmuller): splash clip borderRadius should match the input decorator's border.
       borderRadius: BorderRadius.zero,
       onRemoved: handleRemoved,
+      textDirection: Directionality.of(context),
     );
 
     return splash;
