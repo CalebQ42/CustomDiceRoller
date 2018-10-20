@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyAppBar extends StatelessWidget{
   final Widget title;
@@ -56,41 +56,6 @@ class MyAppBar extends StatelessWidget{
   }
 }
 
-//class MyAppBar extends AppBar{
-//  final Label title;
-//  MyAppBar({this.title,List<Widget> actions}):super(title: title,actions: (){
-//    actions ??= new List();
-//    var def = new PopupMenuButton(
-//        itemBuilder: (context)=>[
-//          PopupMenuItem(
-//              value: "G+",
-//              child: const Text("G+ Community")
-//          ),
-//          PopupMenuItem(
-//              value: "Translate",
-//              child: const Text("Help Translate!")
-//          )
-//        ],
-//        onSelected:(t){
-//          var txt = t;
-//          switch(txt){
-//            case "G+":
-//              _launchInBrowser("https://plus.google.com/communities/117741233533206107778");
-//              break;
-//            case "Translate":
-//              _launchInBrowser("https://crwd.in/customdiceroller");
-//              break;
-//          }
-//        }
-//    );
-//    actions.add(def);
-//    return actions;
-//  }());
-//  void setTitle(String title){
-//    this.title.setText(title);
-//  }
-//}
-
 class MyNavDrawer extends Drawer{
   MyNavDrawer(BuildContext context): super(child: new ListView(
       padding: EdgeInsets.zero,
@@ -103,7 +68,7 @@ class MyNavDrawer extends Drawer{
           leading: new Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [const Icon(Icons.casino)]
+            children: [new SvgPicture.asset("assets/custom_die.xml")]
           ),
           title: new Text("Dice"),
           onTap:(){
@@ -112,29 +77,15 @@ class MyNavDrawer extends Drawer{
           }
         ),
         new ListTile(
-          leading: new FittedBox(
-            fit: BoxFit.scaleDown,
-            alignment: Alignment.center,
-            child: new Column(
-              children:[
-                new Row(
-                  children: <Widget>[
-                    const Icon(Icons.casino)
-                  ],
-                ),
-                new Row(
-                  children: <Widget>[
-                    const Icon(Icons.casino),
-                    const Icon(Icons.casino)
-                  ]
-                )
-              ]
-            )
+          leading: new Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [new SvgPicture.asset("assets/die_stack.xml")]
           ),
-          title: new Text("Dice Groups"),
+          title: new Text("Dice"),
           onTap:(){
             Navigator.pop(context);
-            Navigator.pushNamed(context,"/group");
+            Navigator.pushNamed(context,"/dice");
           }
         ),
         new ListTile(
