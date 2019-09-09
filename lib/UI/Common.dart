@@ -44,15 +44,16 @@ class MyAppBar extends StatelessWidget{
     var appBar = new AppBar(
       key: new Key("AppBar"),
       title: title,
-      actions: actions
+      actions: actions,
     );
-    return new PreferredSize(
-      child: new Hero(
-        tag: "AppBar",
-        child: appBar
-      ),
-      preferredSize: appBar.preferredSize
-    );
+    return appBar;
+    // return new PreferredSize(
+    //   child: new Hero(
+    //     tag: "AppBar",
+    //     child: appBar
+    //   ),
+    //   preferredSize: appBar.preferredSize
+    // );
   }
 }
 
@@ -68,19 +69,26 @@ class MyNavDrawer extends Drawer{
           leading: new Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [new SvgPicture.asset("assets/custom_die.xml")]
+            children: [new SvgPicture.asset(
+              "assets/custom_die.svg",
+              color: Theme.of(context).iconTheme.color
+            )]
           ),
           title: new Text("Dice"),
           onTap:(){
             Navigator.pop(context);
             Navigator.pushNamed(context,"/dice");
+            Navigator.
           }
         ),
         new ListTile(
           leading: new Row(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
-            children: [new SvgPicture.asset("assets/die_stack.xml")]
+            children: [new SvgPicture.asset(
+              "assets/die_stack.svg",
+              color: Theme.of(context).iconTheme.color
+            )]
           ),
           title: new Text("Dice"),
           onTap:(){
