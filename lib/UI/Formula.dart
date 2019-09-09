@@ -2,7 +2,6 @@ import 'package:customdiceroller/CDR.dart';
 import 'package:customdiceroller/CustVars/Widgets/Label.dart';
 import 'package:customdiceroller/UI/Common.dart';
 import 'package:customdiceroller/Dice/DiceFormula.dart';
-import 'package:customdiceroller/CustVars/Widgets/selectable_field.dart';
 
 import 'package:flutter/material.dart';
 
@@ -42,11 +41,19 @@ class FormulaView extends StatelessWidget{
                     alignment: Alignment.centerRight,
                     child: new Padding(
                       padding: new EdgeInsets.only(left:40.0),
-                      child: new SelectableField(
-                        style: Theme.of(context).textTheme.title,
-                        cursorColor: Theme.of(context).textSelectionColor,
+                      child: TextField(
                         controller: display,
-                      ),
+                        readOnly: true,
+                        maxLines: 1,
+                        showCursor: true,
+                        autofocus: true,
+                        style: Theme.of(context).textTheme.title,
+                      )
+                      // child: new SelectableField(
+                      //   style: Theme.of(context).textTheme.title,
+                      //   cursorColor: Theme.of(context).textSelectionColor,
+                      //   controller: display,
+                      // ),
                     )
                   )
                 ),

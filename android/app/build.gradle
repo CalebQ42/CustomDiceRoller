@@ -15,6 +15,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
+crashlytics {
+    enableNdk true
+    androidNdkOut "../../debugSymbols"
+    androidNdkLibsOut "../../build/app/intermediates/transforms/stripDebugSymbol/release/0/lib"
+}
+
 android {
     compileSdkVersion 27
 
