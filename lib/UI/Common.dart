@@ -78,7 +78,6 @@ class MyNavDrawer extends Drawer{
           onTap:(){
             Navigator.pop(context);
             Navigator.pushNamed(context,"/dice");
-            Navigator.
           }
         ),
         new ListTile(
@@ -90,10 +89,10 @@ class MyNavDrawer extends Drawer{
               color: Theme.of(context).iconTheme.color
             )]
           ),
-          title: new Text("Dice"),
+          title: new Text("Groups"),
           onTap:(){
             Navigator.pop(context);
-            Navigator.pushNamed(context,"/dice");
+            Navigator.pushNamed(context,"/groups");
           }
         ),
         new ListTile(

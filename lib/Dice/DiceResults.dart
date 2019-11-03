@@ -9,20 +9,23 @@ class DiceResults{
   var subtractMode = false;
   var problem = false;
   var resList = new List();
-  void add(Result res){
+  var diceNames = new List();
+  void add(Result res, String diceName){
     if(subtractMode)
       res.value *= -1;
     resList.add(new Result(res.name,res.value));
+    diceNames.add(diceName);
     if (has(res.name))
       _reses[indexOf(res.name)].value += res.value;
     else
       _reses.add(res);
   }
-  void addNum(int i){
+  void addNum(int i, String diceName){
     if (subtractMode)
       i*=-1;
     _number += i;
     resList.add(i);
+    diceNames.add(diceName);
   }
   bool has(String name) => _reses.any((r)=>r.name == name);
   int indexOf(String name){
@@ -39,12 +42,12 @@ class DiceResults{
   }
   int getNum() => _number;
   void combineWith(DiceResults dr){
-    dr.resList.forEach((r){
-      if(r is int)
-        addNum(r);
-      else if(r is Result)
-        add(r);
-    });
+    for(int i = 0; i<dr.resList.length;i++){
+      if(dr.resList[i] is int)
+        addNum(dr.resList[i], dr.diceNames[i]);
+      else if(dr.resList[i] is Result)
+        add(dr.resList[i], dr.diceNames[i]);
+    }
   }
   bool isNumOnly() => resList.length == 0;
   void showResultDialog(BuildContext bc,CDR cdr, String problemMessage){
@@ -109,9 +112,9 @@ class DiceResults{
   }
   void showIndividualDialog(BuildContext bc){
     var children = List<Widget>();
-    for(var l in resList){
+    for(int i = 0; i < resList.length; i++){
       children.add(new Text(
-        l.toString(),
+        diceNames[i] + ": " + resList[i].toString(),
         textAlign: TextAlign.center,
       ));
     }

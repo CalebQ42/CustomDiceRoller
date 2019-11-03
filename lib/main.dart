@@ -2,6 +2,7 @@ import 'package:customdiceroller/CDR.dart';
 import 'package:customdiceroller/CrashlyticsStart.dart';
 import 'package:customdiceroller/Preferences.dart';
 import 'package:customdiceroller/UI/Dice.dart';
+import 'package:customdiceroller/UI/Groups.dart';
 import 'package:customdiceroller/UI/Formula.dart';
 
 import 'package:flutter/material.dart';
@@ -26,9 +27,11 @@ class DiceStart extends StatelessWidget{
           "/":(bc){
             switch(cdr.prefs.getString(Preferences.defaultRoute)){
               case "dice": return new Dice(cdr);
+              case "groups": return new Groups(cdr);
               default: return new Formula(cdr);
             }
           },
+          "/groups": (bc) => new Groups(cdr),
           "/formula":(bc)=> new Formula(cdr),
           "/dice":(bc)=>new Dice(cdr)
         },

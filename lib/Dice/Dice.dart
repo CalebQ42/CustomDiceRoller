@@ -9,7 +9,7 @@ import 'package:customdiceroller/Dice/Sides.dart';
 class Die extends JsonSavable{
   static String fileExtension = ".die";
   static Die numberDie(int sides){
-    var d = Die("d"+sides.toString());
+    var d = Die("D"+sides.toString());
     for(int i = 1;i<=sides;i++){
       d.sides.add(SimpleSide(i.toString()));
     }
@@ -58,7 +58,7 @@ class Die extends JsonSavable{
 class Dice extends JsonSavable{
   static var fileExtension = ".dice";
   static Dice numberDice(int number,int sides){
-    var d = Dice(number.toString()+"d"+sides.toString());
+    var d = Dice(number.toString()+"D"+sides.toString());
     for(var i = 0;i<number;i++)
       d.dice.add(Die.numberDie(sides));
     return d;
@@ -86,14 +86,14 @@ class Dice extends JsonSavable{
         var i = d.rollIndex();
         if(d.isComplex(i)){
           var c = d.getComplex(i);
-          c.parts.forEach((p)=>dr.add(new Result(p.name,p.value)));
-          dr.addNum(c.number);
+          c.parts.forEach((p)=>dr.add(new Result(p.name,p.value), d.getName()));
+          dr.addNum(c.number, d.getName());
         }else{
           var s = d.getSimple(i);
           if(s.isInt())
-            dr.addNum(s.intSide());
+            dr.addNum(s.intSide(), d.getName());
           else
-            dr.add(new Result(s.stringSide(),1));
+            dr.add(new Result(s.stringSide(),1), d.getName());
         }
       }
     });

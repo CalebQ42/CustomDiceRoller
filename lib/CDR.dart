@@ -17,7 +17,8 @@ class CDR{
   Future<void> initialize() async {
     var dir = await getApplicationDocumentsDirectory();
     print(dir.path);
-    // this.dir = dir.path.substring(0,dir.path.indexOf("app_flutter"))+"Dice";
+    this.dir = dir.path.substring(0,dir.path.indexOf("app_flutter"))+"Dice";
+    print(this.dir);
     this.dir = dir.path;
     this.prefs = await SharedPreferences.getInstance();
     this.packageInfo = await PackageInfo.fromPlatform();

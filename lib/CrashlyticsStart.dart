@@ -8,6 +8,7 @@ import 'main.dart';
 
 void crashlyticsStart() async{
   bool isInDebugMode = false;
+
   FlutterError.onError = (FlutterErrorDetails details) {
     if (isInDebugMode) {
       // In development mode simply print to console.
@@ -18,8 +19,10 @@ void crashlyticsStart() async{
       Zone.current.handleUncaughtError(details.exception, details.stack);
     }
   };
-  await FlutterCrashlytics().initialize();
+
   runZoned<Future<Null>>(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await FlutterCrashlytics().initialize();
     var cdr = new CDR();
     cdr.initialize().whenComplete((){
       runApp(new DiceStart(cdr));

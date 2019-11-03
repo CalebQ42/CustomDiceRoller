@@ -99,7 +99,7 @@ class DiceFormula{
       var tmp = int.tryParse(str);
       if(tmp ==null)
         return true;
-      dr.addNum(tmp);
+      dr.addNum(tmp, "Static");
     }
     return false;
   }
