@@ -11,10 +11,29 @@ class Dice extends StatelessWidget{
     return new Scaffold(
       appBar: new MyAppBar(
         title: new Label("Dice")
-      ).build(context) as PreferredSizeWidget,
+      ).build(context),
       drawer: new MyNavDrawer(context),
-      body: new Center(
-        child: new Label("Dice"),
+      body: new ListView.builder(
+        padding: EdgeInsets.all(5),
+        // itemCount: cdr.getDice("").length,
+        itemCount: 5,
+        itemBuilder: (BuildContext bc, int i){
+          return Padding(
+            padding: EdgeInsets.all(3),
+            child: Card(
+              child: InkResponse(
+                highlightShape: BoxShape.rectangle,
+                containedInkWell: true,
+                splashFactory: Theme.of(context).splashFactory,
+                child: Padding(
+                  padding: EdgeInsets.all(5),
+                  child: Center(child: Text("Yo"),),
+                ),
+                onTap: (){},
+              )
+            )
+          );
+        },
       )
     );
   }

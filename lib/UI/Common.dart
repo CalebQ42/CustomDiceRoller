@@ -13,10 +13,6 @@ class MyAppBar extends StatelessWidget{
     additionalPopupActions ??= new List();
     List<PopupMenuItem> defPopup = [
       PopupMenuItem(
-          value: "G+",
-          child: const Text("G+ Community")
-      ),
-      PopupMenuItem(
           value: "Translate",
           child: const Text("Help Translate!")
       )
@@ -27,9 +23,6 @@ class MyAppBar extends StatelessWidget{
         onSelected:(t){
           var txt = t;
           switch(txt){
-            case "G+":
-              _launchInBrowser("https://plus.google.com/communities/117741233533206107778");
-              break;
             case "Translate":
               _launchInBrowser("https://crwd.in/customdiceroller");
               break;
@@ -40,20 +33,13 @@ class MyAppBar extends StatelessWidget{
     actions.addAll(additionalActions);
   }
   @override
-  Widget build(BuildContext context) {
+  AppBar build(BuildContext context) {
     var appBar = new AppBar(
       key: new Key("AppBar"),
       title: title,
       actions: actions,
     );
     return appBar;
-    // return new PreferredSize(
-    //   child: new Hero(
-    //     tag: "AppBar",
-    //     child: appBar
-    //   ),
-    //   preferredSize: appBar.preferredSize
-    // );
   }
 }
 

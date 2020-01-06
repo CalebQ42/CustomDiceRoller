@@ -12,7 +12,7 @@ class Formula extends StatelessWidget{
     return new Scaffold(
       appBar: new MyAppBar(
         title: new Label("Dice Formula")
-      ).build(context) as PreferredSizeWidget,
+      ).build(context),
       drawer: new MyNavDrawer(context),
       body: new FormulaView(cdr)
     );
@@ -48,6 +48,9 @@ class FormulaView extends StatelessWidget{
                         showCursor: true,
                         autofocus: true,
                         style: Theme.of(context).textTheme.title,
+                        toolbarOptions: ToolbarOptions(
+                          copy: true, paste: true, selectAll: true, cut: true
+                        ),
                       )
                       // child: new SelectableField(
                       //   style: Theme.of(context).textTheme.title,
@@ -80,10 +83,10 @@ class FormulaView extends StatelessWidget{
   }
   void addToDisplay(String text){
     var cursorPos = display.selection;
-    if(display.selection.baseOffset==-1){
+    if(cursorPos.baseOffset==-1){
       display.text += text;
     }else{
-      display.text = display.text.substring(0,display.selection.baseOffset)+text+display.text.substring(display.selection.extentOffset);
+      display.text = display.text.substring(0,cursorPos.baseOffset)+text+display.text.substring(cursorPos.extentOffset);
     }
     if (cursorPos.start > display.text.length) {
       cursorPos = new TextSelection.fromPosition(
@@ -110,18 +113,17 @@ class FormulaView extends StatelessWidget{
   }
   void delete(){
     var cursorPos = display.selection;
-    if(display.selection.baseOffset==-1){
+    if(cursorPos.baseOffset==-1)
       display.text = display.text.substring(0,display.text.length-1);
-    }else if(!display.selection.isCollapsed){
-      display.text = display.text.substring(0,display.selection.baseOffset)+display.text.substring(display.selection.extentOffset);
-    }else if(display.selection.baseOffset != 0){
-      display.text = display.text.substring(0,display.selection.baseOffset-1)+display.text.substring(display.selection.extentOffset);
-    }
+    else if(!cursorPos.isCollapsed)
+      display.text = display.text.substring(0,cursorPos.baseOffset)+display.text.substring(cursorPos.extentOffset);
+    else if(cursorPos.baseOffset != 0)
+      display.text = display.text.substring(0,cursorPos.baseOffset-1)+display.text.substring(cursorPos.extentOffset);
     if (cursorPos.start > display.text.length) {
       cursorPos = new TextSelection.fromPosition(
           new TextPosition(offset: display.text.length));
     }else if(cursorPos.start!=-1){
-      if(cursorPos.isCollapsed){
+      if(cursorPos.isCollapsed&&cursorPos.start !=0){
         cursorPos = cursorPos.copyWith(
           baseOffset: cursorPos.baseOffset-1,
           extentOffset: cursorPos.extentOffset-1
@@ -251,6 +253,7 @@ class Keypad extends StatelessWidget{
             Expanded(
               flex: 1,
               child: new InkResponse(
+                highlightShape: BoxShape.rectangle,
                 splashFactory: Theme.of(context).splashFactory,
                 containedInkWell: true,
                 onTap: (){
@@ -281,6 +284,7 @@ class KeypadButton extends StatelessWidget{
     return Expanded(
       flex: flex,
       child: new InkResponse(
+        highlightShape: BoxShape.rectangle,
         splashFactory: Theme.of(context).splashFactory,
         containedInkWell: true,
         onTap: onClick,

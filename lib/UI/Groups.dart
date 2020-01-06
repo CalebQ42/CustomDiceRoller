@@ -11,7 +11,7 @@ class Groups extends StatelessWidget{
     return new Scaffold(
       appBar: new MyAppBar(
         title: new Label("Groups")
-      ).build(context) as PreferredSizeWidget,
+      ).build(context),
       drawer: new MyNavDrawer(context),
       body: new Center(
         child: new Label("Groups"),

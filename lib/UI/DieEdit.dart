@@ -13,7 +13,7 @@ class DieEdit extends StatelessWidget{
     return new Scaffold(
       appBar: new MyAppBar(
         title: new Label("Dice")
-      ).build(context) as PreferredSizeWidget,
+      ).build(context),
       drawer: new MyNavDrawer(context),
       body: new Center(
         child: new DieEditWidget(die),
