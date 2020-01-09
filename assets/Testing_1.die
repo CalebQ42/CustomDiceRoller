@@ -1,0 +1,25 @@
+{
+  "name": "Testing 1",
+  "isComplex": [
+    false,
+    false,
+    true
+  ],
+  "sides": [
+    {
+      "value": "5"
+    },
+    {
+      "value": "Advantage"
+    },
+    {
+      "number": 5,
+      "parts": [
+        {
+          "Name": "Advantage",
+          "Value": 4
+        }
+      ]
+    }
+  ]
+}

@@ -2,6 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:customdiceroller/Testing.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:customdiceroller/Dice/Dice.dart';
 import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,22 +19,24 @@ class CDR{
 
   Future<void> initialize() async {
     var dir = await getApplicationDocumentsDirectory();
-    print(dir.path);
     this.dir = dir.path.substring(0,dir.path.indexOf("app_flutter"))+"Dice";
-    print(this.dir);
     this.dir = dir.path;
     this.prefs = await SharedPreferences.getInstance();
     this.packageInfo = await PackageInfo.fromPlatform();
     var dirDir = new Directory(this.dir);
     if(!dirDir.existsSync())
       dirDir.create(recursive: true);
+    if(kDebugMode)
+      setupTesting(this);
     loadBoth();
+    print(_dieMaster.length);
   }
 
   List<Die> getDies(String str){
-    _dieMaster.sort((a,b)=> a.getName().compareTo(b.getName()));
+    print(_dieMaster.length);
     if(str=="")
       return _dieMaster;
+    _dieMaster.sort((a,b)=> a.getName().compareTo(b.getName()));
     return new List.of(_dieMaster.where((d)=>d.getName().contains(str)));
   }
   void removeDieAt(String str, int i){
@@ -64,9 +69,10 @@ class CDR{
     _diceMaster = new List();
     _dieMaster = new List();
     new Directory(dir).listSync().forEach((fse){
-      if(fse.path.endsWith(".dice")){
+      print(fse.path);
+      if(fse.path.endsWith(".dice"))
         _diceMaster.add(new Dice.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));
-      }else if(fse.path.endsWith(".die")){
+      else if(fse.path.endsWith(".die")){
         _dieMaster.add(new Die.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));
       }
     });

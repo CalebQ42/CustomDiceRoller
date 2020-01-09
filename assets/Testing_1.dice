@@ -1,0 +1,59 @@
+{
+  "name": "Testing 1",
+  "dice": [
+    {
+      "name": "d5",
+      "isComplex": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sides": [
+        {
+          "value": "1"
+        },
+        {
+          "value": "2"
+        },
+        {
+          "value": "3"
+        },
+        {
+          "value": "4"
+        },
+        {
+          "value": "5"
+        }
+      ]
+    },
+    {
+      "name": "d5",
+      "isComplex": [
+        false,
+        false,
+        false,
+        false,
+        false
+      ],
+      "sides": [
+        {
+          "value": "1"
+        },
+        {
+          "value": "2"
+        },
+        {
+          "value": "3"
+        },
+        {
+          "value": "4"
+        },
+        {
+          "value": "5"
+        }
+      ]
+    }
+  ]
+}

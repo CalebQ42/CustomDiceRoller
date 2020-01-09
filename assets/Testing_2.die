@@ -1,0 +1,26 @@
+{
+  "name": "Testing 2",
+  "isComplex": [
+    true,
+    false,
+    true
+  ],
+  "sides": [
+    {
+      "number": 10,
+      "parts": []
+    },
+    {
+      "value": "Triumph"
+    },
+    {
+      "number": 7,
+      "parts": [
+        {
+          "Name": "Triumph",
+          "Value": 2
+        }
+      ]
+    }
+  ]
+}

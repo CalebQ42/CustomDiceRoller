@@ -39,25 +39,27 @@ class DieEditState extends State<DieEditWidget>{
     itemCount: die.sides.length+2,
     itemBuilder: (context, i){
       switch(i){
-        case 1:
-          return new GestureDetector(
-            child: new Card(
+        case 0:
+          return new Card(
+            child: InkResponse(
               child: new Column(
                 children: <Widget>[
                   new Text("Name:",
-                    style: Theme.of(context).textTheme.display1
+                    style: Theme.of(context).textTheme.title
                   ),
                   new Text(die.getName(),
-                    style: Theme.of(context).textTheme.display2
+                    style: Theme.of(context).textTheme.title
                   )
                 ],
               ),
-            ),
-            onTap: (){
-              //Handle rename
+            onLongPress: (){
+              print("Time to rename!");
+              //TODO: rename
             },
-          );
-        case 2:
+            highlightShape: BoxShape.rectangle,
+          )
+        );
+        case 1:
           return Center(
             child: new Padding(
               padding: EdgeInsets.only(top: 10.0, bottom: 10.0),

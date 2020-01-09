@@ -31,7 +31,9 @@ class ComplexSide extends JsonSavable{
   JsonSavable clone() => ComplexSide(number:number,parts:new List<ComplexSidePart>.from(parts));
   void load(Map<String, dynamic> mp) {
     number = mp["number"];
-    parts = mp["parts"];
+    parts = new List<ComplexSidePart>();
+    for(dynamic dy in mp["parts"])
+      parts.add(ComplexSidePart.fromJson(dy));
   }
   Map<String, dynamic> toJson() => {"number":number,"parts":parts};
   String toString(){

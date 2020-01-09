@@ -28,7 +28,15 @@ class Die extends JsonSavable{
   JsonSavable clone() => Die.withSides(_name,new List<JsonSavable>.from(sides));
   void load(Map<String, dynamic> mp) {
     _name = mp["name"];
-    sides = mp["sides"];
+    sides = new List<JsonSavable>();
+    List<dynamic> jsonSides = mp["sides"];
+    List<dynamic> isComplex = mp["isComplex"];
+    for(int i = 0;i<jsonSides.length;i++){
+      if(isComplex[i])
+        sides.add(ComplexSide.fromJson(jsonSides[i]));
+      else
+        sides.add(SimpleSide.fromJson(jsonSides[i]));
+    }
   }
   Map<String, dynamic> toJson() => {"name":_name,"sides":sides};
   bool isComplex(int i) => sides[i] is ComplexSide;
@@ -76,7 +84,9 @@ class Dice extends JsonSavable{
   JsonSavable clone() => Dice.withDice(_name,new List<Die>.from(dice));
   void load(Map<String, dynamic> mp) {
     _name = mp["name"];
-    dice = mp["dice"];
+    dice = new List<Die>();
+    for(dynamic dy in mp["dice"])
+      dice.add(Die.fromJson(dy));
   }
   Map<String, dynamic> toJson() => {"name":_name,"dice":dice};
   DiceResults roll(){
