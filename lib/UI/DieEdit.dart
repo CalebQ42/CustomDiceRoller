@@ -105,7 +105,11 @@ class SideCardState extends State<SideCard>{
         //Show editing dialog
       },
       child: new Card(
-        child: child
+        margin: EdgeInsets.all(5.0),
+        child: Padding(
+          padding: EdgeInsets.all(10.0),
+          child: child,
+        )
       ),
     );
   }
