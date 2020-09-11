@@ -7,25 +7,23 @@ import 'package:customdiceroller/Dice/DiceResults.dart';
 import 'package:customdiceroller/Dice/Sides.dart';
 
 class Die extends JsonSavable{
-  static String fileExtension = ".die";
-  static Die numberDie(int sides){
-    var d = Die("D"+sides.toString());
-    for(int i = 1;i<=sides;i++){
-      d.sides.add(SimpleSide(i.toString()));
-    }
-    return d;
-  }
 
   List<JsonSavable> sides;
   String _name;
 
-  Die([this._name = "New Die"]){
-    sides = new List<JsonSavable>();
-  }
-  Die.withSides([this._name,this.sides]);
-  Die.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
+  static String fileExtension = ".die";
 
-  JsonSavable clone() => Die.withSides(_name,new List<JsonSavable>.from(sides));
+  Die({String name,List<JsonSavable> sides}) : this.sides = sides ?? List();
+  
+  Die.numberDie(int sides) :
+    _name = "D" + sides.toString(), 
+    sides = List.generate(sides, (index) => SimpleSide((index+1).toString()));
+  
+  Die.fromJson(Map<String,dynamic> mp) : super.fromJson(mp);
+
+  JsonSavable clone() =>
+    Die(name: _name, sides: new List<JsonSavable>.from(sides));
+
   void load(Map<String, dynamic> mp) {
     _name = mp["name"];
     sides = new List<JsonSavable>();
@@ -38,15 +36,28 @@ class Die extends JsonSavable{
         sides.add(SimpleSide.fromJson(jsonSides[i]));
     }
   }
-  Map<String, dynamic> toJson() => {"name":_name,"sides":sides};
+
+  Map<String, dynamic> toJson() => {
+    "name": _name,
+    "sides": sides
+  };
+
   bool isComplex(int i) => sides[i] is ComplexSide;
+
   ComplexSide getComplex(int i) => sides[i];
+
   SimpleSide getSimple(int i) => sides[i];
+
   int rollIndex() => new Random().nextInt(sides.length);
+
   String toString() => _name + " " + sides.toString();
+
   String localLocation(CDR cdr) => cdr.dir + "/" + _name.replaceAll(" ", "_")+fileExtension;
+
   //TODO: driveFile
+
   void delete(CDR cdr) => new File(localLocation(cdr)).deleteSync();
+
   void rename (String newName, CDR cdr){
     while(saving){
       sleep(new Duration(milliseconds: 200));
@@ -57,38 +68,44 @@ class Die extends JsonSavable{
     saveJson(new File(localLocation(cdr)));
     saving = false;
   }
-  void renameNoFileMove(String name){
+  
+  void renameNoFileMove(String name) =>
     _name = name;
-  }
+
   String getName() => _name;
 }
 
 class Dice extends JsonSavable{
-  static var fileExtension = ".dice";
-  static Dice numberDice(int number,int sides){
-    var d = Dice(number.toString()+"D"+sides.toString());
-    for(var i = 0;i<number;i++)
-      d.dice.add(Die.numberDie(sides));
-    return d;
-  }
 
   List<Die> dice;
   String _name;
 
-  Dice([this._name = "New Dice"]){
-    dice = new List<Die>();
-  }
-  Dice.withDice(this._name,this.dice);
+  static var fileExtension = ".dice";
+
+  Dice.numberDice(int number,int sides) :
+    _name = number.toString()+"D"+sides.toString(),
+    dice = List.generate(number, (index) => Die.numberDie(sides));
+
+  Dice({String name, List<Die> dice}) :
+    _name = name,
+    this.dice = dice ?? List();
+
   Dice.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
-  JsonSavable clone() => Dice.withDice(_name,new List<Die>.from(dice));
+  JsonSavable clone() => Dice(name: _name, dice: new List<Die>.from(dice));
+
   void load(Map<String, dynamic> mp) {
     _name = mp["name"];
     dice = new List<Die>();
     for(dynamic dy in mp["dice"])
       dice.add(Die.fromJson(dy));
   }
-  Map<String, dynamic> toJson() => {"name":_name,"dice":dice};
+
+  Map<String, dynamic> toJson() => {
+    "name": _name,
+    "dice": dice
+  };
+
   DiceResults roll(){
     var dr = DiceResults();
     dice.forEach((d){
@@ -109,9 +126,13 @@ class Dice extends JsonSavable{
     });
     return dr;
   }
+
   String localLocation(CDR cdr) => cdr.dir + "/" + _name.replaceAll(" ", "_")+fileExtension;
+
   //TODO: driveFile
+
   void delete(CDR cdr) => new File(localLocation(cdr)).deleteSync();
+
   void rename (String newName, CDR cdr){
     while(saving){
       sleep(new Duration(milliseconds: 200));
@@ -122,8 +143,10 @@ class Dice extends JsonSavable{
     saveJson(new File(localLocation(cdr)));
     saving = false;
   }
+
   void renameNoFileMove(String name){
     _name = name;
   }
+
   String getName() => _name;
 }

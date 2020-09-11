@@ -12,17 +12,17 @@ dependencies:
     sdk: flutter
 
 
-  flutter_svg: "^0.15.0"
-  firebase_core: "^0.4.3+1"
-  firebase_analytics: "^5.0.9"
-  firebase_messaging: "^6.0.9"
-  shared_preferences: "^0.5.6"
+  flutter_svg: "^0.18.1"
+  firebase_core: "^0.5.0"
+  firebase_analytics: "^6.0.0"
+  firebase_messaging: "^7.0.0"
+  shared_preferences: "^0.5.10"
   flutter_fab_dialer: "^0.1.1"
-  url_launcher: "^5.4.1"
-  path_provider: "^1.5.1"
-  package_info: "^0.4.0+13"
+  url_launcher: "^5.5.3"
+  path_provider: "^1.6.14"
+  package_info: "^0.4.3"
   flutter_crashlytics: "^1.0.0"
-  cupertino_icons: ^0.1.3
+  cupertino_icons: ^1.0.0
 
 dev_dependencies:
   flutter_test:

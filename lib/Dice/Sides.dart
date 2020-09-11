@@ -1,41 +1,57 @@
 import 'package:customdiceroller/CustVars/JsonSavable.dart';
 
 class SimpleSide extends JsonSavable{
+
   String _value;
 
   SimpleSide(this._value);
-  SimpleSide.fromJson(Map<String,dynamic> mp){load(mp);}
+
+  SimpleSide.fromJson(Map<String,dynamic> mp) : super.fromJson(mp);
 
   JsonSavable clone() => SimpleSide(_value);
-  void load(Map<String, dynamic> mp) {
+
+  void load(Map<String, dynamic> mp) =>
     _value = mp["value"];
-  }
-  Map<String, dynamic> toJson() => {"value":_value};
-  int intSide() => int.parse(_value);
+
+  Map<String, dynamic> toJson() => {
+    "value": _value
+  };
+
+  int intSide() => int.tryParse(_value);
+  
   String stringSide() => _value;
-  bool isInt() => int.parse(_value) != null;
+
+  bool isInt() => int.tryParse(_value) != null;
+
   void setString(String side) => _value = side;
+
   void setInt(int side)=> _value = side.toString();
+
   String toString()=>_value;
 
   //TODO: static void edit
 }
 
 class ComplexSide extends JsonSavable{
+
   int number;
   List<ComplexSidePart> parts = new List<ComplexSidePart>();
 
   ComplexSide({this.number = 0,this.parts});
+
   ComplexSide.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
   JsonSavable clone() => ComplexSide(number:number,parts:new List<ComplexSidePart>.from(parts));
+
   void load(Map<String, dynamic> mp) {
     number = mp["number"];
     parts = new List<ComplexSidePart>();
     for(dynamic dy in mp["parts"])
       parts.add(ComplexSidePart.fromJson(dy));
   }
+
   Map<String, dynamic> toJson() => {"number":number,"parts":parts};
+
   String toString(){
     var out = new List<String>();
     if(number != 0)
@@ -56,10 +72,16 @@ class ComplexSidePart extends JsonSavable{
   ComplexSidePart.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
   JsonSavable clone() => ComplexSidePart(name:name,value:value);
+
   void load(Map<String, dynamic> mp){
     name = mp["Name"];
     value = mp["Value"];
   }
-  Map<String, dynamic> toJson() => {"Name":name,"Value":value};
+
+  Map<String, dynamic> toJson() => {
+    "Name":name,
+    "Value":value
+  };
+
   String toString() => value.toString() + " " + name;
 }
