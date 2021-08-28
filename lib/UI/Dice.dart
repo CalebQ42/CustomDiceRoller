@@ -28,7 +28,7 @@ class Dice extends StatelessWidget{
                 splashFactory: Theme.of(context).splashFactory,
                 child: Padding(
                   padding: EdgeInsets.all(10),
-                  child: Center(child: Text(cdr.getDies("")[i].getName(),style: Theme.of(context).textTheme.title,),),
+                  child: Center(child: Text(cdr.getDies("")[i].getName(),style: Theme.of(context).textTheme.headline4,),),
                 ),
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (context){

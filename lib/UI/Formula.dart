@@ -47,7 +47,7 @@ class FormulaView extends StatelessWidget{
                         maxLines: 1,
                         showCursor: true,
                         autofocus: true,
-                        style: Theme.of(context).textTheme.title,
+                        style: Theme.of(context).textTheme.headline4,
                         toolbarOptions: ToolbarOptions(
                           copy: true, paste: true, selectAll: true, cut: true
                         ),

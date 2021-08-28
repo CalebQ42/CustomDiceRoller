@@ -45,10 +45,10 @@ class DieEditState extends State<DieEditWidget>{
               child: new Column(
                 children: <Widget>[
                   new Text("Name:",
-                    style: Theme.of(context).textTheme.title
+                    style: Theme.of(context).textTheme.headline4
                   ),
                   new Text(die.getName(),
-                    style: Theme.of(context).textTheme.title
+                    style: Theme.of(context).textTheme.headline4
                   )
                 ],
               ),
@@ -64,7 +64,7 @@ class DieEditState extends State<DieEditWidget>{
             child: new Padding(
               padding: EdgeInsets.only(top: 10.0, bottom: 10.0),
               child: new Text("Sides:",
-                style: Theme.of(context).textTheme.title
+                style: Theme.of(context).textTheme.headline4
               )
             )
           );

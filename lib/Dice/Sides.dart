@@ -35,7 +35,7 @@ class SimpleSide extends JsonSavable{
 class ComplexSide extends JsonSavable{
 
   int number;
-  List<ComplexSidePart> parts = new List<ComplexSidePart>();
+  List<ComplexSidePart> parts = [];
 
   ComplexSide({this.number = 0,this.parts});
 
@@ -45,7 +45,7 @@ class ComplexSide extends JsonSavable{
 
   void load(Map<String, dynamic> mp) {
     number = mp["number"];
-    parts = new List<ComplexSidePart>();
+    parts = [];
     for(dynamic dy in mp["parts"])
       parts.add(ComplexSidePart.fromJson(dy));
   }
@@ -53,7 +53,7 @@ class ComplexSide extends JsonSavable{
   Map<String, dynamic> toJson() => {"number":number,"parts":parts};
 
   String toString(){
-    var out = new List<String>();
+    var out = [];
     if(number != 0)
       out.add(number.toString());
     parts.forEach((s)=>out.add(s.toString()));

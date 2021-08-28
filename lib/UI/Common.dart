@@ -103,7 +103,7 @@ class MyNavDrawer extends Drawer{
           title: new Text("Settings"),
           onTap:(){
             Navigator.pop(context);
-            Navigator.pushNamed(context,"/settings");
+            // Navigator.pushNamed(context,"/settings");
           }
         ),
       ]

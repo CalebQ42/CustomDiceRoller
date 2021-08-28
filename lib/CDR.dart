@@ -6,7 +6,6 @@ import 'package:customdiceroller/Testing.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:customdiceroller/Dice/Dice.dart';
-import 'package:package_info/package_info.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -15,17 +14,16 @@ class CDR{
   String dir;
   List<Die> _dieMaster;
   List<Dice> _diceMaster;
-  PackageInfo packageInfo;
+  // PackageInfo packageInfo;
 
   Future<void> initialize() async {
     var dir = await getApplicationDocumentsDirectory();
-    this.dir = dir.path.substring(0,dir.path.indexOf("app_flutter"))+"Dice";
-    this.dir = dir.path;
+    this.dir = dir.path+"/Dice";
     this.prefs = await SharedPreferences.getInstance();
-    this.packageInfo = await PackageInfo.fromPlatform();
+    // this.packageInfo = await PackageInfo.fromPlatform();
     var dirDir = new Directory(this.dir);
     if(!dirDir.existsSync())
-      dirDir.create(recursive: true);
+      dirDir.createSync(recursive: true);
     if(kDebugMode)
       setupTesting(this);
     loadBoth();
@@ -57,7 +55,7 @@ class CDR{
     return _dieMaster.any((d)=>d.getName() == name);
   }
   void loadDie(){
-    _dieMaster = new List();
+    _dieMaster = [];
     new Directory(dir).listSync().forEach((fse){
       if(fse.path.endsWith(".die")){
         _dieMaster.add(new Die.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));
@@ -66,8 +64,8 @@ class CDR{
   }
 
   void loadBoth(){
-    _diceMaster = new List();
-    _dieMaster = new List();
+    _diceMaster = [];
+    _dieMaster = [];
     new Directory(dir).listSync().forEach((fse){
       print(fse.path);
       if(fse.path.endsWith(".dice"))
@@ -102,7 +100,7 @@ class CDR{
     return _diceMaster.any((d)=>d.getName()==name);
   }
   void loadDice(){
-    _diceMaster = new List();
+    _diceMaster = [];
     new Directory(dir).listSync().forEach((fse){
       if(fse.path.endsWith(".dice")){
         _diceMaster.add(new Dice.fromJson(jsonDecode(new File(fse.path).readAsStringSync())));

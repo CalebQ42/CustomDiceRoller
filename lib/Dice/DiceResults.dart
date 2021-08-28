@@ -5,11 +5,11 @@ import 'package:customdiceroller/Preferences.dart';
 
 class DiceResults{
   int _number = 0;
-  List<Result> _reses = new List<Result>();
+  List<Result> _reses = [];
   var subtractMode = false;
   var problem = false;
-  var resList = new List();
-  var diceNames = new List();
+  var resList = [];
+  var diceNames = [];
   void add(Result res, String diceName){
     if(subtractMode)
       res.value *= -1;
@@ -58,7 +58,7 @@ class DiceResults{
     }
   }
   void showCombinedDialog(BuildContext bc){
-    var children = new List<Widget>();
+    var children = <Widget>[];
     children.add(
       new Column(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -66,7 +66,7 @@ class DiceResults{
           new Text("Number:"),
           new Text(
             _number.toString(),
-            style: Theme.of(bc).textTheme.title.copyWith(fontWeight: FontWeight.bold),
+            style: Theme.of(bc).textTheme.headline4.copyWith(fontWeight: FontWeight.bold),
           )
         ],
       )
@@ -81,7 +81,7 @@ class DiceResults{
           ),
           new Text(r.value.toString(),
             textAlign: TextAlign.end,
-            style: Theme.of(bc).textTheme.title.copyWith(fontWeight: FontWeight.bold)
+            style: Theme.of(bc).textTheme.headline4.copyWith(fontWeight: FontWeight.bold)
           )
         ],
       ));
@@ -95,14 +95,14 @@ class DiceResults{
           )
         ),
         actions: [
-            new FlatButton(
+            new TextButton(
               child: new Text("Individual"),
               onPressed: (){
                 Navigator.pop(bc);
                 showIndividualDialog(bc);
               }
             ),
-            new FlatButton(
+            new TextButton(
               child: new Text("Cancel"),
               onPressed: ()=> Navigator.pop(bc)
             )
@@ -111,7 +111,7 @@ class DiceResults{
     );
   }
   void showIndividualDialog(BuildContext bc){
-    var children = List<Widget>();
+    var children = <Widget>[];
     for(int i = 0; i < resList.length; i++){
       children.add(new Text(
         diceNames[i] + ": " + resList[i].toString(),
@@ -128,14 +128,14 @@ class DiceResults{
             )
           ),
           actions: [
-            new FlatButton(
+            new TextButton(
               child: new Text("Combined"),
               onPressed: (){
                 Navigator.pop(bc);
                 showCombinedDialog(bc);
               }
             ),
-            new FlatButton(
+            new TextButton(
               child: new Text("Cancel"),
               onPressed: ()=> Navigator.pop(bc)
             )

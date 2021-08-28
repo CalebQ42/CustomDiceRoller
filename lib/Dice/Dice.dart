@@ -13,7 +13,7 @@ class Die extends JsonSavable{
 
   static String fileExtension = ".die";
 
-  Die({String name,List<JsonSavable> sides}) : this.sides = sides ?? List();
+  Die({String name,List<JsonSavable> sides}) : this.sides = sides ?? [];
   
   Die.numberDie(int sides) :
     _name = "D" + sides.toString(), 
@@ -26,7 +26,7 @@ class Die extends JsonSavable{
 
   void load(Map<String, dynamic> mp) {
     _name = mp["name"];
-    sides = new List<JsonSavable>();
+    sides = [];
     List<dynamic> jsonSides = mp["sides"];
     List<dynamic> isComplex = mp["isComplex"];
     for(int i = 0;i<jsonSides.length;i++){
@@ -88,7 +88,7 @@ class Dice extends JsonSavable{
 
   Dice({String name, List<Die> dice}) :
     _name = name,
-    this.dice = dice ?? List();
+    this.dice = dice ?? [];
 
   Dice.fromJson(Map<String,dynamic> mp):super.fromJson(mp);
 
@@ -96,7 +96,7 @@ class Dice extends JsonSavable{
 
   void load(Map<String, dynamic> mp) {
     _name = mp["name"];
-    dice = new List<Die>();
+    dice = [];
     for(dynamic dy in mp["dice"])
       dice.add(Die.fromJson(dy));
   }
