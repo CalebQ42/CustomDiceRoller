@@ -1,20 +1,16 @@
-# CustomDiceRoller
-CDR for short. Custom dice app for Android
+# customdiceroller
 
-[Google Play Store](https://play.google.com/store/apps/details?id=com.apps.darkstorm.cdr)
+A new Flutter project.
 
-Features:
-* Type out dice formulas to roll
-* Create custom dice
-* Create custom dice groups
-* Search dice and dice groups
-* Roll custom dice & dice groups inside formulas
-* Google Drive Support
-* Light and Dark Themes
+## Getting Started
 
-Future Goals:
-* Static modifiers on dice groups
-* Allow dice results to cancel out other results in dice groupts
-* Publish your dice online
-* Share dice directly to others
-* You tell me! Look for the issue entitled Ideas! that has a help wanted tag, or email me at belacdarkstorm@gmail.com
+This project is a starting point for a Flutter application.
+
+A few resources to get you started if this is your first Flutter project:
+
+- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
+- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+For help getting started with Flutter development, view the
+[online documentation](https://docs.flutter.dev/), which offers tutorials,
+samples, guidance on mobile development, and a full API reference.

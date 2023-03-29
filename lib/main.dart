@@ -1,49 +1,48 @@
-import 'package:customdiceroller/CDR.dart';
-import 'package:customdiceroller/Preferences.dart';
-import 'package:customdiceroller/UI/Dice.dart';
-import 'package:customdiceroller/UI/Groups.dart';
-import 'package:customdiceroller/UI/Formula.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'dart:async';
 
+import 'package:customdiceroller/cdr.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-void main() async{
-  WidgetsFlutterBinding.ensureInitialized();
-  try{
-    await Firebase.initializeApp();
-  }catch (e){
-    print(e);
-  }
-  var cdr = new CDR();
-  cdr.initialize().whenComplete((){
-    runApp(new DiceStart(cdr));
-  });
+
+void main() =>
+  runZonedGuarded(
+    () {
+      CDR.initialize().then(
+        (value) => runApp(
+          CDRHolder(
+            value,
+            child: const MainUI()
+          )
+        )
+      );
+    },
+    (error, stack) {
+      if(kDebugMode){
+        print(error);
+        print(stack);
+      }
+    }
+  );
+
+class MainUI extends StatefulWidget{
+  
+
+  const MainUI({super.key});
+
+  @override
+  State<StatefulWidget> createState() => MainUIState();
 }
 
-class DiceStart extends StatelessWidget{
-  final CDR cdr;
-  DiceStart(this.cdr);
+class MainUIState extends State<MainUI>{
   @override
-  Widget build(BuildContext context) {
-    return new MaterialApp(
-        title: "Custom Dice Roller",
-        theme: ThemeData.dark().copyWith(
-            primaryColor: Colors.deepPurple,
-            // accentColor: Colors.deepOrangeAccent
+  Widget build(BuildContext context){
+    return MaterialApp(
+      title: "Custom Dice Roller",
+      home: Scaffold(
+        body: Center(
+          child: Text("yodle")
         ),
-        color: Colors.deepPurple,
-        routes:{
-          "/":(bc){
-            switch(cdr.prefs.getString(Preferences.defaultRoute)){
-              case "dice": return new Dice(cdr);
-              case "groups": return new Groups(cdr);
-              default: return new Formula(cdr);
-            }
-          },
-          "/groups": (bc) => new Groups(cdr),
-          "/formula":(bc)=> new Formula(cdr),
-          "/dice":(bc)=>new Dice(cdr)
-        },
-        home: null,
+      )
     );
   }
 }
