@@ -1,4 +1,4 @@
-package com.example.customdiceroller
+package tech.darkstorm.cdr
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/ui/die_edit.dart';
+import 'package:customdiceroller/ui/frame.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() =>
   runZonedGuarded(
@@ -26,7 +29,6 @@ void main() =>
 
 class MainUI extends StatefulWidget{
   
-
   const MainUI({super.key});
 
   @override
@@ -36,13 +38,16 @@ class MainUI extends StatefulWidget{
 class MainUIState extends State<MainUI>{
   @override
   Widget build(BuildContext context){
+    var cdr = CDR.of(context);
+    cdr.postInit(context);
     return MaterialApp(
-      title: "Custom Dice Roller",
-      home: Scaffold(
-        body: Center(
-          child: Text("yodle")
-        ),
-      )
+      theme: ThemeData.light().copyWith(primaryColor: Colors.purple),
+      darkTheme: ThemeData.dark().copyWith(primaryColor: Colors.purple),
+      onGenerateTitle: (context) => AppLocalizations.of(context)!.cdr,
+      builder: (context, child) => Frame(child: child),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: DieEdit(),
     );
   }
 }
