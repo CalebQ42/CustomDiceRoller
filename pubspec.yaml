@@ -12,7 +12,7 @@ dependencies:
   shared_preferences: ^2.0.20
   url_launcher: ^6.1.10
   uuid: ^3.0.7
-  secure_shared_preferences: ^0.0.4
+  flutter_secure_storage: 8.0.0
 
 dev_dependencies:
   flutter_test:

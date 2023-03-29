@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:secure_shared_preferences/secure_shared_pref.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class CDR{
-  SharedPreferences prefs;
-  SecureSharedPref securePrefs;
+  final SharedPreferences prefs;
+  final FlutterSecureStorage securePrefs = const FlutterSecureStorage();
 
-  CDR({required this.prefs, required this.securePrefs});
+  CDR({required this.prefs});
 
   static Future<CDR> initialize() async{
     WidgetsFlutterBinding.ensureInitialized();
-    var prefs = await SharedPreferences.getInstance();
-    var securePrefs = await SecureSharedPref.getInstance();
     return CDR(
-      prefs: prefs,
-      securePrefs: securePrefs
+      prefs: await SharedPreferences.getInstance()
     );
   }
 
