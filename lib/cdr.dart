@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:isar/isar.dart';
 
 
 class CDR{
+
   final SharedPreferences prefs;
   final FlutterSecureStorage securePrefs = const FlutterSecureStorage();
-  late AppLocalizations local;
+  final GlobalKey<NavigatorState> navKey = GlobalKey();
 
   CDR({required this.prefs});
 
@@ -34,6 +34,5 @@ class CDRHolder extends InheritedWidget{
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
-
   
 }

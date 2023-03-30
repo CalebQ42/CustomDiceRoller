@@ -9,10 +9,6 @@ class DieEdit extends StatelessWidget{
     Column(
       children: [
         TextField(),
-        // AnimatedBuilder(
-        //   animation: animation,
-        //   builder: builder
-        // )
       ],
     );
 }
