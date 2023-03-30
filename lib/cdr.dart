@@ -1,3 +1,6 @@
+import 'package:customdiceroller/dice/dice.dart';
+import 'package:customdiceroller/screens/frame.dart';
+import 'package:customdiceroller/utils/observatory.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,19 +12,27 @@ class CDR{
   final SharedPreferences prefs;
   final FlutterSecureStorage securePrefs = const FlutterSecureStorage();
   final GlobalKey<NavigatorState> navKey = GlobalKey();
+  final GlobalKey<FrameState> frameKey = GlobalKey();
+  late Observatory observatory;
+  Duration globalDuration = const Duration(milliseconds: 300);
 
-  CDR({required this.prefs});
+  final Isar db;
+
+  CDR({required this.prefs, required this.db});
 
   static Future<CDR> initialize() async{
     WidgetsFlutterBinding.ensureInitialized();
-    // var db = await Isar.open([]);
     return CDR(
       prefs: await SharedPreferences.getInstance(),
+      db: await Isar.open([
+        DiceGroupSchema,
+        DieSchema
+      ])
     );
   }
 
   void postInit(BuildContext context){
-    // local = AppLocalizations.of(context)!;
+    observatory = Observatory(this, frameKey);
   }
 
   static CDR of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<CDRHolder>()!.cdr;

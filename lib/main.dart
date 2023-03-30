@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/screens/calculator.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:customdiceroller/screens/frame.dart';
-import 'package:customdiceroller/ui/die_edit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -45,23 +45,46 @@ class MainUIState extends State<MainUI>{
       navigatorKey: cdr.navKey,
       theme: ThemeData.light().copyWith(primaryColor: Colors.purple),
       darkTheme: ThemeData.dark().copyWith(primaryColor: Colors.purple),
+      navigatorObservers: [
+        cdr.observatory
+      ],
       onGenerateTitle: (context) => AppLocalizations.of(context)!.cdr,
-      builder: (context, child) => Frame(child: child),
+      builder: (context, child) => Frame(key: cdr.frameKey, child: child ?? const Text("uh oh")),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       onGenerateRoute: (settings) {
-        if(settings.name == "/settings"){
-          return MaterialPageRoute(
-            builder: (context){
-              return const Settings();
-            }
-          );
+        Widget? widy;
+        RouteSettings? newSettings;
+        switch(settings.name){
+        case "/settings":
+          widy = const Settings();
+          break;
+        case "/calculator":
+          widy = DiceCalculator();
+          break;
+        case "/intro":
+          widy = DiceCalculator();
+          break;
+        case "/dieList":
+          //TODO
+        case "/groupList":
+          //TODO
+        default:
+          //TODO: Allow for setting default screen
+          widy = DiceCalculator();
+          newSettings = const RouteSettings(name: "/calculator");
         }
-        return MaterialPageRoute(
-            builder: (context){
-              return const DieEdit();
-            }
-          );
+        return PageRouteBuilder(
+          settings: newSettings ?? settings,
+          pageBuilder: (context, animation, secondaryAnimation) {
+            return widy!;
+          },
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+            FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+        );
       },
       initialRoute: "/",
     );

@@ -1,4 +1,15 @@
 {
     "cdr": "Custom Dice Roller",
-    "settings": "Settings"
+    "settings": "Settings",
+    "numDie": "d{number}",
+    "@numDie": {
+        "description": "Standard die notation",
+        "placeholders": {
+            "number":{
+                "type": "int",
+                "example": "20"
+            }
+        }
+    },
+    "calculator": "Calculator"
 }

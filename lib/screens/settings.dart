@@ -1,3 +1,4 @@
+import 'package:customdiceroller/screens/frame.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatelessWidget{
@@ -6,7 +7,9 @@ class Settings extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) =>
-    const Center(
-      child: Text("This is a test"),
+    const FrameContent(
+      child: Center(
+        child: Text("This is a test"),
+      )
     );
 }
