@@ -1,4 +1,6 @@
+import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/screens/frame.dart';
+import 'package:customdiceroller/ui/updating_switch_tile.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatelessWidget{
@@ -7,9 +9,22 @@ class Settings extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) =>
-    const FrameContent(
-      child: Center(
-        child: Text("This is a test"),
+    FrameContent(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          UpdatingSwitchTile(
+            value: CDR.of(context).globalDuration == Duration.zero,
+            onChanged: (val){
+              if(val){
+                CDR.of(context).globalDuration = Duration.zero;
+              }else{
+                CDR.of(context).globalDuration = const Duration(milliseconds: 250);
+              }
+            },
+            title: Text("Disable Animations"),
+          )
+        ],
       )
     );
 }

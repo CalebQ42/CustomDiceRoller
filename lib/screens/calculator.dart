@@ -1,4 +1,5 @@
 import 'package:customdiceroller/screens/frame.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class DiceCalculator extends StatelessWidget{
@@ -40,12 +41,59 @@ class CalcKeypad extends StatelessWidget{
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          TextButton(
-            child: Text("9"),
-            onPressed: () =>
-              displayCont.text += 9.toString(),
+          Row(
+            children: [
+              numButton("1", context),
+              numButton("2", context),
+              numButton("3", context)
+            ],
+          ),
+          Row(
+            children: [
+              numButton("4", context),
+              numButton("5", context),
+              numButton("6", context)
+            ],
+          ),
+          Row(
+            children: [
+              numButton("7", context),
+              numButton("8", context),
+              numButton("9", context)
+            ],
+          ),
+          Row(
+            children: [
+              numButton("0", context),
+              Expanded(
+                child: TextButton(
+                  onPressed: () =>
+                    displayCont.text += AppLocalizations.of(context)!.dieNotation,
+                  child: Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Text(AppLocalizations.of(context)!.dieNotation,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
+                )
+              )
+            ],
           )
         ],
       ),
+    );
+
+  Widget numButton(String value, BuildContext context) =>
+    Expanded(
+      child: TextButton(
+        onPressed: () =>
+          displayCont.text += value,
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(value,
+            style: Theme.of(context).textTheme.headlineMedium,
+          )
+        )
+      )
     );
 }

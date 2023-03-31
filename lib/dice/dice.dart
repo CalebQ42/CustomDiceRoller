@@ -31,7 +31,7 @@ class Die {
 
   Die({this.title = "New Die", this.sides = const []});
   Die.numberDie(int maxNum, AppLocalizations localizations) :
-    title = localizations.numDie(maxNum),
+    title = localizations.dieNotation + maxNum.toString(),
     sides = List<Side>.generate(maxNum, (index) => Side.simple((index + 1).toString()));
 
   EmbeddedDie toEmbeded() => EmbeddedDie(title: title, sides: sides);

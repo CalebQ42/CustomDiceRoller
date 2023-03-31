@@ -6,11 +6,7 @@ class Frame extends StatefulWidget{
   
   final Widget child;
 
-  Frame({super.key, required this.child}){
-    if(child is! FrameContent){
-      throw("Frame must have FrameContents child");
-    }
-  }
+  const Frame({super.key, required this.child});
 
   @override
   State<StatefulWidget> createState() => FrameState();
@@ -195,15 +191,12 @@ class Nav extends StatelessWidget{
             )
           ),
           Expanded(
-            child: topItem && vertical ? AnimatedAlign(
+            child: AnimatedAlign(
               alignment: expanded ? Alignment.center : Alignment.centerLeft,
               duration: cdr.globalDuration,
               child: Text(name,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-            ) : Text(name,
-              style: Theme.of(context).textTheme.titleMedium,
-              textAlign: TextAlign.center,
             )
           ),
           if(!vertical) const SizedBox(width: 20),
