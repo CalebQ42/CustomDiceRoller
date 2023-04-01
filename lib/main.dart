@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/screens/calculator.dart';
+import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:customdiceroller/screens/frame.dart';
 import 'package:flutter/foundation.dart';
@@ -40,7 +41,6 @@ class MainUIState extends State<MainUI>{
   @override
   Widget build(BuildContext context){
     var cdr = CDR.of(context);
-    cdr.postInit(context);
     return MaterialApp(
       navigatorKey: cdr.navKey,
       theme: ThemeData.light().copyWith(primaryColor: Colors.purple),
@@ -73,6 +73,10 @@ class MainUIState extends State<MainUI>{
           //TODO: Allow for setting default screen
           widy = DiceCalculator();
           newSettings = const RouteSettings(name: "/calculator");
+        }
+        if(!cdr.initilized){
+          widy = LoadingScreen(startingRoute: newSettings ?? settings, cdr: cdr);
+          newSettings = const RouteSettings(name: "/loading");
         }
         return PageRouteBuilder(
           settings: newSettings ?? settings,

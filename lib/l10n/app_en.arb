@@ -5,5 +5,10 @@
     "@dieNotation": {
         "description": "Die notation"
     },
-    "calculator": "Calculator"
+    "calculator": "Calculator",
+    "newDie": "New Die",
+    "newGroup": "New Dice Group",
+    "dice": "Dice",
+    "diceGroups": "Dice Groups",
+    "loading": "Loading..."
 }

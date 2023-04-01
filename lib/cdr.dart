@@ -1,6 +1,7 @@
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/screens/frame.dart';
 import 'package:customdiceroller/utils/observatory.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -13,10 +14,12 @@ class CDR{
   final FlutterSecureStorage securePrefs = const FlutterSecureStorage();
   final GlobalKey<NavigatorState> navKey = GlobalKey();
   final GlobalKey<FrameState> frameKey = GlobalKey();
-  late Observatory observatory;
+  final Isar db;
+  late Observatory observatory = Observatory(this, frameKey);
+  late AppLocalizations locale;
   Duration globalDuration = const Duration(milliseconds: 300);
 
-  final Isar db;
+  bool initilized = false;
 
   CDR({required this.prefs, required this.db});
 
@@ -31,8 +34,10 @@ class CDR{
     );
   }
 
-  void postInit(BuildContext context){
-    observatory = Observatory(this, frameKey);
+  Future<void> postInit(BuildContext context) async{
+    locale = AppLocalizations.of(context)!;
+    await Future.delayed(const Duration(seconds: 3)); // TODO: Add actual loading here.
+    initilized = true;
   }
 
   static CDR of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<CDRHolder>()!.cdr;

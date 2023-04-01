@@ -18,7 +18,7 @@ class FrameState extends State<Frame> {
 
   bool vertical = false;
   bool expanded = false;
-  bool hidden = false;
+  bool hidden = true;
   double verticalTranslation = 0;
 
   String _selection = "";
@@ -27,7 +27,7 @@ class FrameState extends State<Frame> {
   set selection(String sel) =>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        if(sel == "/intro") { //TODO: add all values that need a hidden appbar
+        if(sel.startsWith("/intro") || sel == "/loading") {
           hidden = true;
         }else{
           hidden = false;
@@ -94,14 +94,22 @@ class FrameState extends State<Frame> {
                     selected: _selection == "/calculator",
                   ),
                   Nav(
-                    name: "testing",
-                    icon: const Icon(Icons.radio),
-                    onTap: () {
-                      cdr.navKey.currentState?.pushNamed("/intro");
-                      Future.delayed(const Duration(seconds: 5), () => cdr.navKey.currentState?.pushNamed("/calculator"));
-                    },
+                    name: locale.dice,
+                    icon: const Icon(Icons.casino),
+                    onTap: () =>
+                      cdr.navKey.currentState?.pushNamed("/dieList"),
                     vertical: vertical,
                     expanded: expanded,
+                    selected: _selection == "/dieList",
+                  ),
+                  Nav(
+                    name: locale.diceGroups,
+                    icon: const Icon(Icons.radio),
+                    onTap: () =>
+                      cdr.navKey.currentState?.pushNamed("/groupList"),
+                    vertical: vertical,
+                    expanded: expanded,
+                    selected: _selection == "/groupList",
                   ),
                   const Spacer(),
                   Nav(
@@ -219,13 +227,14 @@ class Nav extends StatelessWidget{
 class FrameContent extends StatelessWidget{
 
   final Widget? child;
+  final bool allowPop;
 
-  const FrameContent({super.key, this.child});
+  const FrameContent({super.key, this.child, this.allowPop = true});
 
   @override
   Widget build(BuildContext context) =>
     WillPopScope(
-      onWillPop: Frame.of(context).handleBackpress,
+      onWillPop: allowPop ? Frame.of(context).handleBackpress : () async => true,
       child: Container(
         color: Theme.of(context).canvasColor,
         child: child,
