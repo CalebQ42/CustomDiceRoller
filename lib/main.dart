@@ -4,7 +4,7 @@ import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/screens/calculator.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
-import 'package:customdiceroller/screens/frame.dart';
+import 'package:customdiceroller/ui/frame.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -41,10 +41,41 @@ class MainUIState extends State<MainUI>{
   @override
   Widget build(BuildContext context){
     var cdr = CDR.of(context);
+    cdr.topLevelUpdate = () => setState(() {});
+    const snackTheme = SnackBarThemeData(
+      behavior: SnackBarBehavior.floating,
+    );
+    const inputTheme = InputDecorationTheme(
+      border: OutlineInputBorder(),
+    );
+    var bottomSheetTheme = BottomSheetThemeData(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20))
+      ),
+      clipBehavior: Clip.antiAlias,
+      constraints: BoxConstraints.loose(const Size.fromWidth(600)),
+    );
+    var fabTheme = const FloatingActionButtonThemeData(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(25))
+      )
+    );
     return MaterialApp(
       navigatorKey: cdr.navKey,
-      theme: ThemeData.light().copyWith(primaryColor: Colors.purple),
-      darkTheme: ThemeData.dark().copyWith(primaryColor: Colors.purple),
+      theme: ThemeData.light().copyWith(
+        primaryColor: Colors.purple,
+        snackBarTheme: snackTheme,
+        inputDecorationTheme: inputTheme,
+        bottomSheetTheme: bottomSheetTheme,
+        floatingActionButtonTheme: fabTheme
+      ),
+      darkTheme: ThemeData.dark().copyWith(
+        primaryColor: Colors.purple,
+        snackBarTheme: snackTheme,
+        inputDecorationTheme: inputTheme,
+        bottomSheetTheme: bottomSheetTheme,
+        floatingActionButtonTheme: fabTheme
+      ),
       navigatorObservers: [
         cdr.observatory
       ],

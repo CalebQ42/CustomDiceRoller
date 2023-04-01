@@ -1,5 +1,5 @@
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/screens/frame.dart';
+import 'package:customdiceroller/ui/frame.dart';
 import 'package:flutter/material.dart';
 
 class Observatory extends NavigatorObserver{

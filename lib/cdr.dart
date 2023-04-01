@@ -1,5 +1,5 @@
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/screens/frame.dart';
+import 'package:customdiceroller/ui/frame.dart';
 import 'package:customdiceroller/utils/observatory.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -15,11 +15,13 @@ class CDR{
   final GlobalKey<NavigatorState> navKey = GlobalKey();
   final GlobalKey<FrameState> frameKey = GlobalKey();
   final Isar db;
+
   late Observatory observatory = Observatory(this, frameKey);
   late AppLocalizations locale;
-  Duration globalDuration = const Duration(milliseconds: 300);
 
+  Duration globalDuration = const Duration(milliseconds: 300);
   bool initilized = false;
+  void Function()? topLevelUpdate;
 
   CDR({required this.prefs, required this.db});
 

@@ -104,7 +104,7 @@ class FrameState extends State<Frame> {
                   ),
                   Nav(
                     name: locale.diceGroups,
-                    icon: const Icon(Icons.radio),
+                    icon: const Icon(Icons.view_cozy),
                     onTap: () =>
                       cdr.navKey.currentState?.pushNamed("/groupList"),
                     vertical: vertical,
