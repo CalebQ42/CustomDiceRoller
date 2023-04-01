@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:customdiceroller/cdr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -95,7 +97,10 @@ class FrameState extends State<Frame> {
                   ),
                   Nav(
                     name: locale.dice,
-                    icon: const Icon(Icons.casino),
+                    icon: Transform.rotate(
+                      angle: pi/4,
+                      child: const Icon(Icons.casino)
+                    ),
                     onTap: () =>
                       cdr.navKey.currentState?.pushNamed("/dieList"),
                     vertical: vertical,
@@ -104,7 +109,7 @@ class FrameState extends State<Frame> {
                   ),
                   Nav(
                     name: locale.diceGroups,
-                    icon: const Icon(Icons.view_cozy),
+                    icon: const Icon(Icons.spoke),
                     onTap: () =>
                       cdr.navKey.currentState?.pushNamed("/groupList"),
                     vertical: vertical,
@@ -149,7 +154,7 @@ class FrameState extends State<Frame> {
 
 class Nav extends StatelessWidget{
   
-  final Icon icon;
+  final Widget icon;
   final String name;
   final Function() onTap;
   final bool vertical;
