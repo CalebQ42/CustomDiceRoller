@@ -13,7 +13,7 @@ class LoadingScreen extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     cdr.postInit(context).then(
-      (_) => cdr.navKey.currentState?.pushNamedAndRemoveUntil(startingRoute.name ?? "/", (_) => false, arguments: startingRoute.arguments)
+      (_) => cdr.nav?.pushNamedAndRemoveUntil(startingRoute.name ?? "/", (_) => false, arguments: startingRoute.arguments)
     );
     return FrameContent(
       child: Center(

@@ -1,6 +1,7 @@
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/ui/frame.dart';
 import 'package:customdiceroller/utils/observatory.dart';
+import 'package:customdiceroller/utils/preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,35 +11,47 @@ import 'package:isar/isar.dart';
 
 class CDR{
 
-  final SharedPreferences prefs;
-  final FlutterSecureStorage securePrefs = const FlutterSecureStorage();
-  final GlobalKey<NavigatorState> navKey = GlobalKey();
-  final GlobalKey<FrameState> frameKey = GlobalKey();
+  final Prefs prefs;
   final Isar db;
 
-  late Observatory observatory = Observatory(this, frameKey);
+  late Observatory observatory = Observatory(this);
   late AppLocalizations locale;
 
-  Duration globalDuration = const Duration(milliseconds: 300);
-  bool initilized = false;
   void Function()? topLevelUpdate;
+  Duration globalDuration;
+  bool initilized = false;
 
-  CDR({required this.prefs, required this.db});
+  final GlobalKey<NavigatorState> _navKey = GlobalKey();
+  final GlobalKey<FrameState> _frameKey = GlobalKey();
+  
+  GlobalKey<NavigatorState> get navigatorKey => _navKey;
+  GlobalKey<FrameState> get frameKey => _frameKey;
+
+  NavigatorState? get nav => _navKey.currentState;
+  FrameState? get frame => _frameKey.currentState;
+
+  CDR({
+    required this.prefs,
+    required this.db,
+    this.globalDuration = const Duration(milliseconds: 250)
+  });
 
   static Future<CDR> initialize() async{
     WidgetsFlutterBinding.ensureInitialized();
+    var prefs = Prefs(await SharedPreferences.getInstance(), const FlutterSecureStorage());
     return CDR(
-      prefs: await SharedPreferences.getInstance(),
+      prefs: prefs,
       db: await Isar.open([
         DiceGroupSchema,
         DieSchema
-      ])
+      ]),
+      globalDuration: prefs.disableAnimations() ? Duration.zero : const Duration(milliseconds: 300),
     );
   }
 
   Future<void> postInit(BuildContext context) async{
     locale = AppLocalizations.of(context)!;
-    await Future.delayed(const Duration(seconds: 3)); // TODO: Add actual loading here.
+    // TODO: Add actual loading here.
     initilized = true;
   }
 

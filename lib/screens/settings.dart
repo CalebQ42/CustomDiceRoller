@@ -3,28 +3,58 @@ import 'package:customdiceroller/ui/frame.dart';
 import 'package:customdiceroller/ui/updating_switch_tile.dart';
 import 'package:flutter/material.dart';
 
-class Settings extends StatelessWidget{
+class Settings extends StatefulWidget{
 
   const Settings({super.key});
 
   @override
-  Widget build(BuildContext context) =>
-    FrameContent(
+  State<Settings> createState() => _SettingsState();
+}
+
+class _SettingsState extends State<Settings> {
+  @override
+  Widget build(BuildContext context) {
+    var cdr = CDR.of(context);
+    return FrameContent(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          SwitchListTile(
+            value: cdr.prefs.lightTheme(),
+            onChanged: (val){
+              if(val) cdr.prefs.setDarkTheme(false);
+              cdr.prefs.setLightTheme(val);
+              setState((){});
+              cdr.topLevelUpdate!();
+            },
+            title: Text(cdr.locale.lightTheme),
+          ),
+          const Divider(),
+          SwitchListTile(
+            value: cdr.prefs.darkTheme(),
+            onChanged: (val){
+              if(val) cdr.prefs.setLightTheme(false);
+              cdr.prefs.setDarkTheme(val);
+              setState((){});
+              cdr.topLevelUpdate!();
+            },
+            title: Text(cdr.locale.darkTheme),
+          ),
+          const Divider(),
           UpdatingSwitchTile(
-            value: CDR.of(context).globalDuration == Duration.zero,
+            value: cdr.prefs.disableAnimations(),
             onChanged: (val){
               if(val){
-                CDR.of(context).globalDuration = Duration.zero;
+                cdr.globalDuration = Duration.zero;
               }else{
-                CDR.of(context).globalDuration = const Duration(milliseconds: 250);
+                cdr.globalDuration = const Duration(milliseconds: 250);
               }
+              cdr.prefs.setDisableAnimations(val);
             },
-            title: Text("Disable Animations"),
+            title: Text(cdr.locale.disableAnimations),
           )
         ],
       )
     );
+  }
 }

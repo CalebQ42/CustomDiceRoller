@@ -29,11 +29,7 @@ class FrameState extends State<Frame> {
   set selection(String sel) =>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
-        if(sel.startsWith("/intro") || sel == "/loading") {
-          hidden = true;
-        }else{
-          hidden = false;
-        }
+        hidden =  sel.startsWith("/intro") || sel == "/loading";
         _selection = sel;
       });
     });
@@ -90,7 +86,7 @@ class FrameState extends State<Frame> {
                     name: locale.calculator,
                     icon: const Icon(Icons.calculate),
                     onTap: () =>
-                      cdr.navKey.currentState?.pushNamed("/calculator"),
+                      cdr.nav?.pushNamed("/calculator"),
                     vertical: vertical,
                     expanded: expanded,
                     selected: _selection == "/calculator",
@@ -98,30 +94,30 @@ class FrameState extends State<Frame> {
                   Nav(
                     name: locale.dice,
                     icon: Transform.rotate(
-                      angle: pi/4,
+                      angle: pi * 1/4,
                       child: const Icon(Icons.casino)
                     ),
                     onTap: () =>
-                      cdr.navKey.currentState?.pushNamed("/dieList"),
+                      cdr.nav?.pushNamed("/dieList"),
                     vertical: vertical,
                     expanded: expanded,
                     selected: _selection == "/dieList",
                   ),
-                  Nav(
-                    name: locale.diceGroups,
-                    icon: const Icon(Icons.spoke),
-                    onTap: () =>
-                      cdr.navKey.currentState?.pushNamed("/groupList"),
-                    vertical: vertical,
-                    expanded: expanded,
-                    selected: _selection == "/groupList",
-                  ),
+                  // Nav(
+                  //   name: locale.diceGroups,
+                  //   icon: const Icon(Icons.spoke),
+                  //   onTap: () =>
+                  //     cdr.nav?.pushNamed("/groupList"),
+                  //   vertical: vertical,
+                  //   expanded: expanded,
+                  //   selected: _selection == "/groupList",
+                  // ),
                   const Spacer(),
                   Nav(
                     name: locale.settings,
                     icon: const Icon(Icons.settings),
                     onTap: () =>
-                      cdr.navKey.currentState?.pushNamed("/settings"),
+                      cdr.nav?.pushNamed("/settings"),
                     vertical: vertical,
                     lastItem: true,
                     expanded: expanded,
@@ -141,7 +137,16 @@ class FrameState extends State<Frame> {
               curve: Curves.easeIn,
               child: Stack(
                 children:[
-                  widget.child
+                  widget.child,
+                  AnimatedSwitcher(
+                    duration: cdr.globalDuration,
+                    child: expanded ? GestureDetector(
+                      onTap: () => setState(() => expanded = false),
+                      child: Container(
+                        color: Colors.black.withOpacity(0.25),
+                      ),
+                    ) : null,
+                  ),
                 ]
               )
             )
@@ -178,42 +183,46 @@ class Nav extends StatelessWidget{
     var cdr = CDR.of(context);
     var inner = AnimatedContainer(
       duration: cdr.globalDuration,
-      margin: vertical && ((topItem && !expanded) || lastItem) ? const EdgeInsets.only(bottom: 20) : EdgeInsets.zero,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 50,
-            width: 50,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                icon,
-                AnimatedContainer(
-                  duration: cdr.globalDuration,
-                  margin: selected ? const EdgeInsets.symmetric(vertical: 3) : EdgeInsets.zero,
-                  height: selected ? 2 : 0,
-                  width: 5,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(200)),
-                    color: Colors.white
-                  ),
-                )
-              ]
-            )
-          ),
-          Expanded(
-            child: AnimatedAlign(
-              alignment: expanded ? Alignment.center : Alignment.centerLeft,
-              duration: cdr.globalDuration,
-              child: Text(name,
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-            )
-          ),
-          if(!vertical) const SizedBox(width: 20),
-        ]
+      margin: (){
+        EdgeInsets margin = vertical ? EdgeInsets.zero : const EdgeInsets.only(right: 20);
+        if(vertical && (topItem && !expanded) || lastItem){
+          margin = margin += const EdgeInsets.only(bottom: 20);
+        }
+        return margin;
+      }(),
+      // margin: vertical && ((topItem && !expanded) || lastItem) ? const EdgeInsets.only(bottom: 20) : EdgeInsets.zero,
+      child: AnimatedAlign(
+        duration: cdr.globalDuration,
+        alignment: expanded ? Alignment.center : Alignment.centerLeft,
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 50,
+              width: 50,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  icon,
+                  AnimatedContainer(
+                    duration: cdr.globalDuration,
+                    margin: selected ? const EdgeInsets.symmetric(vertical: 3) : EdgeInsets.zero,
+                    height: selected ? 2 : 0,
+                    width: 5,
+                    decoration: ShapeDecoration(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(200)),
+                      color: Colors.white
+                    ),
+                  )
+                ]
+              )
+            ),
+            Text(name,
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ]
+        )
       )
     );
     return SizedOverflowBox(

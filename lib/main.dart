@@ -26,6 +26,7 @@ void main() =>
         print(error);
         print(stack);
       }
+      // TODO: Proper error reporting
     }
   );
 
@@ -61,7 +62,7 @@ class MainUIState extends State<MainUI>{
       )
     );
     return MaterialApp(
-      navigatorKey: cdr.navKey,
+      navigatorKey: cdr.navigatorKey,
       theme: ThemeData.light().copyWith(
         primaryColor: Colors.purple,
         snackBarTheme: snackTheme,
@@ -76,11 +77,17 @@ class MainUIState extends State<MainUI>{
         bottomSheetTheme: bottomSheetTheme,
         floatingActionButtonTheme: fabTheme
       ),
+      themeMode:
+        cdr.prefs.darkTheme() ?
+          ThemeMode.dark :
+        cdr.prefs.lightTheme() ?
+          ThemeMode.light :
+        ThemeMode.system,
       navigatorObservers: [
         cdr.observatory
       ],
       onGenerateTitle: (context) => AppLocalizations.of(context)!.cdr,
-      builder: (context, child) => Frame(key: cdr.frameKey, child: child ?? const Text("uh oh")),
+      builder: (context, child) => Frame(key: cdr.frameKey, child: child ?? const Text("This is borken")),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       onGenerateRoute: (settings) {
@@ -94,12 +101,15 @@ class MainUIState extends State<MainUI>{
           widy = DiceCalculator();
           break;
         case "/intro":
-          widy = DiceCalculator();
+          widy = DiceCalculator(); //TODO
+          newSettings = const RouteSettings(name: "/calculator");
           break;
         case "/dieList":
-          //TODO
-        case "/groupList":
-          //TODO
+          widy = DiceCalculator(); //TODO
+          break;
+        // case "/groupList":
+        //   widy = DiceCalculator(); //TODO
+        //   break;
         default:
           //TODO: Allow for setting default screen
           widy = DiceCalculator();
@@ -114,9 +124,14 @@ class MainUIState extends State<MainUI>{
           pageBuilder: (context, animation, secondaryAnimation) {
             return widy!;
           },
+          transitionDuration: cdr.globalDuration,
+          reverseTransitionDuration: cdr.globalDuration,
           transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-            FadeTransition(
-              opacity: animation,
+            SlideTransition(
+              position: Tween<Offset>(
+                begin: const Offset(1.0, 0.0),
+                end: Offset.zero
+              ).animate(animation),
               child: child,
             ),
         );

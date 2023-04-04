@@ -1,14 +1,12 @@
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/ui/frame.dart';
 import 'package:flutter/material.dart';
 
 class Observatory extends NavigatorObserver{
 
   List<Route> routeHistory = [];
   CDR cdr;
-  GlobalKey<FrameState> frame;
 
-  Observatory(this.cdr, this.frame);
+  Observatory(this.cdr);
 
   String currentRoute(){
     if(routeHistory.isNotEmpty) return routeHistory.last.settings.name ?? "";
@@ -17,7 +15,7 @@ class Observatory extends NavigatorObserver{
 
   void report(){
     if(routeHistory.isNotEmpty){
-      frame.currentState?.selection = routeHistory.last.settings.name ?? "";
+      cdr.frame?.selection = routeHistory.last.settings.name ?? "";
     }
   }
 

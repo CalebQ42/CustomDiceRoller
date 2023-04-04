@@ -1,6 +1,5 @@
 {
     "cdr": "Custom Dice Roller",
-    "settings": "Settings",
     "dieNotation": "d",
     "@dieNotation": {
         "description": "Die notation"
@@ -10,5 +9,11 @@
     "newGroup": "New Dice Group",
     "dice": "Dice",
     "diceGroups": "Dice Groups",
-    "loading": "Loading..."
+    "loading": "Loading...",
+
+    "settings": "Settings",
+    "darkTheme": "Dark Theme",
+    "lightTheme": "Light Theme",
+    "amoledTheme": "Amoled (Pitch Black) Dark Theme",
+    "disableAnimations": "Disable Animations"
 }

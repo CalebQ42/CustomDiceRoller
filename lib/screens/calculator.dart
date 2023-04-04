@@ -14,11 +14,13 @@ class DiceCalculator extends StatelessWidget{
       child: Column(
         children: [
           const Spacer(),
-          TextField(
-            readOnly: true,
-            showCursor: true,
-            controller: displayCont,
-            
+          SizedBox(
+            width: 500,
+            child: TextField(
+              readOnly: true,
+              showCursor: true,
+              controller: displayCont,
+            )
           ),
           CalcKeypad(
             displayCont: displayCont,
