@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/screens/calculator.dart';
+import 'package:customdiceroller/screens/dice_list.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:customdiceroller/ui/frame.dart';
@@ -105,7 +106,7 @@ class MainUIState extends State<MainUI>{
           newSettings = const RouteSettings(name: "/calculator");
           break;
         case "/dieList":
-          widy = DiceCalculator(); //TODO
+          widy = DieList(); //TODO
           break;
         // case "/groupList":
         //   widy = DiceCalculator(); //TODO
@@ -124,6 +125,7 @@ class MainUIState extends State<MainUI>{
           pageBuilder: (context, animation, secondaryAnimation) {
             return widy!;
           },
+          maintainState: false,
           transitionDuration: cdr.globalDuration,
           reverseTransitionDuration: cdr.globalDuration,
           transitionsBuilder: (context, animation, secondaryAnimation, child) =>

@@ -65,5 +65,4 @@ class CDRHolder extends InheritedWidget{
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
-  
 }

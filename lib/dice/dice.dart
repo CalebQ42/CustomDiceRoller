@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:isar/isar.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -35,6 +36,8 @@ class Die {
     sides = List<Side>.generate(maxNum, (index) => Side.simple((index + 1).toString()));
 
   EmbeddedDie toEmbeded() => EmbeddedDie(title: title, sides: sides);
+
+  static Die of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<DieHolder>()!.die;
 }
 
 @embedded
@@ -51,4 +54,14 @@ class SidePart{
   String value;
 
   SidePart({this.number = 1, this.value = ""});
+}
+
+class DieHolder extends InheritedWidget{
+
+  final Die die;
+
+  const DieHolder(this.die, {super.key, required super.child});
+
+  @override
+  bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
 }
