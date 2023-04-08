@@ -242,16 +242,37 @@ class FrameContent extends StatelessWidget{
 
   final Widget? child;
   final bool allowPop;
+  final FloatingActionButton? fab;
 
-  const FrameContent({super.key, this.child, this.allowPop = true});
+  const FrameContent({
+    super.key,
+    this.child,
+    this.allowPop = true,
+    this.fab
+  });
 
   @override
   Widget build(BuildContext context) =>
     WillPopScope(
       onWillPop: allowPop ? Frame.of(context).handleBackpress : () async => true,
-      child: Container(
-        color: Theme.of(context).canvasColor,
-        child: child,
+      child: Stack(
+        children: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            child: Container(
+              color: Theme.of(context).canvasColor,
+              child: child,
+            )
+          ),
+          if(fab != null) Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.all(30),
+              child: fab
+            ),
+          )
+        ]
       ),
     );
 }

@@ -1,3 +1,4 @@
+import 'package:customdiceroller/dice/results.dart';
 import 'package:customdiceroller/ui/frame.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +12,13 @@ class DiceCalculator extends StatelessWidget{
   @override
   Widget build(BuildContext context) =>
     FrameContent(
+      fab: FloatingActionButton(
+        onPressed: (){
+          var res = DiceResults.parse(displayCont.text);
+          //TODO: show results
+        },
+        child: const Icon(Icons.casino),
+      ),
       child: Column(
         children: [
           const Spacer(),

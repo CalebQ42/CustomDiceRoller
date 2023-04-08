@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class UpdatingSwitchTile extends StatefulWidget{
+
   final bool value;
   final void Function(bool) onChanged;
   final EdgeInsetsGeometry? contentPadding;
@@ -37,6 +38,7 @@ class UpdatingSwitchTileState extends State<UpdatingSwitchTile>{
 }
 
 class UpdatingSwitch extends StatefulWidget{
+  
   final bool value;
   final Function(bool) onChanged;
 
