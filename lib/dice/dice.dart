@@ -5,27 +5,28 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 part 'dice.g.dart';
 
-@collection
-class DiceGroup{
-  Id id = Id.parse(const Uuid().v4());
+// @collection
+// class DiceGroup{
+//   Id id = Isar.autoIncrement;
 
-  String title;
-  List<EmbeddedDie> dice;
+//   String title;
+//   List<EmbeddedDie> dice;
 
-  DiceGroup({this.title = "New Group", this.dice = const []});
-}
+//   DiceGroup({this.title = "New Group", this.dice = const []});
+// }
 
-@embedded
-class EmbeddedDie{
-  String title;
-  List<Side> sides;
+// @embedded
+// class EmbeddedDie{
+//   String title;
+//   List<Side> sides;
 
-  EmbeddedDie({this.title = "", this.sides = const []});
-}
+//   EmbeddedDie({this.title = "", this.sides = const []});
+// }
 
 @collection
 class Die {
-  Id id = Id.parse(const Uuid().v4());
+  Id id = Isar.autoIncrement;
+  String uuid = const Uuid().v4();
 
   String title = "";
   List<Side> sides = [];
@@ -35,7 +36,7 @@ class Die {
     title = localizations.dieNotation + maxNum.toString(),
     sides = List<Side>.generate(maxNum, (index) => Side.simple((index + 1).toString()));
 
-  EmbeddedDie toEmbeded() => EmbeddedDie(title: title, sides: sides);
+  // EmbeddedDie toEmbeded() => EmbeddedDie(title: title, sides: sides);
 
   static Die of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<DieHolder>()!.die;
 }

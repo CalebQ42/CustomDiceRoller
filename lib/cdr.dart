@@ -42,7 +42,6 @@ class CDR{
     return CDR(
       prefs: prefs,
       db: await Isar.open([
-        DiceGroupSchema,
         DieSchema
       ]),
       globalDuration: prefs.disableAnimations() ? Duration.zero : const Duration(milliseconds: 300),
