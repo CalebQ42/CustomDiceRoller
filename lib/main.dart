@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/screens/calculator.dart';
 import 'package:customdiceroller/screens/dice_list.dart';
+import 'package:customdiceroller/screens/die_edit.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:customdiceroller/ui/frame.dart';
@@ -94,31 +96,35 @@ class MainUIState extends State<MainUI>{
       onGenerateRoute: (settings) {
         Widget? widy;
         RouteSettings? newSettings;
-        switch(settings.name){
-        case "/settings":
-          widy = const Settings();
-          break;
-        case "/calculator":
-          widy = DiceCalculator();
-          break;
-        case "/intro":
-          widy = DiceCalculator(); //TODO
-          newSettings = const RouteSettings(name: "/calculator");
-          break;
-        case "/dieList":
-          widy = DieList(); //TODO
-          break;
-        // case "/groupList":
-        //   widy = DiceCalculator(); //TODO
-        //   break;
-        default:
-          //TODO: Allow for setting default screen
-          widy = DiceCalculator();
-          newSettings = const RouteSettings(name: "/calculator");
-        }
         if(!cdr.initilized){
           widy = LoadingScreen(startingRoute: newSettings ?? settings, cdr: cdr);
           newSettings = const RouteSettings(name: "/loading");
+        }else if((settings.name?.startsWith("/die/") ?? false) && settings.name!.length > 5){
+          var d = cdr.db.dies.getByUuidSync(settings.name!.substring(5));
+          if(d != null){
+            widy = DieEdit(d);
+          }
+        }else{
+          switch(settings.name){
+          case "/settings":
+            widy = const Settings();
+            break;
+          case "/calculator":
+            widy = DiceCalculator();
+            break;
+          case "/intro":
+            widy = DiceCalculator(); //TODO:
+            newSettings = const RouteSettings(name: "/calculator");
+            break;
+          case "/dieList":
+            widy = const DieList();
+            break;
+          }
+        }
+        if(widy == null){
+          //TODO: Allow settings default screen
+          widy = DiceCalculator();
+          newSettings = const RouteSettings(name: "/calculator");
         }
         return PageRouteBuilder(
           settings: newSettings ?? settings,

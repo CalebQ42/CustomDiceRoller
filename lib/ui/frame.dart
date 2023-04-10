@@ -46,14 +46,19 @@ class FrameState extends State<Frame> {
     hidden ? const RoundedRectangleBorder() :
     vertical ? const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))) :
         const RoundedRectangleBorder(borderRadius: BorderRadius.horizontal(left: Radius.circular(20.0)));
-
   EdgeInsets get contentMargin =>
     hidden ? EdgeInsets.zero : vertical ? const EdgeInsets.only(top: 50) :
         const EdgeInsets.only(left: 50);
-
   Matrix4? get transform => !expanded ? Matrix4.translationValues(0, 0, 0) :
     vertical ? Matrix4.translationValues(0, verticalTranslation, 0) :
         Matrix4.translationValues(200, 0, 0);
+  ShapeBorder get topItemShape =>
+    hidden ? const RoundedRectangleBorder() :
+    vertical ? const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20.0))) :
+        const RoundedRectangleBorder(borderRadius: BorderRadius.only(topLeft: Radius.circular(20.0)));
+  EdgeInsets get topItemMargin =>
+    hidden ? EdgeInsets.zero : vertical ? const EdgeInsets.symmetric(horizontal: 20) :
+        const EdgeInsets.only(left: 20);
 
   @override
   Widget build(BuildContext context){

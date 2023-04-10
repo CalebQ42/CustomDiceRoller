@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/ui/frame.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
@@ -23,6 +22,7 @@ class DieListState extends State<DieList>{
     var cdr = CDR.of(context);
     return FrameContent(
       fab: FloatingActionButton(
+        child: const Icon(Icons.add),
         onPressed: () async{
           await cdr.db.writeTxn(() async => await cdr.db.dies.put(Die()));
           listKey.currentState?.insertItem(cdr.db.dies.countSync()-1);
@@ -35,7 +35,17 @@ class DieListState extends State<DieList>{
           if(die == null) return const Text("uh oh");
           return Dismissible(
             key: ValueKey<Die>(die),
-            child: DieItem(die),
+            direction: cdr.prefs.swipeDelete() ? DismissDirection.horizontal : DismissDirection.none,
+            child: DieItem(
+              die,
+              () async {
+                await cdr.db.writeTxn(() async => await cdr.db.dies.delete(die.id));
+                listKey.currentState?.removeItem(
+                  index,
+                  (context, animation) => SizeTransition(sizeFactor: animation)
+                );
+              }
+            ),
             onDismissed: (direction) async {
               await cdr.db.writeTxn(() async => await cdr.db.dies.delete(die.id));
               listKey.currentState?.removeItem(
@@ -53,8 +63,9 @@ class DieListState extends State<DieList>{
 
 class DieItem extends StatelessWidget{
   final Die d;
+  final void Function() onDelete;
 
-  const DieItem(this.d, {super.key});
+  const DieItem(this.d, this.onDelete, {super.key});
   
   @override
   Widget build(BuildContext context) =>
@@ -64,7 +75,7 @@ class DieItem extends StatelessWidget{
       child: InkResponse(
         containedInkWell: true,
         highlightShape: BoxShape.rectangle,
-        onTap: () => print("hello"),
+        onTap: () =>  CDR.of(context).nav?.pushNamed("/die/${d.uuid}"),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
@@ -72,7 +83,8 @@ class DieItem extends StatelessWidget{
               containedInkWell: true,
               highlightShape: BoxShape.rectangle,
               onTap: (){
-                print("yodle");
+                var res = d.roll();
+                //TODO: Display result;
               },
               child: Padding(
                 padding: const EdgeInsets.all(15),
@@ -86,15 +98,13 @@ class DieItem extends StatelessWidget{
             Expanded(
               child: Text(d.title, style: Theme.of(context).textTheme.headlineSmall,)
             ),
-            if(kIsWeb) InkResponse(
+            if(CDR.of(context).prefs.deleteButton()) InkResponse(
               containedInkWell: true,
               highlightShape: BoxShape.rectangle,
-              onTap: (){
-                //TODO: Roll die
-              },
-              child: Padding(
+              onTap: onDelete,
+              child: const Padding(
                 padding: EdgeInsets.all(15),
-                child: const Icon(Icons.delete_forever)
+                child: Icon(Icons.delete_forever)
               )
             ),
           ]

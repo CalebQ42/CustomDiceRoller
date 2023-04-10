@@ -15,5 +15,7 @@
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",
     "amoledTheme": "Amoled (Pitch Black) Dark Theme",
-    "disableAnimations": "Disable Animations"
+    "disableAnimations": "Disable Animations",
+    "swipeDelete": "Swipe to Delete",
+    "deleteButtonPref": "Show Delete Button"
 }

@@ -41,6 +41,30 @@ class _SettingsState extends State<Settings> {
             title: Text(cdr.locale.darkTheme),
           ),
           const Divider(),
+          SwitchListTile(
+            value: cdr.prefs.swipeDelete(),
+            onChanged: (val){
+              cdr.prefs.setSwipeDelete(val);
+              if(!val && !cdr.prefs.deleteButton()){
+                cdr.prefs.setDeleteButton(true);
+              }
+              setState((){});
+            },
+            title: Text(cdr.locale.swipeDelete),
+          ),
+          const Divider(),
+          SwitchListTile(
+            value: cdr.prefs.deleteButton(),
+            onChanged: (val){
+              cdr.prefs.setDeleteButton(val);
+              if(!val && !cdr.prefs.swipeDelete()){
+                cdr.prefs.setSwipeDelete(true);
+              }
+              setState((){});
+            },
+            title: Text(cdr.locale.deleteButtonPref),
+          ),
+          const Divider(),
           UpdatingSwitchTile(
             value: cdr.prefs.disableAnimations(),
             onChanged: (val){

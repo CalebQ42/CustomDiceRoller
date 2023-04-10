@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
@@ -35,6 +36,10 @@ class Prefs{
   Future<void> setPassword(String p) => securePrefs.write(key: "stupidPassword", value: p);
 
   // Misc
-  bool disableAnimations() => prefs.getBool("DisableAnimations") ?? false;
-  void setDisableAnimations(bool p) => prefs.setBool("DisableAnimations", p);
+  bool disableAnimations() => prefs.getBool("disableAnimations") ?? false;
+  void setDisableAnimations(bool p) => prefs.setBool("disableAnimations", p);
+  bool deleteButton() => prefs.getBool("deleteButton") ?? kIsWeb;
+  void setDeleteButton(bool p) => prefs.setBool("deleteButton", p);
+  bool swipeDelete() => prefs.getBool("swipeDelete") ?? true;
+  void setSwipeDelete(bool p) => prefs.setBool("swipeDelete", p);
 }

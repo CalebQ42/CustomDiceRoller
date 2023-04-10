@@ -39,7 +39,21 @@ const DieSchema = CollectionSchema(
   deserialize: _dieDeserialize,
   deserializeProp: _dieDeserializeProp,
   idName: r'id',
-  indexes: {},
+  indexes: {
+    r'uuid': IndexSchema(
+      id: 2134397340427724972,
+      name: r'uuid',
+      unique: true,
+      replace: true,
+      properties: [
+        IndexPropertySchema(
+          name: r'uuid',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
+    )
+  },
   links: {},
   embeddedSchemas: {r'Side': SideSchema, r'SidePart': SidePartSchema},
   getId: _dieGetId,
@@ -140,6 +154,60 @@ void _dieAttach(IsarCollection<dynamic> col, Id id, Die object) {
   object.id = id;
 }
 
+extension DieByIndex on IsarCollection<Die> {
+  Future<Die?> getByUuid(String uuid) {
+    return getByIndex(r'uuid', [uuid]);
+  }
+
+  Die? getByUuidSync(String uuid) {
+    return getByIndexSync(r'uuid', [uuid]);
+  }
+
+  Future<bool> deleteByUuid(String uuid) {
+    return deleteByIndex(r'uuid', [uuid]);
+  }
+
+  bool deleteByUuidSync(String uuid) {
+    return deleteByIndexSync(r'uuid', [uuid]);
+  }
+
+  Future<List<Die?>> getAllByUuid(List<String> uuidValues) {
+    final values = uuidValues.map((e) => [e]).toList();
+    return getAllByIndex(r'uuid', values);
+  }
+
+  List<Die?> getAllByUuidSync(List<String> uuidValues) {
+    final values = uuidValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'uuid', values);
+  }
+
+  Future<int> deleteAllByUuid(List<String> uuidValues) {
+    final values = uuidValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'uuid', values);
+  }
+
+  int deleteAllByUuidSync(List<String> uuidValues) {
+    final values = uuidValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'uuid', values);
+  }
+
+  Future<Id> putByUuid(Die object) {
+    return putByIndex(r'uuid', object);
+  }
+
+  Id putByUuidSync(Die object, {bool saveLinks = true}) {
+    return putByIndexSync(r'uuid', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByUuid(List<Die> objects) {
+    return putAllByIndex(r'uuid', objects);
+  }
+
+  List<Id> putAllByUuidSync(List<Die> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'uuid', objects, saveLinks: saveLinks);
+  }
+}
+
 extension DieQueryWhereSort on QueryBuilder<Die, Die, QWhere> {
   QueryBuilder<Die, Die, QAfterWhere> anyId() {
     return QueryBuilder.apply(this, (query) {
@@ -211,6 +279,49 @@ extension DieQueryWhere on QueryBuilder<Die, Die, QWhereClause> {
         upper: upperId,
         includeUpper: includeUpper,
       ));
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterWhereClause> uuidEqualTo(String uuid) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'uuid',
+        value: [uuid],
+      ));
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterWhereClause> uuidNotEqualTo(String uuid) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uuid',
+              lower: [],
+              upper: [uuid],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uuid',
+              lower: [uuid],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uuid',
+              lower: [uuid],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'uuid',
+              lower: [],
+              upper: [uuid],
+              includeUpper: false,
+            ));
+      }
     });
   }
 }
@@ -920,15 +1031,15 @@ const SidePartSchema = Schema(
   name: r'SidePart',
   id: 8597548793712253229,
   properties: {
-    r'number': PropertySchema(
+    r'name': PropertySchema(
       id: 0,
-      name: r'number',
-      type: IsarType.long,
+      name: r'name',
+      type: IsarType.string,
     ),
     r'value': PropertySchema(
       id: 1,
       name: r'value',
-      type: IsarType.string,
+      type: IsarType.long,
     )
   },
   estimateSize: _sidePartEstimateSize,
@@ -943,7 +1054,7 @@ int _sidePartEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.value.length * 3;
+  bytesCount += 3 + object.name.length * 3;
   return bytesCount;
 }
 
@@ -953,8 +1064,8 @@ void _sidePartSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeLong(offsets[0], object.number);
-  writer.writeString(offsets[1], object.value);
+  writer.writeString(offsets[0], object.name);
+  writer.writeLong(offsets[1], object.value);
 }
 
 SidePart _sidePartDeserialize(
@@ -964,8 +1075,8 @@ SidePart _sidePartDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = SidePart(
-    number: reader.readLongOrNull(offsets[0]) ?? 1,
-    value: reader.readStringOrNull(offsets[1]) ?? "",
+    name: reader.readStringOrNull(offsets[0]) ?? "",
+    value: reader.readLongOrNull(offsets[1]) ?? 1,
   );
   return object;
 }
@@ -978,9 +1089,9 @@ P _sidePartDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readLongOrNull(offset) ?? 1) as P;
-    case 1:
       return (reader.readStringOrNull(offset) ?? "") as P;
+    case 1:
+      return (reader.readLongOrNull(offset) ?? 1) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -988,73 +1099,20 @@ P _sidePartDeserializeProp<P>(
 
 extension SidePartQueryFilter
     on QueryBuilder<SidePart, SidePart, QFilterCondition> {
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> numberEqualTo(
-      int value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'number',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> numberGreaterThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'number',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> numberLessThan(
-    int value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'number',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> numberBetween(
-    int lower,
-    int upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'number',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
-    });
-  }
-
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueEqualTo(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameEqualTo(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'value',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueGreaterThan(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameGreaterThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1062,14 +1120,14 @@ extension SidePartQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         include: include,
-        property: r'value',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueLessThan(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameLessThan(
     String value, {
     bool include = false,
     bool caseSensitive = true,
@@ -1077,14 +1135,14 @@ extension SidePartQueryFilter
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.lessThan(
         include: include,
-        property: r'value',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueBetween(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameBetween(
     String lower,
     String upper, {
     bool includeLower = true,
@@ -1093,7 +1151,7 @@ extension SidePartQueryFilter
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
-        property: r'value',
+        property: r'name',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -1103,70 +1161,123 @@ extension SidePartQueryFilter
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueStartsWith(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameStartsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'value',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueEndsWith(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameEndsWith(
     String value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'value',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueContains(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameContains(
       String value,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.contains(
-        property: r'value',
+        property: r'name',
         value: value,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueMatches(
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameMatches(
       String pattern,
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.matches(
-        property: r'value',
+        property: r'name',
         wildcard: pattern,
         caseSensitive: caseSensitive,
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueIsEmpty() {
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'value',
+        property: r'name',
         value: '',
       ));
     });
   }
 
-  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueIsNotEmpty() {
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> nameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'value',
+        property: r'name',
         value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueEqualTo(
+      int value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'value',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueGreaterThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'value',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueLessThan(
+    int value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'value',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<SidePart, SidePart, QAfterFilterCondition> valueBetween(
+    int lower,
+    int upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'value',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
       ));
     });
   }
