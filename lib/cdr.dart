@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/ui/frame.dart';
 import 'package:customdiceroller/utils/observatory.dart';
 import 'package:customdiceroller/utils/preferences.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,7 +13,6 @@ import 'package:isar/isar.dart';
 
 
 class CDR{
-
   final Prefs prefs;
   final Isar db;
 
@@ -29,6 +31,13 @@ class CDR{
 
   NavigatorState? get nav => _navKey.currentState;
   FrameState? get frame => _frameKey.currentState;
+
+  bool get isMobile {
+    if(kIsWeb){
+      return false;
+    }
+    return Platform.isAndroid || Platform.isIOS;
+  }
 
   CDR({
     required this.prefs,

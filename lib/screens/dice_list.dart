@@ -44,7 +44,7 @@ class DieListState extends State<DieList>{
                   index,
                   (context, animation) => SizeTransition(sizeFactor: animation)
                 );
-              }
+              },
             ),
             onDismissed: (direction) async {
               await cdr.db.writeTxn(() async => await cdr.db.dies.delete(die.id));
@@ -64,12 +64,17 @@ class DieListState extends State<DieList>{
 class DieItem extends StatelessWidget{
   final Die d;
   final void Function() onDelete;
-
   const DieItem(this.d, this.onDelete, {super.key});
   
   @override
-  Widget build(BuildContext context) =>
-    Card(
+  Widget build(BuildContext context) {
+    var shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(20));
+    return AnimatedContainer(
+      duration: CDR.of(context).globalDuration,
+      decoration: ShapeDecoration(
+        shape: shape,
+        color: Theme.of(context).cardColor
+      ),
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.all(5),
       child: InkResponse(
@@ -82,10 +87,8 @@ class DieItem extends StatelessWidget{
             InkResponse(
               containedInkWell: true,
               highlightShape: BoxShape.rectangle,
-              onTap: (){
-                var res = d.roll();
-                //TODO: Display result;
-              },
+              onTap: () =>
+                d.roll()[0].toResult().showResults(context),
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Transform.rotate(
@@ -111,4 +114,5 @@ class DieItem extends StatelessWidget{
         )
       )
     );
+  }
 }

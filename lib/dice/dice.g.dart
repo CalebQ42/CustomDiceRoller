@@ -52,6 +52,19 @@ const DieSchema = CollectionSchema(
           caseSensitive: true,
         )
       ],
+    ),
+    r'title': IndexSchema(
+      id: -7636685945352118059,
+      name: r'title',
+      unique: true,
+      replace: false,
+      properties: [
+        IndexPropertySchema(
+          name: r'title',
+          type: IndexType.hash,
+          caseSensitive: true,
+        )
+      ],
     )
   },
   links: {},
@@ -206,6 +219,58 @@ extension DieByIndex on IsarCollection<Die> {
   List<Id> putAllByUuidSync(List<Die> objects, {bool saveLinks = true}) {
     return putAllByIndexSync(r'uuid', objects, saveLinks: saveLinks);
   }
+
+  Future<Die?> getByTitle(String title) {
+    return getByIndex(r'title', [title]);
+  }
+
+  Die? getByTitleSync(String title) {
+    return getByIndexSync(r'title', [title]);
+  }
+
+  Future<bool> deleteByTitle(String title) {
+    return deleteByIndex(r'title', [title]);
+  }
+
+  bool deleteByTitleSync(String title) {
+    return deleteByIndexSync(r'title', [title]);
+  }
+
+  Future<List<Die?>> getAllByTitle(List<String> titleValues) {
+    final values = titleValues.map((e) => [e]).toList();
+    return getAllByIndex(r'title', values);
+  }
+
+  List<Die?> getAllByTitleSync(List<String> titleValues) {
+    final values = titleValues.map((e) => [e]).toList();
+    return getAllByIndexSync(r'title', values);
+  }
+
+  Future<int> deleteAllByTitle(List<String> titleValues) {
+    final values = titleValues.map((e) => [e]).toList();
+    return deleteAllByIndex(r'title', values);
+  }
+
+  int deleteAllByTitleSync(List<String> titleValues) {
+    final values = titleValues.map((e) => [e]).toList();
+    return deleteAllByIndexSync(r'title', values);
+  }
+
+  Future<Id> putByTitle(Die object) {
+    return putByIndex(r'title', object);
+  }
+
+  Id putByTitleSync(Die object, {bool saveLinks = true}) {
+    return putByIndexSync(r'title', object, saveLinks: saveLinks);
+  }
+
+  Future<List<Id>> putAllByTitle(List<Die> objects) {
+    return putAllByIndex(r'title', objects);
+  }
+
+  List<Id> putAllByTitleSync(List<Die> objects, {bool saveLinks = true}) {
+    return putAllByIndexSync(r'title', objects, saveLinks: saveLinks);
+  }
 }
 
 extension DieQueryWhereSort on QueryBuilder<Die, Die, QWhere> {
@@ -319,6 +384,49 @@ extension DieQueryWhere on QueryBuilder<Die, Die, QWhereClause> {
               indexName: r'uuid',
               lower: [],
               upper: [uuid],
+              includeUpper: false,
+            ));
+      }
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterWhereClause> titleEqualTo(String title) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'title',
+        value: [title],
+      ));
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterWhereClause> titleNotEqualTo(String title) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [],
+              upper: [title],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [title],
+              includeLower: false,
+              upper: [],
+            ));
+      } else {
+        return query
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [title],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'title',
+              lower: [],
+              upper: [title],
               includeUpper: false,
             ));
       }

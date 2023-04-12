@@ -90,8 +90,10 @@ class FrameState extends State<Frame> {
                   Nav(
                     name: locale.calculator,
                     icon: const Icon(Icons.calculate),
-                    onTap: () =>
-                      cdr.nav?.pushNamed("/calculator"),
+                    onTap: () {
+                      setState(() => expanded = false);
+                      cdr.nav?.popAndPushNamed("/calculator");
+                    },
                     vertical: vertical,
                     expanded: expanded,
                     selected: _selection == "/calculator",
@@ -102,8 +104,10 @@ class FrameState extends State<Frame> {
                       angle: pi * 1/4,
                       child: const Icon(Icons.casino)
                     ),
-                    onTap: () =>
-                      cdr.nav?.pushNamed("/dieList"),
+                    onTap: () {
+                      setState(() => expanded = false);
+                      cdr.nav?.pushNamed("/dieList");
+                    },
                     vertical: vertical,
                     expanded: expanded,
                     selected: _selection == "/dieList",
@@ -121,8 +125,10 @@ class FrameState extends State<Frame> {
                   Nav(
                     name: locale.settings,
                     icon: const Icon(Icons.settings),
-                    onTap: () =>
-                      cdr.nav?.pushNamed("/settings"),
+                    onTap: () {
+                      setState(() => expanded = false);
+                      cdr.nav?.pushNamed("/settings");
+                    },
                     vertical: vertical,
                     lastItem: true,
                     expanded: expanded,

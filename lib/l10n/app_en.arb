@@ -11,6 +11,9 @@
     "diceGroups": "Dice Groups",
     "loading": "Loading...",
 
+    "dieUniqueName": "Die must have a unique name",
+    "mustName": "Die must have a name",
+
     "settings": "Settings",
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",

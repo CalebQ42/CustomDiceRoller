@@ -16,6 +16,7 @@ class Die {
   @Index(unique: true, replace: true)
   String uuid = const Uuid().v4();
 
+  @Index(unique: true)
   String title = "";
   List<Side> sides = [];
 
@@ -24,10 +25,13 @@ class Die {
     title = localizations.dieNotation + sides.toString(),
     sides = List<Side>.generate(sides, (index) => Side.number(index+1));
 
-  DiceResults roll(){
-    var res = DiceResults();
-    res.add(sides[Random().nextInt(sides.length)]);
-    return res;
+  List<Side> roll([int times = 1]) {
+    var out = <Side>[];
+    var ran = Random.secure();
+    for(int i = 0; i < times; i++){
+      out.add(sides[ran.nextInt(sides.length)]);
+    }
+    return out;
   }
 
   void save({CDR? cdr, BuildContext? context}){
@@ -48,6 +52,15 @@ class Side{
   Side({this.parts = const []});
   Side.simple(String name) : parts = [SidePart(name: name)];
   Side.number(int value) : parts = [SidePart(value: value)];
+
+  DiceResults toResult(){
+    var dr = DiceResults();
+    dr.add(this);
+    return dr;
+  }
+
+  @override
+  String toString() => parts.toString();
 }
 
 @embedded
@@ -56,6 +69,14 @@ class SidePart{
   String name;
 
   SidePart({this.value = 1, this.name = ""});
+
+  @override
+  String toString(){
+    var out = name;
+    if(name != "") out += ": ";
+    out += value.toString();
+    return out;
+  }
 }
 
 // class DieHolder extends InheritedWidget{

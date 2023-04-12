@@ -1,49 +1,79 @@
-import 'package:customdiceroller/dice/results.dart';
+import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/dice/formula.dart';
 import 'package:customdiceroller/ui/frame.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
-class DiceCalculator extends StatelessWidget{
+class DiceCalculator extends StatefulWidget{
 
   DiceCalculator({super.key});
 
-  final TextEditingController displayCont = TextEditingController();
+  @override
+  State<DiceCalculator> createState() => _DiceCalculatorState();
+}
+
+class _DiceCalculatorState extends State<DiceCalculator> {
+  String prevText = "";
+  TextEditingController? displayCont;
 
   @override
-  Widget build(BuildContext context) =>
-    FrameContent(
-      fab: FloatingActionButton(
-        onPressed: (){
-          var res = DiceResults.parse(displayCont.text);
-          //TODO: show results
-        },
-        child: const Icon(Icons.casino),
-      ),
-      child: Column(
-        children: [
-          const Spacer(),
-          SizedBox(
-            width: 500,
-            child: TextField(
-              readOnly: true,
-              showCursor: true,
-              controller: displayCont,
-            )
-          ),
-          CalcKeypad(
-            displayCont: displayCont,
-          ),
-          const Spacer()
-        ],
+  Widget build(BuildContext context) {
+    displayCont ??= TextEditingController()
+      ..addListener(() {
+        if(prevText.length > displayCont!.text.length){
+          var del = prevText.substring(displayCont!.selection.start, displayCont!.selection.start + (prevText.length - displayCont!.text.length));
+          print(del);
+          //TODO: Detect if custom die was deleted and delete the whole thing.
+        }
+        prevText = displayCont!.text;
+      });
+    return TextFieldTapRegion(
+      child: FrameContent(
+        fab: FloatingActionButton(
+          onPressed: () =>
+            print(DiceFormula.solve(displayCont!.text, CDR.of(context))), //TODO: show rusults in a UI
+          child: const Icon(Icons.casino),
+        ),
+        child: Column(
+          children: [
+            const Spacer(),
+            SizedBox(
+              width: 500,
+              child: TextField(
+                autofocus: true,
+                readOnly: CDR.of(context).isMobile,
+                showCursor: true,
+                controller: displayCont,
+                enableSuggestions: false,
+                autocorrect: false,
+                maxLines: 1,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp("([0-9]|${CDR.of(context).locale.dieNotation}|\\+|-)")),
+                ],
+              )
+            ),
+            CalcKeypad(
+              addToDisplay: addToDisplay,
+            ),
+            const Spacer()
+          ],
+        )
       )
     );
+  }
+
+  void addToDisplay(String value){
+    var sel = displayCont!.selection;
+    displayCont?.text = sel.textBefore(displayCont!.text) + value + sel.textAfter(displayCont!.text);
+    displayCont?.selection = sel.copyWith(baseOffset: sel.baseOffset+1, extentOffset: sel.extentOffset+1-(sel.end-sel.start));
+  }
 }
 
 class CalcKeypad extends StatelessWidget{
+  final void Function(String) addToDisplay;
 
-  final TextEditingController displayCont;
-
-  const CalcKeypad({super.key, required this.displayCont});
+  const CalcKeypad({super.key, required this.addToDisplay});
 
   @override
   Widget build(BuildContext context) =>
@@ -76,18 +106,7 @@ class CalcKeypad extends StatelessWidget{
           Row(
             children: [
               numButton("0", context),
-              Expanded(
-                child: TextButton(
-                  onPressed: () =>
-                    displayCont.text += AppLocalizations.of(context)!.dieNotation,
-                  child: Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Text(AppLocalizations.of(context)!.dieNotation,
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                )
-              )
+              numButton(AppLocalizations.of(context)!.dieNotation, context)
             ],
           )
         ],
@@ -98,7 +117,7 @@ class CalcKeypad extends StatelessWidget{
     Expanded(
       child: TextButton(
         onPressed: () =>
-          displayCont.text += value,
+          addToDisplay(value),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Text(value,

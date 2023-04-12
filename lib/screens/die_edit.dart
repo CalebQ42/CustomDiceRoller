@@ -15,21 +15,42 @@ class DieEdit extends StatefulWidget{
 
 class _DieEditState extends State<DieEdit> {
   TextEditingController? nameController;
+  bool nameConflict = false;
+  bool noName = false;
 
   @override
   Widget build(BuildContext context) {
     var cdr = CDR.of(context);
     nameController ??= TextEditingController(text: widget.d.title)
-        ..addListener(() {
-          widget.d.title = nameController!.text;
-          widget.d.save(cdr: cdr);
+        ..addListener(() async {
+          if(nameController!.text == ""){
+            setState(() => noName = true);
+            return;
+          }else if(noName){
+            setState(() => noName = false);
+          }
+          var d = await cdr.db.dies.getByTitle(nameController!.text);
+          if(d != null && d.id != widget.d.id){
+            setState(() => nameConflict = true);
+          }else{
+            if(nameConflict) setState(() => nameConflict = false);
+            widget.d.title = nameController!.text;
+            widget.d.save(cdr: cdr);
+          }
         });
     return FrameContent(
       child: Column(
         children: [
-          TextField(
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: TextField(
+            decoration: InputDecoration(
+              labelText: "Die Name",
+              errorText: noName ? cdr.locale.mustName : nameConflict ? cdr.locale.dieUniqueName : null
+            ),
             textCapitalization: TextCapitalization.words,
             controller: nameController,
+          )
           )
         ],
       )
