@@ -42,4 +42,6 @@ class Prefs{
   void setDeleteButton(bool p) => prefs.setBool("deleteButton", p);
   bool swipeDelete() => prefs.getBool("swipeDelete") ?? true;
   void setSwipeDelete(bool p) => prefs.setBool("swipeDelete", p);
+  bool individual() => prefs.getBool("individual") ?? false;
+  void setIndividual(bool p) => prefs.setBool("individual", p);
 }

@@ -11,12 +11,19 @@
     "diceGroups": "Dice Groups",
     "loading": "Loading...",
 
+    "individual": "Individual",
+    "combined": "Combined",
+
+    "pleaseAddSide": "Please add at least one side",
     "dieUniqueName": "Die must have a unique name",
+    "dieInvalidCharacter": "Die name cannot contain curly braces",
     "mustName": "Die must have a name",
+    "dieName": "Die Name",
 
     "settings": "Settings",
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",
+    "individualPref": "Show individual results first",
     "amoledTheme": "Amoled (Pitch Black) Dark Theme",
     "disableAnimations": "Disable Animations",
     "swipeDelete": "Swipe to Delete",

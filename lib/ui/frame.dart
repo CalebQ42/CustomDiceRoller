@@ -92,7 +92,7 @@ class FrameState extends State<Frame> {
                     icon: const Icon(Icons.calculate),
                     onTap: () {
                       setState(() => expanded = false);
-                      cdr.nav?.popAndPushNamed("/calculator");
+                      if(_selection != "/calculator") cdr.nav?.popAndPushNamed("/calculator");
                     },
                     vertical: vertical,
                     expanded: expanded,
@@ -106,7 +106,7 @@ class FrameState extends State<Frame> {
                     ),
                     onTap: () {
                       setState(() => expanded = false);
-                      cdr.nav?.pushNamed("/dieList");
+                      if(_selection != "/dieList") cdr.nav?.pushNamed("/dieList");
                     },
                     vertical: vertical,
                     expanded: expanded,
@@ -127,7 +127,7 @@ class FrameState extends State<Frame> {
                     icon: const Icon(Icons.settings),
                     onTap: () {
                       setState(() => expanded = false);
-                      cdr.nav?.pushNamed("/settings");
+                      if(_selection != "/settings") cdr.nav?.pushNamed("/settings");
                     },
                     vertical: vertical,
                     lastItem: true,

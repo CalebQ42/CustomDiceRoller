@@ -24,8 +24,12 @@ class DieListState extends State<DieList>{
       fab: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () async{
-          await cdr.db.writeTxn(() async => await cdr.db.dies.put(Die()));
-          listKey.currentState?.insertItem(cdr.db.dies.countSync()-1);
+          var newD = Die(title: cdr.locale.newDie);
+          cdr.nav?.pushNamed("/die/${newD.uuid}", arguments: newD);
+          if(cdr.db.dies.getByTitleSync(newD.title) == null){
+            await cdr.db.writeTxn(() async => await cdr.db.dies.put(newD));
+          }
+          // listKey.currentState?.insertItem(cdr.db.dies.countSync()-1);
         }
       ),
       child: AnimatedList(
@@ -69,6 +73,7 @@ class DieItem extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
     var shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(20));
+    var cdr = CDR.of(context);
     return AnimatedContainer(
       duration: CDR.of(context).globalDuration,
       decoration: ShapeDecoration(
@@ -80,15 +85,24 @@ class DieItem extends StatelessWidget{
       child: InkResponse(
         containedInkWell: true,
         highlightShape: BoxShape.rectangle,
-        onTap: () =>  CDR.of(context).nav?.pushNamed("/die/${d.uuid}"),
+        onTap: () =>  cdr.nav?.pushNamed("/die/${d.uuid}"),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
             InkResponse(
               containedInkWell: true,
               highlightShape: BoxShape.rectangle,
-              onTap: () =>
-                d.roll()[0].toResult().showResults(context),
+              onTap: () {
+                if(d.sides.isNotEmpty){
+                  d.roll()[0].toResult().showResults(context);
+                }else{
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(cdr.locale.pleaseAddSide)
+                    )
+                  );
+                }
+              },
               child: Padding(
                 padding: const EdgeInsets.all(15),
                 child: Transform.rotate(
@@ -99,7 +113,10 @@ class DieItem extends StatelessWidget{
             ),
             Container(width: 10),
             Expanded(
-              child: Text(d.title, style: Theme.of(context).textTheme.headlineSmall,)
+              child: Text(
+                d.title,
+                style: Theme.of(context).textTheme.headlineSmall
+              )
             ),
             if(CDR.of(context).prefs.deleteButton()) InkResponse(
               containedInkWell: true,

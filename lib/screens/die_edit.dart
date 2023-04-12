@@ -17,6 +17,7 @@ class _DieEditState extends State<DieEdit> {
   TextEditingController? nameController;
   bool nameConflict = false;
   bool noName = false;
+  bool invalidCharacter = false;
 
   @override
   Widget build(BuildContext context) {
@@ -28,6 +29,12 @@ class _DieEditState extends State<DieEdit> {
             return;
           }else if(noName){
             setState(() => noName = false);
+          }
+          if(nameController!.text.contains("{") || nameController!.text.contains("}")){
+            setState(() => invalidCharacter = true);
+            return;
+          }else if(invalidCharacter){
+            setState(() => invalidCharacter = false);
           }
           var d = await cdr.db.dies.getByTitle(nameController!.text);
           if(d != null && d.id != widget.d.id){
@@ -44,13 +51,14 @@ class _DieEditState extends State<DieEdit> {
           Padding(
             padding: const EdgeInsets.all(20),
             child: TextField(
-            decoration: InputDecoration(
-              labelText: "Die Name",
-              errorText: noName ? cdr.locale.mustName : nameConflict ? cdr.locale.dieUniqueName : null
-            ),
-            textCapitalization: TextCapitalization.words,
-            controller: nameController,
-          )
+              autofocus: widget.d.title == cdr.locale.newDie,
+              decoration: InputDecoration(
+                labelText: cdr.locale.dieName,
+                errorText: noName ? cdr.locale.mustName : invalidCharacter ? cdr.locale.dieInvalidCharacter : nameConflict ? cdr.locale.dieUniqueName : null
+              ),
+              textCapitalization: TextCapitalization.words,
+              controller: nameController,
+            )
           )
         ],
       )

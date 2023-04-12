@@ -20,16 +20,18 @@ class Die {
   String title = "";
   List<Side> sides = [];
 
-  Die({this.title = "New Die", this.sides = const []});
+  Die({required this.title, this.sides = const []});
   Die.numberDie(int sides, AppLocalizations localizations) :
     title = localizations.dieNotation + sides.toString(),
     sides = List<Side>.generate(sides, (index) => Side.number(index+1));
 
   List<Side> roll([int times = 1]) {
     var out = <Side>[];
-    var ran = Random.secure();
-    for(int i = 0; i < times; i++){
-      out.add(sides[ran.nextInt(sides.length)]);
+    if(sides.isNotEmpty){
+      var ran = Random.secure();
+      for(int i = 0; i < times; i++){
+        out.add(sides[ran.nextInt(sides.length)]);
+      }
     }
     return out;
   }
@@ -60,7 +62,20 @@ class Side{
   }
 
   @override
-  String toString() => parts.toString();
+  String toString() {
+    var out = "";
+    if(parts.isNotEmpty){
+      for(var i = 0; i < parts.length; i++){
+        if(parts[i].name != ""){
+          out += "; ${parts[i].value} ${parts[i].name}";
+        }else{
+          out += "; ${parts[i].value}";
+        }
+      }
+      out = out.substring(2);
+    }
+    return out;
+  }
 }
 
 @embedded

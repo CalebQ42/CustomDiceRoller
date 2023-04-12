@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 
 class DiceCalculator extends StatefulWidget{
 
-  DiceCalculator({super.key});
+  const DiceCalculator({super.key});
 
   @override
   State<DiceCalculator> createState() => _DiceCalculatorState();
@@ -32,7 +32,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
       child: FrameContent(
         fab: FloatingActionButton(
           onPressed: () =>
-            print(DiceFormula.solve(displayCont!.text, CDR.of(context))), //TODO: show rusults in a UI
+            DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context), //TODO: show rusults in a UI
           child: const Icon(Icons.casino),
         ),
         child: Column(

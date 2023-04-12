@@ -100,7 +100,12 @@ class MainUIState extends State<MainUI>{
           widy = LoadingScreen(startingRoute: newSettings ?? settings, cdr: cdr);
           newSettings = const RouteSettings(name: "/loading");
         }else if((settings.name?.startsWith("/die/") ?? false) && settings.name!.length > 5){
-          var d = cdr.db.dies.getByUuidSync(settings.name!.substring(5));
+          Die? d;
+          if(settings.arguments == null){
+            d = cdr.db.dies.getByUuidSync(settings.name!.substring(5));
+          }else{
+            d = settings.arguments as Die?;
+          }
           if(d != null){
             widy = DieEdit(d);
           }
@@ -110,10 +115,10 @@ class MainUIState extends State<MainUI>{
             widy = const Settings();
             break;
           case "/calculator":
-            widy = DiceCalculator();
+            widy = const DiceCalculator();
             break;
           case "/intro":
-            widy = DiceCalculator(); //TODO:
+            widy = const DiceCalculator(); //TODO:
             newSettings = const RouteSettings(name: "/calculator");
             break;
           case "/dieList":
@@ -123,7 +128,7 @@ class MainUIState extends State<MainUI>{
         }
         if(widy == null){
           //TODO: Allow settings default screen
-          widy = DiceCalculator();
+          widy = const DiceCalculator();
           newSettings = const RouteSettings(name: "/calculator");
         }
         return PageRouteBuilder(

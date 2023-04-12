@@ -41,6 +41,13 @@ class _SettingsState extends State<Settings> {
             title: Text(cdr.locale.darkTheme),
           ),
           const Divider(),
+          UpdatingSwitchTile(
+            value: cdr.prefs.individual(),
+            onChanged: (val) =>
+              cdr.prefs.setIndividual(val),
+            title: Text(cdr.locale.individualPref),
+          ),
+          const Divider(),
           SwitchListTile(
             value: cdr.prefs.swipeDelete(),
             onChanged: (val){
