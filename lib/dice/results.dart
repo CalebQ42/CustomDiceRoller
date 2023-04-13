@@ -39,10 +39,16 @@ class DiceResults{
   int getResult(String name) => _res[name] ?? 0;
 
   void showResults(BuildContext context){
-    if(CDR.of(context).prefs.individual()){
-      showIndividualResults(context);
+    if(!problem){
+      if(CDR.of(context).prefs.individual()){
+        showIndividualResults(context);
+      }else{
+        showCombinedResults(context);
+      }
     }else{
-      showCombinedResults(context);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(CDR.of(context).locale.parseError))
+      );
     }
   }
   void showCombinedResults(BuildContext context) =>

@@ -24,6 +24,9 @@
     "add": "Add",
     "cancel": "Cancel",
 
+    "parseError": "Cannot solve formula as given",
+    "addDie": "Add Die",
+
     "settings": "Settings",
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",

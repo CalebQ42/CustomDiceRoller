@@ -86,7 +86,45 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                   ]
                 )
               ),
-              CalcKeypad(addToDisplay: addToDisplay),
+              NumBar(
+                addToDisplay: addToDisplay,
+                values: const ["1", "2", "3", "+"]
+              ),
+              NumBar(
+                addToDisplay: addToDisplay,
+                values: const ["4", "5", "6", "-"]
+              ),
+              NumBar(
+                addToDisplay: addToDisplay,
+                values: ["7", "8", "9", cdr.locale.dieNotation]
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: NumButton(
+                      addToDisplay: addToDisplay,
+                      value: "0"
+                    )
+                  ),
+                  Expanded(
+                    child: SizedBox(
+                      height: 65,
+                      child: InkResponse(
+                        containedInkWell: true,
+                        highlightShape: BoxShape.rectangle,
+                        onTap: () => print("TODO"), // TODO: select a die
+                        child: Center(
+                          child: Text(
+                            CDR.of(context).locale.addDie,
+                            textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          )
+                        )
+                      )
+                    )
+                  )
+                ],
+              ),
               Spacer()
               // CalcKeypad(
               //   addToDisplay: addToDisplay,
@@ -114,55 +152,6 @@ class _DiceCalculatorState extends State<DiceCalculator> {
   }
 }
 
-class CalcKeypad extends StatelessWidget{
-  final void Function(String) addToDisplay;
-
-  const CalcKeypad({super.key, required this.addToDisplay});
-
-  @override
-  Widget build(BuildContext context) {
-    var cdr = CDR.of(context);
-    return SizedBox(
-      height: 300,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          NumBar(
-            addToDisplay: addToDisplay,
-            values: const ["1", "2", "3", "+"]
-          ),
-          NumBar(
-            addToDisplay: addToDisplay,
-            values: const ["4", "5", "6", "-"]
-          ),
-          NumBar(
-            addToDisplay: addToDisplay,
-            values: ["7", "8", "9", cdr.locale.dieNotation]
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: NumButton(
-                addToDisplay: addToDisplay,
-                value: "0"
-                )
-              ),
-              Expanded(
-                child: TextButton(
-                  onPressed: (){
-                    //TODO: choose a custom Die
-                  },
-                  child: Text("Add Die")
-                )
-              )
-            ],
-          ),
-        ],
-      )
-    );
-  }
-}
-
 class NumButton extends StatelessWidget{
   final void Function(String) addToDisplay;
   final String value;
@@ -171,16 +160,20 @@ class NumButton extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) =>
-    InkResponse(
-      containedInkWell: true,
-      highlightShape: BoxShape.rectangle,
-      hoverColor: Colors.white,
-      onTap: () =>
-        addToDisplay(value),
-      child: Text(
-        value,
-        textAlign: TextAlign.center,
-        style: Theme.of(context).textTheme.headlineSmall,
+    SizedBox(
+      height: 65,
+      child: InkResponse(
+        containedInkWell: true,
+        highlightShape: BoxShape.rectangle,
+        onTap: () =>
+          addToDisplay(value),
+        child: Center(
+          child: Text(
+            value,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headlineSmall,
+          )
+        )
       )
     );
 }
@@ -193,17 +186,15 @@ class NumBar extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) =>
-    Expanded(
-      child: Row(
-        children: List.generate(
-          values.length,
-          (index) => Expanded(
-            child: NumButton(
-              addToDisplay: addToDisplay,
-              value: values[index]
-            )
+    Row(
+      children: List.generate(
+        values.length,
+        (index) => Expanded(
+          child: NumButton(
+            addToDisplay: addToDisplay,
+            value: values[index]
           )
-        ),
-      )
+        )
+      ),
     );
 }
