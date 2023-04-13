@@ -124,7 +124,7 @@ Die _dieDeserialize(
           Side(),
         ) ??
         const [],
-    title: reader.readStringOrNull(offsets[1]) ?? "New Die",
+    title: reader.readString(offsets[1]),
   );
   object.id = id;
   object.uuid = reader.readString(offsets[2]);
@@ -147,7 +147,7 @@ P _dieDeserializeProp<P>(
           ) ??
           const []) as P;
     case 1:
-      return (reader.readStringOrNull(offset) ?? "New Die") as P;
+      return (reader.readString(offset)) as P;
     case 2:
       return (reader.readString(offset)) as P;
     default:

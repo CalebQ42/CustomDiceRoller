@@ -151,7 +151,10 @@ class FrameSpeedDialState extends State<FrameSpeedDial> with SingleTickerProvide
                       )
                     ) : null
                   ),
-                  Container(width: 15,),
+                  if(widget.children[i].label != null) AnimatedContainer(
+                    duration: cdr.globalDuration,
+                    width: _expanded ? 10 : 0,
+                  ),
                   widget.children[i],
                 ]
               )
@@ -184,7 +187,11 @@ class SpeedDialIcons extends StatelessWidget{
   @override
   Widget build(BuildContext context) =>
     FloatingActionButton.small(
-      onPressed: onPressed,
+      onPressed: (){
+        onPressed();
+        context.findAncestorStateOfType<FrameSpeedDialState>()?.expanded = false;
+        FrameContent.of(context).fabExtended = false;
+      },
       heroTag: null,
       child: child,
     );

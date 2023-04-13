@@ -10,17 +10,17 @@ class DiceResults{
   bool get hasNumRes => _hasNumRes;
   final Map<String, int> _res = {};
   List<String> get values => _res.keys.toList();
-  final List<Side> _indResults = [];
+  final List<String> _indResults = [];
 
   bool subtractMode = false;
   bool problem = false;
   
-  void addAll(List<Side> sides){
+  void addAll(List<Side> sides, String dieName){
     for(var s in sides){
-      add(s);
+      add(s, dieName);
     }
   }
-  void add(Side s) {
+  void add(Side s, String dieName) {
     for(int i = 0; i < s.parts.length; i++){
       if(subtractMode) s.parts[i].value *= -1;
       if(s.parts[i].name == ""){
@@ -30,7 +30,11 @@ class DiceResults{
         _res[s.parts[i].name] = (_res[s.parts[i].name] ?? 0) + s.parts[i].value;
       }
     }
-    _indResults.add(s);
+    if(dieName == ""){
+      _indResults.add(s.toString());
+    }else{
+      _indResults.add("$dieName: $s");
+    }
   }
   int getResult(String name) => _res[name] ?? 0;
 
@@ -89,7 +93,7 @@ class DiceResults{
           _indResults.length,
           (index) =>
             Text(
-              _indResults[index].toString(),
+              _indResults[index],
               textAlign: TextAlign.center,
               style: Theme.of(c).textTheme.headlineSmall,
             )

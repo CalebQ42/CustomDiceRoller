@@ -74,8 +74,7 @@ class DieItem extends StatelessWidget{
   Widget build(BuildContext context) {
     var shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(20));
     var cdr = CDR.of(context);
-    return AnimatedContainer(
-      duration: CDR.of(context).globalDuration,
+    return Container(
       decoration: ShapeDecoration(
         shape: shape,
         color: Theme.of(context).cardColor
@@ -94,7 +93,7 @@ class DieItem extends StatelessWidget{
               highlightShape: BoxShape.rectangle,
               onTap: () {
                 if(d.sides.isNotEmpty){
-                  d.roll()[0].toResult().showResults(context);
+                  d.rollRes().showResults(context);
                 }else{
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

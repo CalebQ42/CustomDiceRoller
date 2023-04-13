@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,9 +40,9 @@ class Prefs{
   // Misc
   bool disableAnimations() => prefs.getBool("disableAnimations") ?? false;
   void setDisableAnimations(bool p) => prefs.setBool("disableAnimations", p);
-  bool deleteButton() => prefs.getBool("deleteButton") ?? kIsWeb;
+  bool deleteButton() => prefs.getBool("deleteButton") ?? kIsWeb || !(Platform.isAndroid || Platform.isIOS);
   void setDeleteButton(bool p) => prefs.setBool("deleteButton", p);
-  bool swipeDelete() => prefs.getBool("swipeDelete") ?? true;
+  bool swipeDelete() => prefs.getBool("swipeDelete") ?? kIsWeb || (Platform.isAndroid || Platform.isIOS);
   void setSwipeDelete(bool p) => prefs.setBool("swipeDelete", p);
   bool individual() => prefs.getBool("individual") ?? false;
   void setIndividual(bool p) => prefs.setBool("individual", p);

@@ -28,12 +28,18 @@ class Die {
   List<Side> roll([int times = 1]) {
     var out = <Side>[];
     if(sides.isNotEmpty){
-      var ran = Random.secure();
+      var ran = Random();
       for(int i = 0; i < times; i++){
         out.add(sides[ran.nextInt(sides.length)]);
       }
     }
     return out;
+  }
+
+  DiceResults rollRes([int times = 1]){
+    var res = DiceResults();
+    res.addAll(roll(times), title);
+    return res;
   }
 
   void save({CDR? cdr, BuildContext? context}){
@@ -55,21 +61,17 @@ class Side{
   Side.simple(String name) : parts = [SidePart(name: name)];
   Side.number(int value) : parts = [SidePart(value: value)];
 
-  DiceResults toResult(){
-    var dr = DiceResults();
-    dr.add(this);
-    return dr;
-  }
-
   @override
   String toString() {
     var out = "";
     if(parts.isNotEmpty){
       for(var i = 0; i < parts.length; i++){
-        if(parts[i].name != ""){
-          out += "; ${parts[i].value} ${parts[i].name}";
-        }else{
+        if(parts[i].name == ""){
           out += "; ${parts[i].value}";
+        }else if (parts[i].value == 1){
+          out += "; ${parts[i].name}";
+        }else{
+          out += "; ${parts[i].value} ${parts[i].name}";
         }
       }
       out = out.substring(2);

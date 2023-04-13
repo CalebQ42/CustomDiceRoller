@@ -48,6 +48,8 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                 enableSuggestions: false,
                 autocorrect: false,
                 maxLines: 1,
+                onSubmitted: (value) =>
+                  DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp("([0-9]|${CDR.of(context).locale.dieNotation}|\\+|-)")),
                 ],
@@ -78,39 +80,68 @@ class CalcKeypad extends StatelessWidget{
   @override
   Widget build(BuildContext context) =>
     SizedBox(
-      width: 300,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      width: 400,
+      height: 400,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            children: [
-              numButton("1", context),
-              numButton("2", context),
-              numButton("3", context)
-            ],
+          Expanded(
+            flex: 3, 
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Expanded(
+                  child: Row(
+                    children: [
+                      numButton("1", context),
+                      numButton("2", context),
+                      numButton("3", context)
+                    ],
+                  )
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      numButton("4", context),
+                      numButton("5", context),
+                      numButton("6", context)
+                    ],
+                  )
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      numButton("7", context),
+                      numButton("8", context),
+                      numButton("9", context)
+                    ],
+                  )
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      numButton("0", context),
+                      numButton(AppLocalizations.of(context)!.dieNotation, context)
+                    ],
+                  )
+                )
+              ],
+            )
           ),
-          Row(
-            children: [
-              numButton("4", context),
-              numButton("5", context),
-              numButton("6", context)
-            ],
-          ),
-          Row(
-            children: [
-              numButton("7", context),
-              numButton("8", context),
-              numButton("9", context)
-            ],
-          ),
-          Row(
-            children: [
-              numButton("0", context),
-              numButton(AppLocalizations.of(context)!.dieNotation, context)
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                numButton("+", context),
+                numButton("-", context)
+              ],
+            ),
           )
-        ],
-      ),
+        ]
+      )
     );
 
   Widget numButton(String value, BuildContext context) =>

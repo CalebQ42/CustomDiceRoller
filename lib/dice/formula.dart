@@ -58,7 +58,7 @@ class DiceFormula{
       }
       post = int.tryParse(str.substring(dInd+1));
       if(pre == null || post == null) return true;
-      dr.addAll(numberDice(pre, post));
+      dr.addAll(numberDice(pre, post), "${cdr.locale.dieNotation}$post");
       dr.subtractMode = false;
     }else if(str.contains("{") && str.contains("}")){
       dr.subtractMode = str.startsWith("-");
@@ -76,19 +76,19 @@ class DiceFormula{
       var inner = str.substring(str.indexOf("{")+1,str.lastIndexOf("}"));
       var d = cdr.db.dies.getByTitleSync(inner);
       if(d == null) return true;
-      dr.addAll(d.roll(pre));
+      dr.addAll(d.roll(pre), d.title);
       dr.subtractMode = false;
     }else{
       var tmp = int.tryParse(str);
       if(tmp ==null) return true;
-      dr.add(Side.number(tmp));
+      dr.add(Side.number(tmp), "");
     }
     return false;
   }
 
   static List<Side> numberDice(int number, int sides){
     var out = <Side>[];
-    var ran = Random.secure();
+    var ran = Random();
     for(int i = 0; i < number; i++){
       out.add(Side.number(ran.nextInt(sides)+1));
     }

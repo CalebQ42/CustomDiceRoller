@@ -59,26 +59,28 @@ class MainUIState extends State<MainUI>{
       clipBehavior: Clip.antiAlias,
       constraints: BoxConstraints.loose(const Size.fromWidth(600)),
     );
-    var fabTheme = const FloatingActionButtonThemeData(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(25))
-      )
-    );
     return MaterialApp(
+      themeAnimationDuration: cdr.globalDuration,
       navigatorKey: cdr.navigatorKey,
       theme: ThemeData.light().copyWith(
+        colorScheme: const ColorScheme.light(
+          primary: Colors.purple,
+          secondary: Colors.orangeAccent
+        ),
         primaryColor: Colors.purple,
         snackBarTheme: snackTheme,
         inputDecorationTheme: inputTheme,
         bottomSheetTheme: bottomSheetTheme,
-        floatingActionButtonTheme: fabTheme
       ),
       darkTheme: ThemeData.dark().copyWith(
+        colorScheme: const ColorScheme.dark(
+          primary: Colors.purple,
+          secondary: Colors.orangeAccent
+        ),
         primaryColor: Colors.purple,
         snackBarTheme: snackTheme,
         inputDecorationTheme: inputTheme,
         bottomSheetTheme: bottomSheetTheme,
-        floatingActionButtonTheme: fabTheme
       ),
       themeMode:
         cdr.prefs.darkTheme() ?

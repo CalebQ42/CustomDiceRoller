@@ -21,6 +21,8 @@
     "dieName": "Die Name",
     "simple": "Simple",
     "complex": "Complex",
+    "add": "Add",
+    "cancel": "Cancel",
 
     "settings": "Settings",
     "darkTheme": "Dark Theme",
