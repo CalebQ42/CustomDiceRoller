@@ -2,7 +2,6 @@ import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/formula.dart';
 import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 
 class DiceCalculator extends StatefulWidget{
@@ -16,15 +15,17 @@ class DiceCalculator extends StatefulWidget{
 class _DiceCalculatorState extends State<DiceCalculator> {
   String prevText = "";
   TextEditingController? displayCont;
+  ScrollController displayScrollCont = ScrollController();
 
   @override
   Widget build(BuildContext context) {
+    var cdr = CDR.of(context);
     displayCont ??= TextEditingController()
       ..addListener(() {
         if(prevText.length > displayCont!.text.length){
-          var del = prevText.substring(displayCont!.selection.start, displayCont!.selection.start + (prevText.length - displayCont!.text.length));
-          print(del);
-          //TODO: Detect if custom die was deleted and delete the whole thing.
+          // var del = prevText.substring(displayCont!.selection.start, displayCont!.selection.start + (prevText.length - displayCont!.text.length));
+          // print(del);
+          //TODO: detect if broken custom dice
         }
         prevText = displayCont!.text;
       });
@@ -35,31 +36,63 @@ class _DiceCalculatorState extends State<DiceCalculator> {
             DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context), //TODO: show rusults in a UI
           child: const Icon(Icons.casino),
         ),
-        child: Column(
-          children: [
-            const Spacer(),
-            SizedBox(
-              width: 500,
-              child: TextField(
-                autofocus: true,
-                readOnly: CDR.of(context).isMobile,
-                showCursor: true,
-                controller: displayCont,
-                enableSuggestions: false,
-                autocorrect: false,
-                maxLines: 1,
-                onSubmitted: (value) =>
-                  DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(RegExp("([0-9]|${CDR.of(context).locale.dieNotation}|\\+|-)")),
-                ],
-              )
-            ),
-            CalcKeypad(
-              addToDisplay: addToDisplay,
-            ),
-            const Spacer()
-          ],
+        child: SizedBox(
+          width: 500,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Spacer(),
+              InputDecorator(
+                decoration: const InputDecoration(),
+                isFocused: true,
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        scrollController: displayScrollCont,
+                        style: Theme.of(context).textTheme.headlineSmall,
+                        autofocus: true,
+                        readOnly: CDR.of(context).isMobile,
+                        showCursor: true,
+                        controller: displayCont,
+                        enableSuggestions: false,
+                        autocorrect: false,
+                        minLines: 1,
+                        maxLines: 1,
+                        decoration: null,
+                        onSubmitted: (value) =>
+                          DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(RegExp("([0-9]|${CDR.of(context).locale.dieNotation}|\\+|-)")),
+                        ],
+                      )
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.backspace),
+                      onPressed: (){
+                        var sel = displayCont!.selection;
+                        var bef = sel.textBefore(displayCont!.text);
+                        if(!sel.isCollapsed){
+                          displayCont?.text = bef + sel.textAfter(displayCont!.text);
+                          displayCont?.selection = TextSelection.collapsed(offset: bef.length);
+                        }else if(bef != ""){
+                          displayCont?.text = bef.substring(0, bef.length-1);
+                          displayCont?.selection = TextSelection.collapsed(offset: bef.length-1);
+                        }
+                        //TODO: detect if broken custom dice
+                      },
+                    )
+                  ]
+                )
+              ),
+              CalcKeypad(addToDisplay: addToDisplay),
+              Spacer()
+              // CalcKeypad(
+              //   addToDisplay: addToDisplay,
+              // )
+            ],
+          )
         )
       )
     );
@@ -68,7 +101,16 @@ class _DiceCalculatorState extends State<DiceCalculator> {
   void addToDisplay(String value){
     var sel = displayCont!.selection;
     displayCont?.text = sel.textBefore(displayCont!.text) + value + sel.textAfter(displayCont!.text);
-    displayCont?.selection = sel.copyWith(baseOffset: sel.baseOffset+1, extentOffset: sel.extentOffset+1-(sel.end-sel.start));
+    if(displayCont!.text == value){
+      displayCont?.selection = TextSelection.collapsed(offset: value.length);
+    }else{
+      displayCont?.selection = TextSelection.collapsed(offset: sel.baseOffset+1);
+    }
+    displayScrollCont.animateTo(
+      displayScrollCont.position.maxScrollExtent * (displayCont!.selection.baseOffset / displayCont!.text.length) + 20,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.linear
+    );
   }
 }
 
@@ -78,83 +120,90 @@ class CalcKeypad extends StatelessWidget{
   const CalcKeypad({super.key, required this.addToDisplay});
 
   @override
-  Widget build(BuildContext context) =>
-    SizedBox(
-      width: 400,
-      height: 400,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+  Widget build(BuildContext context) {
+    var cdr = CDR.of(context);
+    return SizedBox(
+      height: 300,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Expanded(
-            flex: 3, 
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      numButton("1", context),
-                      numButton("2", context),
-                      numButton("3", context)
-                    ],
-                  )
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      numButton("4", context),
-                      numButton("5", context),
-                      numButton("6", context)
-                    ],
-                  )
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      numButton("7", context),
-                      numButton("8", context),
-                      numButton("9", context)
-                    ],
-                  )
-                ),
-                Expanded(
-                  child: Row(
-                    children: [
-                      numButton("0", context),
-                      numButton(AppLocalizations.of(context)!.dieNotation, context)
-                    ],
-                  )
-                )
-              ],
-            )
+          NumBar(
+            addToDisplay: addToDisplay,
+            values: const ["1", "2", "3", "+"]
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                numButton("+", context),
-                numButton("-", context)
-              ],
-            ),
-          )
-        ]
+          NumBar(
+            addToDisplay: addToDisplay,
+            values: const ["4", "5", "6", "-"]
+          ),
+          NumBar(
+            addToDisplay: addToDisplay,
+            values: ["7", "8", "9", cdr.locale.dieNotation]
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: NumButton(
+                addToDisplay: addToDisplay,
+                value: "0"
+                )
+              ),
+              Expanded(
+                child: TextButton(
+                  onPressed: (){
+                    //TODO: choose a custom Die
+                  },
+                  child: Text("Add Die")
+                )
+              )
+            ],
+          ),
+        ],
       )
     );
+  }
+}
 
-  Widget numButton(String value, BuildContext context) =>
+class NumButton extends StatelessWidget{
+  final void Function(String) addToDisplay;
+  final String value;
+
+  const NumButton({super.key, required this.addToDisplay, required this.value});
+
+  @override
+  Widget build(BuildContext context) =>
+    InkResponse(
+      containedInkWell: true,
+      highlightShape: BoxShape.rectangle,
+      hoverColor: Colors.white,
+      onTap: () =>
+        addToDisplay(value),
+      child: Text(
+        value,
+        textAlign: TextAlign.center,
+        style: Theme.of(context).textTheme.headlineSmall,
+      )
+    );
+}
+
+class NumBar extends StatelessWidget{
+  final void Function(String) addToDisplay;
+  final List<String> values;
+
+  const NumBar({super.key, required this.addToDisplay, required this.values});
+
+  @override
+  Widget build(BuildContext context) =>
     Expanded(
-      child: TextButton(
-        onPressed: () =>
-          addToDisplay(value),
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Text(value,
-            style: Theme.of(context).textTheme.headlineSmall,
+      child: Row(
+        children: List.generate(
+          values.length,
+          (index) => Expanded(
+            child: NumButton(
+              addToDisplay: addToDisplay,
+              value: values[index]
+            )
           )
-        )
+        ),
       )
     );
 }

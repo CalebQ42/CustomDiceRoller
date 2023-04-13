@@ -42,45 +42,41 @@ class FrameContentState extends State<FrameContent> {
             return true;
           } :
         Frame.of(context).handleBackpress,
-      child: Stack(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: Container(
-              color: Theme.of(context).canvasColor,
-              child: widget.child,
-            )
-          ),
-          AnimatedSwitcher(
-            duration: CDR.of(context).globalDuration,
-            transitionBuilder: (child, animation) =>
-              FadeTransition(
-                opacity: animation,
-                child: child
-              ),
-            child: _fabExpanded ?
-              GestureDetector(
-                onTap: () {
-                  widget.fabKey?.currentState?.expanded = false;
-                  fabExtended = false;
-                },
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height,
-                  color: Colors.black.withOpacity(.25),
-                )
-              ) : null,
-          ),
-          if(widget.fab != null) Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.all(30),
-              child: widget.fab
+      child: Container(
+        color: Theme.of(context).canvasColor,
+        child: Stack(
+          children: [
+            widget.child ?? Container(),
+            AnimatedSwitcher(
+              duration: CDR.of(context).globalDuration,
+              transitionBuilder: (child, animation) =>
+                FadeTransition(
+                  opacity: animation,
+                  child: child
+                ),
+              child: _fabExpanded ?
+                GestureDetector(
+                  onTap: () {
+                    widget.fabKey?.currentState?.expanded = false;
+                    fabExtended = false;
+                  },
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    color: Colors.black.withOpacity(.25),
+                  )
+                ) : null,
             ),
-          ),
-        ]
-      ),
+            if(widget.fab != null) Align(
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                padding: const EdgeInsets.all(30),
+                child: widget.fab
+              ),
+            ),
+          ]
+        ),
+      )
     );
 }
 
