@@ -253,7 +253,7 @@ class FrameContent extends StatelessWidget{
 
   final Widget? child;
   final bool allowPop;
-  final FloatingActionButton? fab;
+  final Widget? fab;
 
   const FrameContent({
     super.key,

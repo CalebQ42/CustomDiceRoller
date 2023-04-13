@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/ui/frame.dart';
+import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
@@ -22,7 +22,7 @@ class DieListState extends State<DieList>{
     var cdr = CDR.of(context);
     return FrameContent(
       fab: FloatingActionButton(
-        child: const Icon(Icons.add),
+        child: const Icon(Icons.add_box_outlined),
         onPressed: () async{
           var newD = Die(title: cdr.locale.newDie);
           cdr.nav?.pushNamed("/die/${newD.uuid}", arguments: newD);

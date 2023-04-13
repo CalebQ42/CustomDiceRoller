@@ -1,5 +1,5 @@
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/ui/frame.dart';
+import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:customdiceroller/ui/updating_switch_tile.dart';
 import 'package:flutter/material.dart';
 

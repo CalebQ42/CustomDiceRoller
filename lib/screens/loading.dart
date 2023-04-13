@@ -1,5 +1,5 @@
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/ui/frame.dart';
+import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 

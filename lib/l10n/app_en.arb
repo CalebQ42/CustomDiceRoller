@@ -19,6 +19,8 @@
     "dieInvalidCharacter": "Die name cannot contain curly braces",
     "mustName": "Die must have a name",
     "dieName": "Die Name",
+    "simple": "Simple",
+    "complex": "Complex",
 
     "settings": "Settings",
     "darkTheme": "Dark Theme",

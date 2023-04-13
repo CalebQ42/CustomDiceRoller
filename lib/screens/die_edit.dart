@@ -1,7 +1,8 @@
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/ui/frame.dart';
+import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_speed_dial/simple_speed_dial.dart';
 
 class DieEdit extends StatefulWidget{
 
@@ -18,6 +19,7 @@ class _DieEditState extends State<DieEdit> {
   bool nameConflict = false;
   bool noName = false;
   bool invalidCharacter = false;
+  GlobalKey<FrameSpeedDialState> fabKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +48,22 @@ class _DieEditState extends State<DieEdit> {
           }
         });
     return FrameContent(
+      fab: FrameSpeedDial(
+        key: fabKey,
+        children: [
+          SpeedDialIcons(
+            onPressed: () => print("Simple"),
+            label: cdr.locale.simple,
+            child: const Icon(Icons.square),
+          ),
+          SpeedDialIcons(
+            onPressed: () => print("Complex"),
+            label: cdr.locale.complex,
+            child: const Icon(Icons.layers),
+          )
+        ]
+      ),
+      fabKey: fabKey,
       child: Column(
         children: [
           Padding(
