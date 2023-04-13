@@ -42,7 +42,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Spacer(),
+              const Spacer(),
               InputDecorator(
                 decoration: const InputDecoration(),
                 isFocused: true,
@@ -125,10 +125,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                   )
                 ],
               ),
-              Spacer()
-              // CalcKeypad(
-              //   addToDisplay: addToDisplay,
-              // )
+              const Spacer()
             ],
           )
         )
