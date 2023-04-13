@@ -42,7 +42,8 @@ class FrameContentState extends State<FrameContent> {
             return true;
           } :
         Frame.of(context).handleBackpress,
-      child: Container(
+      child: Material(
+        elevation: 50.0,
         color: Theme.of(context).canvasColor,
         child: Stack(
           children: [

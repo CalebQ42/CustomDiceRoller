@@ -26,10 +26,9 @@ class DieListState extends State<DieList>{
         onPressed: () async{
           var newD = Die(title: cdr.locale.newDie);
           cdr.nav?.pushNamed("/die/${newD.uuid}", arguments: newD);
-          if(cdr.db.dies.getByTitleSync(newD.title) == null){
+          if(await cdr.db.dies.getByTitle(newD.title) == null){
             await cdr.db.writeTxn(() async => await cdr.db.dies.put(newD));
           }
-          // listKey.currentState?.insertItem(cdr.db.dies.countSync()-1);
         }
       ),
       child: AnimatedList(
@@ -72,13 +71,9 @@ class DieItem extends StatelessWidget{
   
   @override
   Widget build(BuildContext context) {
-    var shape = RoundedRectangleBorder(borderRadius: BorderRadius.circular(20));
     var cdr = CDR.of(context);
-    return Container(
-      decoration: ShapeDecoration(
-        shape: shape,
-        color: Theme.of(context).cardColor
-      ),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       clipBehavior: Clip.antiAlias,
       margin: const EdgeInsets.all(5),
       child: InkResponse(
