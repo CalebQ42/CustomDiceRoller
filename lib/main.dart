@@ -60,6 +60,7 @@ class MainUIState extends State<MainUI>{
       constraints: BoxConstraints.loose(const Size.fromWidth(600)),
     );
     return MaterialApp(
+      themeAnimationDuration: cdr.globalDuration,
       navigatorKey: cdr.navigatorKey,
       theme: ThemeData.light().copyWith(
         colorScheme: const ColorScheme.light(
@@ -73,6 +74,7 @@ class MainUIState extends State<MainUI>{
       ),
       darkTheme: ThemeData.dark().copyWith(
         colorScheme: const ColorScheme.dark(
+          shadow: Colors.white,
           primary: Colors.purple,
           secondary: Colors.orangeAccent
         ),

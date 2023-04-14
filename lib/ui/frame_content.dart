@@ -71,7 +71,7 @@ class FrameContentState extends State<FrameContent> {
             if(widget.fab != null) Align(
               alignment: Alignment.bottomRight,
               child: Padding(
-                padding: const EdgeInsets.all(30),
+                padding: const EdgeInsets.all(15),
                 child: widget.fab
               ),
             ),

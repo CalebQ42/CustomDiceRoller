@@ -33,100 +33,117 @@ class _DiceCalculatorState extends State<DiceCalculator> {
       child: FrameContent(
         fab: FloatingActionButton(
           onPressed: () =>
-            DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context), //TODO: show rusults in a UI
+            DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
           child: const Icon(Icons.casino),
         ),
-        child: SizedBox(
-          width: 500,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Spacer(),
-              InputDecorator(
-                decoration: const InputDecoration(),
-                isFocused: true,
-                child: Row(
+        child: Center(
+          child: SizedBox(
+            width: 500,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Spacer(),
+                InputDecorator(
+                  decoration: const InputDecoration(),
+                  isFocused: true,
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: TextField(
+                          scrollController: displayScrollCont,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                          autofocus: true,
+                          readOnly: CDR.of(context).isMobile,
+                          showCursor: true,
+                          controller: displayCont,
+                          enableSuggestions: false,
+                          autocorrect: false,
+                          minLines: 1,
+                          maxLines: 1,
+                          decoration: null,
+                          onSubmitted: (value) =>
+                            DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp("([0-9]|${CDR.of(context).locale.dieNotation}|\\+|-)")),
+                          ],
+                        )
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.backspace),
+                        onPressed: (){
+                          var sel = displayCont!.selection;
+                          var bef = sel.textBefore(displayCont!.text);
+                          if(!sel.isCollapsed){
+                            displayCont?.text = bef + sel.textAfter(displayCont!.text);
+                            displayCont?.selection = TextSelection.collapsed(offset: bef.length);
+                          }else if(bef != ""){
+                            displayCont?.text = bef.substring(0, bef.length-1);
+                            displayCont?.selection = TextSelection.collapsed(offset: bef.length-1);
+                          }
+                          //TODO: detect if broken custom dice
+                        },
+                      )
+                    ]
+                  )
+                ),
+                Container(height: 10),
+                NumBar(
+                  addToDisplay: addToDisplay,
+                  values: const ["1", "2", "3", "+"]
+                ),
+                NumBar(
+                  addToDisplay: addToDisplay,
+                  values: const ["4", "5", "6", "-"]
+                ),
+                NumBar(
+                  addToDisplay: addToDisplay,
+                  values: ["7", "8", "9", cdr.locale.dieNotation]
+                ),
+                Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        scrollController: displayScrollCont,
-                        style: Theme.of(context).textTheme.headlineSmall,
-                        autofocus: true,
-                        readOnly: CDR.of(context).isMobile,
-                        showCursor: true,
-                        controller: displayCont,
-                        enableSuggestions: false,
-                        autocorrect: false,
-                        minLines: 1,
-                        maxLines: 1,
-                        decoration: null,
-                        onSubmitted: (value) =>
-                          DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
-                        inputFormatters: [
-                          FilteringTextInputFormatter.allow(RegExp("([0-9]|${CDR.of(context).locale.dieNotation}|\\+|-)")),
-                        ],
-                      )
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.backspace),
-                      onPressed: (){
-                        var sel = displayCont!.selection;
-                        var bef = sel.textBefore(displayCont!.text);
-                        if(!sel.isCollapsed){
-                          displayCont?.text = bef + sel.textAfter(displayCont!.text);
-                          displayCont?.selection = TextSelection.collapsed(offset: bef.length);
-                        }else if(bef != ""){
-                          displayCont?.text = bef.substring(0, bef.length-1);
-                          displayCont?.selection = TextSelection.collapsed(offset: bef.length-1);
-                        }
-                        //TODO: detect if broken custom dice
-                      },
-                    )
-                  ]
-                )
-              ),
-              NumBar(
-                addToDisplay: addToDisplay,
-                values: const ["1", "2", "3", "+"]
-              ),
-              NumBar(
-                addToDisplay: addToDisplay,
-                values: const ["4", "5", "6", "-"]
-              ),
-              NumBar(
-                addToDisplay: addToDisplay,
-                values: ["7", "8", "9", cdr.locale.dieNotation]
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: NumButton(
-                      addToDisplay: addToDisplay,
-                      value: "0"
-                    )
-                  ),
-                  Expanded(
-                    child: SizedBox(
-                      height: 65,
-                      child: InkResponse(
-                        containedInkWell: true,
-                        highlightShape: BoxShape.rectangle,
-                        onTap: () => print("TODO"), // TODO: select a die
-                        child: Center(
-                          child: Text(
-                            CDR.of(context).locale.addDie,
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.headlineSmall,
+                      child: SizedBox(
+                        height: 65,
+                        child: InkResponse(
+                          containedInkWell: true,
+                          highlightShape: BoxShape.rectangle,
+                          onTap: () => print("TODO"), // TODO: history
+                          child: const Center(
+                            child: Icon(Icons.history)
                           )
                         )
                       )
-                    )
-                  )
-                ],
-              ),
-              const Spacer()
-            ],
+                    ),
+                    Expanded(
+                      child: NumButton(
+                        addToDisplay: addToDisplay,
+                        value: "0"
+                      )
+                    ),
+                    Expanded(
+                      flex: 2,
+                      child: SizedBox(
+                        height: 65,
+                        child: InkResponse(
+                          containedInkWell: true,
+                          highlightShape: BoxShape.rectangle,
+                          onTap: () => print("TODO"), // TODO: select a die
+                          child: Center(
+                            child: Text(
+                              CDR.of(context).locale.addDie,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.headlineSmall,
+                            )
+                          )
+                        )
+                      )
+                    ),
+                  ],
+                ),
+                const Spacer()
+              ],
+            )
           )
         )
       )

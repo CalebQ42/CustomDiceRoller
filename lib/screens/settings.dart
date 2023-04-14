@@ -81,6 +81,7 @@ class _SettingsState extends State<Settings> {
                 cdr.globalDuration = const Duration(milliseconds: 250);
               }
               cdr.prefs.setDisableAnimations(val);
+              cdr.topLevelUpdate!();
             },
             title: Text(cdr.locale.disableAnimations),
           )

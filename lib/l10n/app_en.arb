@@ -22,6 +22,7 @@
     "simple": "Simple",
     "complex": "Complex",
     "add": "Add",
+    "update": "Update",
     "cancel": "Cancel",
 
     "parseError": "Cannot solve formula as given",

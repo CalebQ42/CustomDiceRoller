@@ -53,33 +53,47 @@ class DiceResults{
   }
   void showCombinedResults(BuildContext context) =>
     Bottom(
-      child: (c) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if(_hasNumRes) Text(
-            _num.toString(),
-            style: Theme.of(context).textTheme.headlineMedium,
-            textAlign: TextAlign.center,
-          ),
-          ...List.generate(
-            _res.length,
-            (index) {
-              var key = values[index];
-              return Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  Text("$key:"),
-                  Expanded(
-                    child: Text(
-                      _res[key].toString(),
-                      textAlign: TextAlign.center,
+      child: (c) => Padding(
+        padding: EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if(_hasNumRes) Text(
+              _num.toString(),
+              style: Theme.of(context).textTheme.headlineMedium,
+              textAlign: TextAlign.center,
+            ),
+            ...List.generate(
+              _res.length,
+              (index) {
+                var key = values[index];
+                return Row(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      flex: 3,
+                      child: Text(
+                        key,
+                        style: Theme.of(c).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      )
+                    ),
+                    if(_res[key] != 1) Container(width: 10),
+                    if(_res[key] != 1) Expanded(
+                      child: Text(
+                        _res[key].toString(),
+                        style: Theme.of(c).textTheme.titleLarge,
+                        textAlign: TextAlign.center,
+                      )
                     )
-                  )
-                ],
-              );
-            }
-          )
-        ],
+                  ],
+                );
+              }
+            )
+          ],
+        )
       ),
       buttons: (c) =>[
         TextButton(

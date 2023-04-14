@@ -22,6 +22,7 @@ class _DieEditState extends State<DieEdit> {
   GlobalKey<FrameSpeedDialState> fabKey = GlobalKey();
   GlobalKey<AnimatedListState> listKey = GlobalKey();
   TextEditingController stuff = TextEditingController();
+  ScrollController listCont = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,6 +63,11 @@ class _DieEditState extends State<DieEdit> {
                   widget.d.sides.add(s);
                   listKey.currentState?.insertItem(widget.d.sides.length-1);
                   widget.d.save(cdr: cdr);
+                  listCont.animateTo(
+                    listCont.position.maxScrollExtent + 90,
+                    duration: cdr.globalDuration,
+                    curve: Curves.easeIn
+                  );
                 },
               ).show(context),
             label: cdr.locale.simple,
@@ -75,27 +81,28 @@ class _DieEditState extends State<DieEdit> {
         ]
       ),
       fabKey: fabKey,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: TextField(
-                autofocus: widget.d.title == cdr.locale.newDie,
-                decoration: InputDecoration(
-                  labelText: cdr.locale.dieName,
-                  errorText: noName ? cdr.locale.mustName : invalidCharacter ? cdr.locale.dieInvalidCharacter : nameConflict ? cdr.locale.dieUniqueName : null
-                ),
-                textCapitalization: TextCapitalization.words,
-                controller: nameController,
-              )
-            ),
-            AnimatedList(
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(15),
+            child: TextField(
+              autofocus: widget.d.title == cdr.locale.newDie,
+              decoration: InputDecoration(
+                labelText: cdr.locale.dieName,
+                errorText: noName ? cdr.locale.mustName : invalidCharacter ? cdr.locale.dieInvalidCharacter : nameConflict ? cdr.locale.dieUniqueName : null
+              ),
+              style: Theme.of(context).textTheme.titleLarge,
+              textCapitalization: TextCapitalization.words,
+              controller: nameController,
+            )
+          ),
+          Expanded(
+            child: AnimatedList(
               key: listKey,
-              shrinkWrap: true,
-              initialItemCount: widget.d.sides.length,
+              controller: listCont,
+              initialItemCount: widget.d.sides.length + 1,
               itemBuilder:(context, index, animation) =>
-                Dismissible(
+                index != widget.d.sides.length ? Dismissible(
                   key: ValueKey<Side>(widget.d.sides[index]),
                   direction: cdr.prefs.swipeDelete() ? DismissDirection.horizontal : DismissDirection.none,
                   child: sideCard(context, index),
@@ -105,57 +112,55 @@ class _DieEditState extends State<DieEdit> {
                     listKey.currentState?.removeItem(index, (context, animation) =>
                       SizeTransition(sizeFactor: animation));
                   },
-                )
+                ) : Container(height: 70)
             )
-          ],
-        )
+          ),
+        ],
       )
     );
   }
 
   Widget sideCard(BuildContext context, int index) =>
     Card(
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children:[
-          InkResponse(
-            containedInkWell: true,
-            highlightShape: BoxShape.rectangle,
-            onTap: () =>
-              SimpleSideDialog(
-                s: widget.d.sides[index],
-                onClose: (s){
-                  widget.d.sides[index] = s;
-                  widget.d.save(context: context);
-                }
-              ).show(context),
-            child: const Padding(
-              padding: EdgeInsets.all(15),
-              child: Icon(Icons.edit)
-            )
-          ),
-          Container(width: 10),
-          Expanded(
-            child: Text(
-              widget.d.sides[index].toString(),
-              style: Theme.of(context).textTheme.headlineSmall
-            )
-          ),
-          if(CDR.of(context).prefs.deleteButton()) InkResponse(
-            containedInkWell: true,
-            highlightShape: BoxShape.rectangle,
-            onTap: (){
-              widget.d.sides.removeAt(index);
+      child: InkResponse(
+        containedInkWell: true,
+        highlightShape: BoxShape.rectangle,
+        onTap: () =>
+          SimpleSideDialog(
+            s: widget.d.sides[index],
+            onClose: (s){
+              widget.d.sides[index] = s;
               widget.d.save(context: context);
-              listKey.currentState?.removeItem(index, (context, animation) =>
-                SizeTransition(sizeFactor: animation));
+              listKey.currentState?.setState(() {});
             },
-            child: const Padding(
-              padding: EdgeInsets.all(15),
-              child: Icon(Icons.delete_forever)
-            )
-          ),
-        ]
+            updating: true,
+          ).show(context),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children:[
+            Container(width: 10),
+            Expanded(
+              child: Text(
+                widget.d.sides[index].toString(),
+                style: Theme.of(context).textTheme.headlineSmall
+              )
+            ),
+            if(CDR.of(context).prefs.deleteButton()) InkResponse(
+              containedInkWell: true,
+              highlightShape: BoxShape.rectangle,
+              onTap: (){
+                widget.d.sides.removeAt(index);
+                widget.d.save(context: context);
+                listKey.currentState?.removeItem(index, (context, animation) =>
+                  SizeTransition(sizeFactor: animation));
+              },
+              child: const Padding(
+                padding: EdgeInsets.all(15),
+                child: Icon(Icons.delete_forever)
+              )
+            ),
+          ]
+        )
       )
     );
 }
