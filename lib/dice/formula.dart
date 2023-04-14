@@ -6,7 +6,6 @@ import 'package:customdiceroller/dice/results.dart';
 
 class DiceFormula{
   static DiceResults solve(String str, CDR cdr){
-    str = str.toLowerCase();
     var dr = DiceResults();
     var last = 0;
     var problem = false;
@@ -21,9 +20,11 @@ class DiceFormula{
               break outside;
             }
             last = j+1;
+            i = j;
+            break;
           }
         }
-      }else if(str[i]=='+'||str[i]=='-'){
+      }else if(i != last && str[i]=='+'||str[i]=='-'){
         var prob = parse(str.substring(last,i),dr,cdr);
         if(prob){
           problem = true;
@@ -42,14 +43,34 @@ class DiceFormula{
   }
 
   static bool parse(String str, DiceResults dr, CDR cdr){
-    if(str.contains("d")){
+    if(str.contains("{") && str.contains("}")){
+      dr.subtractMode = str.startsWith("-");
+      if(str.startsWith("+")||str.startsWith("-")) str = str.substring(1);
+      if(str.indexOf("{")!=0 && str[str.indexOf("{")-1] == cdr.locale.dieNotation){
+        str = str.substring(0,str.indexOf('{'))+str.substring(str.indexOf("{"));
+      }
+      var preStr = str.substring(0,str.indexOf("{"));
+      if(preStr.endsWith(cdr.locale.dieNotation)) preStr = preStr.substring(0, preStr.length-1);
+      int? pre;
+      if(preStr.isNotEmpty){
+        pre = int.tryParse(preStr);
+      }else{
+        pre = 1;
+      }
+      if(pre == null) return true;
+      var inner = str.substring(str.indexOf("{")+1,str.lastIndexOf("}"));
+      var d = cdr.db.dies.getByTitleSync(inner);
+      if(d == null) return true;
+      dr.addAll(d.roll(pre), d.title);
+      dr.subtractMode = false;
+    }else if(str.contains(cdr.locale.dieNotation)){
       dr.subtractMode = str.startsWith("-");
       if(str.startsWith("+")||str.startsWith("-")){
         str = str.substring(1);
       }
       int? pre;
       int? post;
-      var dInd = str.indexOf("d");
+      var dInd = str.indexOf(cdr.locale.dieNotation);
       if(dInd == str.length-1) return true;
       if(dInd ==0){
         pre = 1;
@@ -59,24 +80,6 @@ class DiceFormula{
       post = int.tryParse(str.substring(dInd+1));
       if(pre == null || post == null) return true;
       dr.addAll(numberDice(pre, post), "${cdr.locale.dieNotation}$post");
-      dr.subtractMode = false;
-    }else if(str.contains("{") && str.contains("}")){
-      dr.subtractMode = str.startsWith("-");
-      if(str.startsWith("+")||str.startsWith("-")) str = str.substring(1);
-      int? pre;
-      if(str.indexOf("{")!=0 && str[str.indexOf("{")-1] == 'd'){
-        str = str.substring(0,str.indexOf('{'))+str.substring(str.indexOf("{"));
-      }
-      if(str.indexOf("{")!=0){
-        pre = int.tryParse(str.substring(0,str.indexOf("{")));
-      }else{
-        pre = 1;
-      }
-      if(pre == null) return true;
-      var inner = str.substring(str.indexOf("{")+1,str.lastIndexOf("}"));
-      var d = cdr.db.dies.getByTitleSync(inner);
-      if(d == null) return true;
-      dr.addAll(d.roll(pre), d.title);
       dr.subtractMode = false;
     }else{
       var tmp = int.tryParse(str);

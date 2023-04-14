@@ -51,23 +51,30 @@ class DiceResults{
       );
     }
   }
-  void showCombinedResults(BuildContext context) =>
+  void showCombinedResults(BuildContext context) {
+    bool showNums = false;
+    for(var k in _res.keys){
+      if(_res[k] != 0 && _res[k] != 1){
+        showNums = true;
+        break;
+      }
+    }
     Bottom(
-      child: (c) => Padding(
-        padding: EdgeInsets.all(10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            if(_hasNumRes) Text(
-              _num.toString(),
-              style: Theme.of(context).textTheme.headlineMedium,
-              textAlign: TextAlign.center,
-            ),
-            ...List.generate(
-              _res.length,
-              (index) {
-                var key = values[index];
-                return Row(
+      child: (c) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          if(_hasNumRes) Text(
+            _num.toString(),
+            style: Theme.of(context).textTheme.headlineMedium,
+            textAlign: TextAlign.center,
+          ),
+          ...List.generate(
+            _res.length,
+            (index) {
+              var key = values[index];
+              return _res[key] != 0 ? Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
                   mainAxisSize: MainAxisSize.max,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -80,8 +87,8 @@ class DiceResults{
                         textAlign: TextAlign.center,
                       )
                     ),
-                    if(_res[key] != 1) Container(width: 10),
-                    if(_res[key] != 1) Expanded(
+                    if(showNums) Container(width: 10),
+                    if(showNums) Expanded(
                       child: Text(
                         _res[key].toString(),
                         style: Theme.of(c).textTheme.titleLarge,
@@ -89,11 +96,11 @@ class DiceResults{
                       )
                     )
                   ],
-                );
-              }
-            )
-          ],
-        )
+                )
+              ) : Container();
+            }
+          )
+        ],
       ),
       buttons: (c) =>[
         TextButton(
@@ -105,6 +112,7 @@ class DiceResults{
         )
       ],
     ).show(context);
+  }
   void showIndividualResults(BuildContext context) =>
     Bottom(
       child: (c) => Column(

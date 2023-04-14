@@ -1,8 +1,12 @@
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/dice/formula.dart';
+import 'package:customdiceroller/ui/bottom.dart';
 import 'package:customdiceroller/ui/frame_content.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
+import 'package:isar/isar.dart';
 
 class DiceCalculator extends StatefulWidget{
 
@@ -22,10 +26,14 @@ class _DiceCalculatorState extends State<DiceCalculator> {
     var cdr = CDR.of(context);
     displayCont ??= TextEditingController()
       ..addListener(() {
-        if(prevText.length > displayCont!.text.length){
-          // var del = prevText.substring(displayCont!.selection.start, displayCont!.selection.start + (prevText.length - displayCont!.text.length));
-          // print(del);
-          //TODO: detect if broken custom dice
+        var curTxt = displayCont!.text;
+        var curSel = displayCont!.selection;
+        if(prevText.length < curTxt.length){
+          if(curSel.baseOffset > 0 && curTxt.substring(curSel.baseOffset-1, curSel.baseOffset) == "{"){
+            var bef = curSel.textBefore(curTxt);
+            displayCont!.text = "$bef}${curSel.textAfter(curTxt)}";
+            displayCont!.selection = TextSelection.collapsed(offset: bef.length);
+          }
         }
         prevText = displayCont!.text;
       });
@@ -54,7 +62,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                           scrollController: displayScrollCont,
                           style: Theme.of(context).textTheme.headlineSmall,
                           autofocus: true,
-                          readOnly: CDR.of(context).isMobile,
+                          readOnly: cdr.isMobile || kIsWeb,
                           showCursor: true,
                           controller: displayCont,
                           enableSuggestions: false,
@@ -65,7 +73,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                           onSubmitted: (value) =>
                             DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
                           inputFormatters: [
-                            FilteringTextInputFormatter.allow(RegExp("([0-9]|${CDR.of(context).locale.dieNotation}|\\+|-)")),
+                            FilteringTextInputFormatter.allow(RegExp("[0-9]|${CDR.of(context).locale.dieNotation}|\\+|-|{(.*?)}|({|})")),
                           ],
                         )
                       ),
@@ -74,14 +82,29 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                         onPressed: (){
                           var sel = displayCont!.selection;
                           var bef = sel.textBefore(displayCont!.text);
+                          int selLoc = sel.baseOffset;
+                          String outTxt = displayCont!.text;
                           if(!sel.isCollapsed){
-                            displayCont?.text = bef + sel.textAfter(displayCont!.text);
-                            displayCont?.selection = TextSelection.collapsed(offset: bef.length);
+                            outTxt = bef + sel.textAfter(displayCont!.text);
+                            selLoc = bef.length;
                           }else if(bef != ""){
-                            displayCont?.text = bef.substring(0, bef.length-1);
-                            displayCont?.selection = TextSelection.collapsed(offset: bef.length-1);
+                            outTxt = bef.substring(0, bef.length-1) + sel.textAfter(displayCont!.text);
+                            selLoc = bef.length-1;
                           }
-                          //TODO: detect if broken custom dice
+                          var matches = RegExp("[0-9]|${CDR.of(context).locale.dieNotation}|\\+|-|{(.*?)}|({|})").allMatches(outTxt);
+                          outTxt = "";
+                          int prevEnd = 0;
+                          for(var m in matches){
+                            var txt = m.input.substring(m.start, m.end);
+                            if(txt != "{" && txt != "}"){
+                              outTxt += txt;
+                              if(selLoc > prevEnd && selLoc <= m.start) selLoc = outTxt.length-1;
+                              prevEnd = m.end;
+                            }
+                          }
+                          if(selLoc > outTxt.length) selLoc = outTxt.length;
+                          displayCont?.text = outTxt;
+                          displayCont?.selection = TextSelection.collapsed(offset: selLoc);
                         },
                       )
                     ]
@@ -128,7 +151,41 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                         child: InkResponse(
                           containedInkWell: true,
                           highlightShape: BoxShape.rectangle,
-                          onTap: () => print("TODO"), // TODO: select a die
+                          onTap: () =>
+                            Bottom(
+                              padding: false,
+                              child: (c) =>
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: List.generate(
+                                    cdr.db.dies.countSync(),
+                                    (index) {
+                                      var dieName = cdr.db.dies.where().offset(index).findFirstSync()!.title;
+                                      return InkResponse(
+                                        containedInkWell: true,
+                                        highlightShape: BoxShape.rectangle,
+                                        onTap: () {
+                                          addToDisplay("{$dieName}");
+                                          cdr.nav?.pop();
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(15),
+                                          child: Text(
+                                            dieName,
+                                            style: Theme.of(context).textTheme.titleMedium,
+                                          )
+                                        )
+                                      );
+                                    }
+                                  )
+                                ),
+                              buttons: (c) => [
+                                TextButton(
+                                  onPressed: () => cdr.nav?.pop(),
+                                  child: Text(cdr.locale.cancel),
+                                )
+                              ],
+                            ).show(context),
                           child: Center(
                             child: Text(
                               CDR.of(context).locale.addDie,
@@ -156,7 +213,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
     if(displayCont!.text == value){
       displayCont?.selection = TextSelection.collapsed(offset: value.length);
     }else{
-      displayCont?.selection = TextSelection.collapsed(offset: sel.baseOffset+1);
+      displayCont?.selection = TextSelection.collapsed(offset: sel.baseOffset+value.length);
     }
     displayScrollCont.animateTo(
       displayScrollCont.position.maxScrollExtent * (displayCont!.selection.baseOffset / displayCont!.text.length) + 20,
