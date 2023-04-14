@@ -82,13 +82,28 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                         onPressed: (){
                           var sel = displayCont!.selection;
                           var bef = sel.textBefore(displayCont!.text);
+                          var end = sel.textAfter(displayCont!.text);
+                          if(!sel.isCollapsed){
+                            var begBracket = RegExp("{").allMatches(bef).length;
+                            var endBracket = RegExp("}").allMatches(bef).length;
+                            if(begBracket > endBracket){
+                              sel = sel.copyWith(baseOffset: bef.lastIndexOf("{"));
+                              bef = sel.textBefore(displayCont!.text);
+                            }
+                            begBracket = RegExp("{").allMatches(end).length;
+                            endBracket = RegExp("}").allMatches(end).length;
+                            if(endBracket > begBracket){
+                              sel = sel.copyWith(extentOffset: sel.extentOffset + end.indexOf("}") + 1);
+                              end = sel.textAfter(displayCont!.text);
+                            }
+                          }
                           int selLoc = sel.baseOffset;
                           String outTxt = displayCont!.text;
                           if(!sel.isCollapsed){
-                            outTxt = bef + sel.textAfter(displayCont!.text);
+                            outTxt = bef + end;
                             selLoc = bef.length;
                           }else if(bef != ""){
-                            outTxt = bef.substring(0, bef.length-1) + sel.textAfter(displayCont!.text);
+                            outTxt = bef.substring(0, bef.length-1) + end;
                             selLoc = bef.length-1;
                           }
                           var matches = RegExp("[0-9]|${CDR.of(context).locale.dieNotation}|\\+|-|{(.*?)}|({|})").allMatches(outTxt);
