@@ -34,6 +34,21 @@ class _DiceCalculatorState extends State<DiceCalculator> {
             displayCont!.text = "$bef}${curSel.textAfter(curTxt)}";
             displayCont!.selection = TextSelection.collapsed(offset: bef.length);
           }
+        }else if(curSel.baseOffset != -1 && prevText.length > curTxt.length){
+          var bef = curSel.textBefore(curTxt);
+          var end = curSel.textAfter(curTxt);
+          var begBracket = RegExp("{").allMatches(bef).length;
+          var endBracket = RegExp("}").allMatches(bef).length;
+          if(begBracket > endBracket){
+            bef = bef.substring(0, bef.lastIndexOf("{"));
+          }
+          begBracket = RegExp("{").allMatches(end).length;
+          endBracket = RegExp("}").allMatches(end).length;
+          if(endBracket > begBracket){
+            end = end.substring(end.indexOf("}")+1);
+          }
+          displayCont!.text = bef + end;
+          displayCont!.selection = TextSelection.collapsed(offset: bef.length);
         }
         prevText = displayCont!.text;
       });

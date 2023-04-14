@@ -31,6 +31,8 @@
     "settings": "Settings",
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",
+    "calculatorKeyboard": "Allow keyboard input on the calculator",
+    "keyboardWarning": "Be careful!",
     "individualPref": "Show individual results first",
     "amoledTheme": "Amoled (Pitch Black) Dark Theme",
     "disableAnimations": "Disable Animations",

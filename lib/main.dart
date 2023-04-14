@@ -121,7 +121,7 @@ class MainUIState extends State<MainUI>{
             widy = const DiceCalculator();
             break;
           case "/intro":
-            widy = const DiceCalculator(); //TODO:
+            widy = const DiceCalculator(); //TODO: Intro
             newSettings = const RouteSettings(name: "/calculator");
             break;
           case "/dieList":
