@@ -24,6 +24,8 @@ class SimpleSideDialog extends StatelessWidget{
       child: TextField(
         controller: txt,
         autofocus: true,
+        textCapitalization: TextCapitalization.sentences,
+        autocorrect: true,
         onSubmitted: (value) =>
           close(value, context),
       ),
