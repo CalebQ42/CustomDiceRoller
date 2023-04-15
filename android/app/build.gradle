@@ -74,6 +74,9 @@ android {
        release {
            signingConfig signingConfigs.main
        }
+       profile{
+            signingConfig signingConfigs.main
+       }
        debug{
             signingConfig signingConfigs.main
        }

@@ -83,21 +83,24 @@ class CDR{
     }
     if(prefs.drive()){
       loading.loadingText = locale.loadingDrive;
-      var ok = await initializeDrive();
-      if(ok){
-        ok = await syncSaves();
-      }
-      if(!ok) loading.driveFail();
+      if(!await initializeDrive()) loading.driveFail = true;
     }
     initilized = true;
   }
 
-  Future<bool> initializeDrive(){
+
+
+  Future<bool> initializeDrive([bool reset = false]) async{
+    if(driver != null && reset){
+      await driver?.gsi?.signOut();
+      driver = null;
+    }
     driver ??= Driver(
       drive.DriveApi.driveAppdataScope,
       firebaseAvailable && prefs.crashlytics()
     );
-    return driver!.ready();
+    if(!await driver!.ready()) return false;
+    return syncSaves();
   }
 
   Future<bool> syncSaves() async{
