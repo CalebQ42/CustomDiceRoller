@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:customdiceroller/cdr.dart';
@@ -19,11 +20,54 @@ class Die {
   @Index(unique: true)
   String title = "";
   List<Side> sides = [];
+  DateTime lastSave = DateTime.now();
+
+  @Ignore()
+  bool saving = false;
+  @Ignore()
+  bool saveWaiting = false;
+  @Ignore()
+  String? driveId;
 
   Die({required this.title, this.sides = const []});
   Die.numberDie(int sides, AppLocalizations localizations) :
     title = localizations.dieNotation + sides.toString(),
     sides = List<Side>.generate(sides, (index) => Side.number(index+1));
+
+  static Future<bool> importFromCloud(String id, CDR cdr) async{
+    if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
+    var med = await cdr.driver!.getContents(id);
+    if(med == null) return false;
+    List<int> data = [];
+    await for(var m in med.stream){
+      data.addAll(m);
+    }
+    var json = const JsonDecoder().convert(String.fromCharCodes(data)) as Map<String, dynamic>;
+    try{
+      await cdr.db.dies.importJson([json]);
+    }catch(e){
+      return false;
+    }
+    return true;
+  }
+
+  //Load from the cloud. Must be re-pulled from the db for updated values
+  Future<bool> cloudLoad(String id, CDR cdr) async{
+    if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
+    var med = await cdr.driver!.getContents(id);
+    if(med == null) return false;
+    List<int> data = [];
+    await for(var m in med.stream){
+      data.addAll(m);
+    }
+    var json = const JsonDecoder().convert(String.fromCharCodes(data)) as Map<String, dynamic>;
+    try{
+      if(lastSave.isBefore(json["lastSave"])) await cdr.db.dies.importJson([json]);
+    }catch(e){
+      return false;
+    }
+    return true;
+  }
 
   List<Side> roll([int times = 1]) {
     var out = <Side>[];
@@ -42,12 +86,42 @@ class Die {
     return res;
   }
 
-  void save({CDR? cdr, BuildContext? context}){
+  Future<void> save({CDR? cdr, BuildContext? context}) async{
     if(cdr == null){
       if(context == null) throw("MUST PROVIDE EITHER cdr or context!!!");
       cdr = CDR.of(context);
     }
-    cdr.db.writeTxn(() async => await cdr!.db.dies.put(this));
+    if(saving || saveWaiting) return;
+    if(!saving){
+      saving = true;
+      lastSave = DateTime.now();
+      cdr.db.writeTxn(() async => await cdr!.db.dies.put(this));
+      await cloudSave(cdr);
+      saving = false;
+      if(saveWaiting) save(cdr: cdr);
+    }else{
+      saveWaiting = true;
+    }
+  }
+
+  Future<bool> cloudSave(CDR cdr) async{
+    if(!cdr.prefs.drive() && cdr.driver == null && !await cdr.driver!.ready()) return false;
+    driveId ??= await getDriveId(cdr);
+    if(driveId != null){
+      var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
+      return await cdr.driver!.updateContents(driveId!, Stream.value(const JsonEncoder().convert(json).codeUnits));
+    }
+    return false;
+  }
+
+  Future<String?> getDriveId(CDR cdr) async{
+    if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return null;
+    var list = await cdr.driver!.listFiles("");
+    if(list == null) return null;
+    for(var fil in list){
+      if(fil.name == uuid) return fil.driveId;
+    }
+    return cdr.driver!.createFile(uuid);
   }
 
   // static Die of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<DieHolder>()!.die;

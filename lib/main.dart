@@ -5,6 +5,7 @@ import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/screens/calculator.dart';
 import 'package:customdiceroller/screens/dice_list.dart';
 import 'package:customdiceroller/screens/die_edit.dart';
+import 'package:customdiceroller/screens/intro.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:customdiceroller/ui/frame.dart';
@@ -99,40 +100,41 @@ class MainUIState extends State<MainUI>{
       onGenerateRoute: (settings) {
         Widget? widy;
         RouteSettings? newSettings;
-        if(!cdr.initilized){
-          widy = LoadingScreen(startingRoute: newSettings ?? settings, cdr: cdr);
-          newSettings = const RouteSettings(name: "/loading");
-        }else if((settings.name?.startsWith("/die/") ?? false) && settings.name!.length > 5){
-          Die? d;
-          if(settings.arguments == null){
-            d = cdr.db.dies.getByUuidSync(settings.name!.substring(5));
-          }else{
-            d = settings.arguments as Die?;
-          }
-          if(d != null){
-            widy = DieEdit(d);
-          }
+        if(!cdr.prefs.shownIntro()){
+          widy = const IntroScreen();
+          newSettings = const RouteSettings(name: "/intro");
         }else{
-          switch(settings.name){
-          case "/settings":
-            widy = const Settings();
-            break;
-          case "/calculator":
-            widy = const DiceCalculator();
-            break;
-          case "/intro":
-            widy = const DiceCalculator(); //TODO: Intro
-            newSettings = const RouteSettings(name: "/calculator");
-            break;
-          case "/dieList":
-            widy = const DieList();
-            break;
+          if(!cdr.initilized){
+            widy = LoadingScreen(startingRoute: newSettings ?? settings, cdr: cdr);
+            newSettings = const RouteSettings(name: "/loading");
+          }else if((settings.name?.startsWith("/die/") ?? false) && settings.name!.length > 5){
+            Die? d;
+            if(settings.arguments == null){
+              d = cdr.db.dies.getByUuidSync(settings.name!.substring(5));
+            }else{
+              d = settings.arguments as Die?;
+            }
+            if(d != null){
+              widy = DieEdit(d);
+            }
+          }else{
+            switch(settings.name){
+            case "/settings":
+              widy = const Settings();
+              break;
+            case "/calculator":
+              widy = const DiceCalculator();
+              break;
+            case "/dieList":
+              widy = const DieList();
+              break;
+            }
           }
-        }
-        if(widy == null){
-          //TODO: Allow settings default screen
-          widy = const DiceCalculator();
-          newSettings = const RouteSettings(name: "/calculator");
+          if(widy == null){
+            //TODO: Allow settings default screen
+            widy = const DiceCalculator();
+            newSettings = const RouteSettings(name: "/calculator");
+          }
         }
         return PageRouteBuilder(
           settings: newSettings ?? settings,

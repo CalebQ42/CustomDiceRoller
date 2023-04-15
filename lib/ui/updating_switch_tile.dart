@@ -7,8 +7,9 @@ class UpdatingSwitchTile extends StatefulWidget{
   final void Function(bool) onChanged;
   final EdgeInsetsGeometry? contentPadding;
   final Widget? title;
+  final Widget? subtitle;
 
-  const UpdatingSwitchTile({required this.value, required this.onChanged, this.title, this.contentPadding, Key? key}) : super(key: key);
+  const UpdatingSwitchTile({required this.value, required this.onChanged, this.title, this.subtitle, this.contentPadding, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => UpdatingSwitchTileState();
@@ -29,6 +30,7 @@ class UpdatingSwitchTileState extends State<UpdatingSwitchTile>{
     SwitchListTile(
       value: value,
       title: widget.title,
+      subtitle: widget.subtitle,
       contentPadding: widget.contentPadding,
       onChanged: (b){
         widget.onChanged(b);

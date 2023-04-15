@@ -19,7 +19,13 @@ dependencies:
   isar_flutter_libs: ^3.0.5
   isar: ^3.0.5
   intl: any
-  flutter_dotenv: ^5.0.2
+  # flutter_dotenv: ^5.0.2
+  firebase_crashlytics: ^3.1.0
+  google_sign_in: ^6.1.0
+  extension_google_sign_in_as_googleapis_auth: ^2.0.9
+  googleapis: ^10.1.0
+  universal_internet_checker: ^0.1.2
+  firebase_core: ^2.9.0
 
 dev_dependencies:
   flutter_test:

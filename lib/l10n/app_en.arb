@@ -1,4 +1,10 @@
 {
+    "introWelcomeTitle": "Welcome!",
+    "introWelcomeSub": "Thank you for giving this app a try, but before we get started, we need to set some preferences.",
+    "introFirebaseTitle": "Firebase",
+    "introFirebaseSub": "Custom Dice Roller makes use of Firebase by Google. Firebase is used in the project to provide crash reporting (via Crashlytics) and possibly other functions in the future (ads, analytics). Rest assured that if more functions are added, you'll be seeing this screen again. If you want to, you can disable Firebase completely, or each function independently. You can change this later in settings.",
+    "introOtherTitle": "Other Preferences",
+    
     "cdr": "Custom Dice Roller",
     "dieNotation": "d",
     "@dieNotation": {
@@ -9,7 +15,9 @@
     "newGroup": "New Dice Group",
     "dice": "Dice",
     "diceGroups": "Dice Groups",
+
     "loading": "Loading...",
+    "loadingDrive": "Loading Google Drive...",
 
     "individual": "Individual",
     "combined": "Combined",
@@ -29,13 +37,18 @@
     "addDie": "Add Die",
 
     "settings": "Settings",
+    "drive": "Sync to Google Drive",
     "darkTheme": "Dark Theme",
     "lightTheme": "Light Theme",
     "calculatorKeyboard": "Allow keyboard input on the calculator",
-    "keyboardWarning": "Be careful!",
+    "keyboardWarning": "Use at your own risk",
+    "firebase": "Firebase",
+    "crashlytics": "Crashlytics",
     "individualPref": "Show individual results first",
     "amoledTheme": "Amoled (Pitch Black) Dark Theme",
     "disableAnimations": "Disable Animations",
     "swipeDelete": "Swipe to Delete",
-    "deleteButtonPref": "Show Delete Button"
+    "deleteButtonPref": "Show Delete Button",
+
+    "notAvailablePlatform": "Not available on this platform"
 }

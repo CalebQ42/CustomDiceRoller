@@ -3,7 +3,7 @@ import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class LoadingScreen extends StatelessWidget{
+class LoadingScreen extends StatefulWidget{
 
   final RouteSettings startingRoute;
   final CDR cdr;
@@ -11,10 +11,32 @@ class LoadingScreen extends StatelessWidget{
   const LoadingScreen({super.key, required this.startingRoute, required this.cdr});
 
   @override
+  State<LoadingScreen> createState() => LoadingScreenState();
+}
+
+class LoadingScreenState extends State<LoadingScreen> {
+  bool started = false;
+  String _loadingText = "";
+  set loadingText(String s) => setState(() => _loadingText = s);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadingText = AppLocalizations.of(context)!.loading;
+  }
+
+  void driveFail(){
+    //TODO:
+  }
+
+  @override
   Widget build(BuildContext context) {
-    cdr.postInit(context).then(
-      (_) => cdr.nav?.pushNamedAndRemoveUntil(startingRoute.name ?? "/", (_) => false, arguments: startingRoute.arguments)
-    );
+    if(!started){
+      started = true;
+      widget.cdr.postInit(context, this).then(
+        (_) => widget.cdr.nav?.pushNamedAndRemoveUntil(widget.startingRoute.name ?? "/", (_) => false, arguments: widget.startingRoute.arguments)
+      );
+    }
     return FrameContent(
       child: Center(
         child: Column(
@@ -23,7 +45,7 @@ class LoadingScreen extends StatelessWidget{
             const CircularProgressIndicator(),
             Container(height: 10),
             Text(
-              AppLocalizations.of(context)!.loading,
+              _loadingText,
               style: Theme.of(context).textTheme.headlineMedium,
             )
           ],

@@ -6,39 +6,44 @@ class Bottom extends StatelessWidget{
   final Color? background;
   final Widget Function(BuildContext)? child;
   final bool padding;
+  final bool dismissible;
 
   final GlobalKey<_ButtonState> _butKey = GlobalKey();
 
-  Bottom({this.buttons, this.background, required this.child, this.padding = true, Key? key}) : super(key: key);
+  Bottom({
+    this.buttons,
+    this.background,
+    required this.child,
+    this.padding = true,
+    this.dismissible = true,
+    super.key
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: MediaQuery.of(context).viewInsets,
-      child: Wrap(
-        children: [
-          ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.5),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              primary: false,
-              child: Padding(
-                padding: padding ? const EdgeInsets.only(
-                  top: 10,
-                  left: 10,
-                  right: 10,
-                  bottom: 15
-                ) : EdgeInsets.zero,
-                child: child!(context)
-              )
+    return Wrap(
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.height * 0.5),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            primary: false,
+            child: Padding(
+              padding: padding ? const EdgeInsets.only(
+                top: 10,
+                left: 10,
+                right: 10,
+                bottom: 15
+              ) : EdgeInsets.zero,
+              child: child!(context)
             )
-          ),
-          if(buttons != null) _BottomButtons(
-            key: _butKey,
-            builder: buttons!,
           )
-        ],
-      )
+        ),
+        if(buttons != null) _BottomButtons(
+          key: _butKey,
+          builder: buttons!,
+        )
+      ],
     );
   }
 
@@ -50,6 +55,8 @@ class Bottom extends StatelessWidget{
       builder: (c) => this,
       backgroundColor: background,
       isScrollControlled: true,
+      isDismissible: dismissible,
+      useSafeArea: true,
     );
 }
 

@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:customdiceroller/ui/updating_switch_tile.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class Settings extends StatefulWidget{
@@ -16,9 +19,24 @@ class _SettingsState extends State<Settings> {
   Widget build(BuildContext context) {
     var cdr = CDR.of(context);
     return FrameContent(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      child: ListView(
         children: [
+          if(kIsWeb || Platform.isAndroid || Platform.isIOS) SwitchListTile(
+            value: cdr.prefs.drive(),
+            onChanged: (val) async{
+              if(!val){
+                cdr.prefs.setDriveFirst(true);
+                cdr.prefs.setDrive(val);
+                await cdr.driver?.gsi?.signOut();
+                cdr.driver = null;
+                return;
+              }
+              
+              //TODO: pop-up and enable;
+            },
+            title: Text(cdr.locale.drive),
+          ),
+          const Divider(),
           SwitchListTile(
             value: cdr.prefs.lightTheme(),
             onChanged: (val){
@@ -39,6 +57,22 @@ class _SettingsState extends State<Settings> {
               cdr.topLevelUpdate!();
             },
             title: Text(cdr.locale.darkTheme),
+          ),
+          const Divider(),
+          if(kIsWeb || Platform.isAndroid || Platform.isIOS) SwitchListTile(
+            value: cdr.prefs.firebase(),
+            onChanged: (val){
+              //TODO: popup about re-starting the app.
+            },
+            title: Text(cdr.locale.firebase),
+          ),
+          const Divider(),
+          UpdatingSwitchTile(
+            title: Text(cdr.locale.calculatorKeyboard),
+            subtitle: Text(cdr.locale.keyboardWarning),
+            value: cdr.prefs.allowKeyboard(),
+            onChanged: (p) =>
+              cdr.prefs.setAllowKeyboard(p),
           ),
           const Divider(),
           UpdatingSwitchTile(
