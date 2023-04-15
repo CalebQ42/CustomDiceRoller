@@ -125,14 +125,16 @@ class Intro{
         Container(height: 20),
         UpdatingSwitchTile(
           title: Text(locale.firebase),
+          subtitle: !(kIsWeb || Platform.isAndroid || Platform.isIOS) ? Text(locale.notAvailablePlatform) : null,
           value: cdr.prefs.firebase(),
-          onChanged: (p) => cdr.prefs.setFirebase(p),
+          onChanged: kIsWeb || Platform.isAndroid || Platform.isIOS ? (p) => cdr.prefs.setFirebase(p) : null,
         ),
         const Divider(),
         UpdatingSwitchTile(
           title: Text(locale.crashlytics),
+          subtitle: !(Platform.isAndroid || Platform.isIOS) ? Text(locale.notAvailablePlatform) : null,
           value: cdr.prefs.crashlytics(),
-          onChanged: (p) => cdr.prefs.setCrashlytics(p),
+          onChanged: Platform.isAndroid || Platform.isIOS ? (p) => cdr.prefs.setCrashlytics(p) : null,
         ),
       ],
     );
@@ -147,11 +149,12 @@ class Intro{
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         Container(height: 20),
-        if(kIsWeb || Platform.isAndroid || Platform.isIOS) UpdatingSwitchTile(
+        UpdatingSwitchTile(
           title: Text(locale.drive),
+          subtitle: !(kIsWeb || Platform.isAndroid || Platform.isIOS) ? Text(locale.notAvailablePlatform) : null,
           value: cdr.prefs.drive(),
-          onChanged: (p) =>
-            cdr.prefs.setDrive(p),
+          onChanged: (kIsWeb || Platform.isAndroid || Platform.isIOS) ? (p) =>
+            cdr.prefs.setDrive(p) : null,
         ),
         const Divider(),
         SwitchListTile(

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 class UpdatingSwitchTile extends StatefulWidget{
 
   final bool value;
-  final void Function(bool) onChanged;
+  final void Function(bool)? onChanged;
   final EdgeInsetsGeometry? contentPadding;
   final Widget? title;
   final Widget? subtitle;
 
-  const UpdatingSwitchTile({required this.value, required this.onChanged, this.title, this.subtitle, this.contentPadding, Key? key}) : super(key: key);
+  const UpdatingSwitchTile({required this.value, this.onChanged, this.title, this.subtitle, this.contentPadding, Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => UpdatingSwitchTileState();
@@ -32,10 +32,10 @@ class UpdatingSwitchTileState extends State<UpdatingSwitchTile>{
       title: widget.title,
       subtitle: widget.subtitle,
       contentPadding: widget.contentPadding,
-      onChanged: (b){
-        widget.onChanged(b);
+      onChanged: widget.onChanged != null ? (b){
+        widget.onChanged!(b);
         setState(() => value = b);
-      }
+      } : null
     );
 }
 

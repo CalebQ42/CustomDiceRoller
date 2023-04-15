@@ -25,7 +25,7 @@ class Prefs{
   // Firebase
   bool firebase() => prefs.getBool("firebase") ?? kIsWeb || Platform.isAndroid || Platform.isIOS;
   void setFirebase(bool p) => prefs.setBool("firebase", p);
-  bool crashlytics() => prefs.getBool("crashlytics") ?? kIsWeb || Platform.isAndroid || Platform.isIOS;
+  bool crashlytics() => prefs.getBool("crashlytics") ?? Platform.isAndroid || Platform.isIOS;
   void setCrashlytics(bool p) => prefs.setBool("crashlytics", p);
 
   //Drive
