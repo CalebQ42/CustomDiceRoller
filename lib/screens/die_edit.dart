@@ -107,6 +107,7 @@ class _DieEditState extends State<DieEdit> {
                   direction: cdr.prefs.swipeDelete() ? DismissDirection.horizontal : DismissDirection.none,
                   child: sideCard(context, index),
                   onDismissed: (_){
+                    //TODO: Undo
                     widget.d.sides.removeAt(index);
                     widget.d.save(cdr: cdr);
                     listKey.currentState?.removeItem(index, (context, animation) =>

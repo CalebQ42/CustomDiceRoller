@@ -3,7 +3,6 @@ import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/dice/formula.dart';
 import 'package:customdiceroller/ui/bottom.dart';
 import 'package:customdiceroller/ui/frame_content.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -77,7 +76,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                           scrollController: displayScrollCont,
                           style: Theme.of(context).textTheme.headlineSmall,
                           autofocus: true,
-                          readOnly: cdr.isMobile || kIsWeb,
+                          readOnly: !cdr.prefs.allowKeyboard(),
                           showCursor: true,
                           controller: displayCont,
                           enableSuggestions: false,

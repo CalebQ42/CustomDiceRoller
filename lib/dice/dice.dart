@@ -36,7 +36,6 @@ class Die {
 
   static Future<bool> importFromCloud(String id, CDR cdr) async{
     if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
-    print("yo");
     var med = await cdr.driver!.getContents(id);
     if(med == null) return false;
     List<int> data = [];

@@ -12,17 +12,23 @@ import 'package:customdiceroller/ui/frame.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:stupid/stupid.dart';
+
+CDR? cdr;
 
 void main() =>
   runZonedGuarded(
     () {
       CDR.initialize().then(
-        (value) => runApp(
-          CDRHolder(
-            value,
-            child: const MainUI()
-          )
-        )
+        (value) {
+          cdr = value;
+          runApp(
+            CDRHolder(
+              value,
+              child: const MainUI()
+            )
+          );
+        }
       );
     },
     (error, stack) {
@@ -30,7 +36,12 @@ void main() =>
         print(error);
         print(stack);
       }
-      // TODO: Proper error reporting
+      if(cdr!.prefs.crash()){
+        cdr?.stupid?.crash(Crash(
+          error: error.toString(),
+          stack: stack.toString(),
+        ));
+      }
     }
   );
 

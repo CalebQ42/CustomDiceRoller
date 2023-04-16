@@ -24,6 +24,8 @@ class Prefs{
   void setAmoledDark(bool p) => prefs.setBool("amoledDark", p);
 
   // Stupid
+  bool stupid() => prefs.getBool("stupid") ?? true;
+  void setStupid(bool p) => prefs.setBool("stupid", p);
   Future<String> stupidUuid() async {
     var id = await securePrefs.read(key: "uuid");
     if(id == null){

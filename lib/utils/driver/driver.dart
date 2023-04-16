@@ -1,12 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 
-import 'package:firebase_crashlytics/firebase_crashlytics.dart' deferred as crash;
 import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:googleapis/drive/v3.dart';
 import 'package:extension_google_sign_in_as_googleapis_auth/extension_google_sign_in_as_googleapis_auth.dart';
 import 'package:customdiceroller/utils/driver/query.dart';
+import 'package:stupid/stupid.dart';
 import 'package:universal_internet_checker/universal_internet_checker.dart';
 
 class Driver{
@@ -20,9 +19,9 @@ class Driver{
   StreamSubscription? sub;
   bool internetAvailable = true;
 
-  bool crashlytics;
+  Stupid? stupid;
 
-  Driver(this.scope, this.crashlytics) : wd = scope == DriveApi.driveAppdataScope ? "appDataFolder" : "root";
+  Driver(this.scope, [this.stupid]) : wd = scope == DriveApi.driveAppdataScope ? "appDataFolder" : "root";
 
   Future<bool> changeScope(String scope) async {
     this.scope = scope;
@@ -59,15 +58,15 @@ class Driver{
           if(gsi!.currentUser == null) await gsi!.signIn();
         }
         if(gsi!.currentUser == null) return false;
-      } catch(e) {
-        if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-          await crash.loadLibrary();
-          crash.FirebaseCrashlytics.instance.recordError(e, null,
-            reason: "ready"
-          );
-        }else if(kDebugMode){
+      } catch(e, stack) {
+        if(kDebugMode){
           print("ready:");
           print(e);
+        }else{
+          stupid?.crash(Crash(
+            error: e.toString(),
+            stack: stack.toString()
+          ));
         }
         return false;
       }
@@ -91,15 +90,15 @@ class Driver{
       if (foldId == null) return false;
       wd = foldId;
       return true;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "setWD"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("setWD:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return false;
     }
@@ -114,15 +113,15 @@ class Driver{
         spaces: (scope == DriveApi.driveAppdataScope) ? "appDataFolder" : "drive",
         q: "'$foldID' in parents"
       )).files;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "listFilesFromRoot"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("listFilesFromRoot:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -137,15 +136,15 @@ class Driver{
         spaces: (scope == DriveApi.driveAppdataScope) ? "appDataFolder" : "drive",
         q: "'$foldID' in parents"
       )).files;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "listFiles"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("listFiles:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -196,15 +195,15 @@ class Driver{
         parentID = out[0].id!;
       }
       return out![0].id!;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "getIDFromRoot"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("getIDFromRoot:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -249,15 +248,15 @@ class Driver{
         parentID = out[0].id!;
       }
       return out![0].id;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "getID"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("getID:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -288,15 +287,15 @@ class Driver{
       );
       fil = await api!.files.create(fil);
       return fil.id;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "createFileFromRoot"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("createFileFromRoot:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -315,15 +314,15 @@ class Driver{
       );
       fil = await api!.files.create(fil);
       return fil.id;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "createFileWithParent"
-        );
-      }else if(kDebugMode){
-        print("createWithParent:");
+    }catch(e, stack){
+      if(kDebugMode){
+        print("createFileWithParent:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -352,15 +351,15 @@ class Driver{
         uploadMedia: (data != null) ? Media(data, dataLength) : null
       );
       return fil.id;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "createFile"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("createFile:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -370,15 +369,15 @@ class Driver{
     if(!await ready()) return null;
     try{
       return (await api!.files.get(id)) as File;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "getFile"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("getFile:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -388,15 +387,15 @@ class Driver{
     if(!await ready()) return null;
     try{
       return (await api!.files.get(id, downloadOptions: DownloadOptions.fullMedia)) as Media;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "getContents"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("getContents:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return null;
     }
@@ -414,15 +413,15 @@ class Driver{
         uploadMedia: Media(data, dataLength)
       );
       return fil.id != null;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "updateContents"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("updateContents:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return false;
     }
@@ -432,15 +431,15 @@ class Driver{
     if(!await ready()) return Future.value();
     try{
       return await api!.files.delete(id);
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "delete"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("delete:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return;
     }
@@ -450,15 +449,15 @@ class Driver{
     if(!await ready()) return false;
     try{
       return (await api!.files.update(File(trashed: true), id)).trashed ?? false;
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "trash"
-        );
-      }else if(kDebugMode){
+    }catch(e, stack){
+      if(kDebugMode){
         print("trash:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return false;
     }
@@ -468,15 +467,15 @@ class Driver{
     if(!await ready()) return false;
     try{
       return !((await api!.files.update(File(trashed: false), id)).trashed ?? false);
-    }catch(e){
-      if(!kIsWeb && (Platform.isAndroid || Platform.isIOS) && crashlytics){
-        await crash.loadLibrary();
-        crash.FirebaseCrashlytics.instance.recordError(e, null,
-          reason: "unTrash"
-        );
-      }else if(kDebugMode){
-        print("unTrash:");
+    }catch(e, stack){
+      if(kDebugMode){
+        print("untrash:");
         print(e);
+      }else{
+        stupid?.crash(Crash(
+          error: e.toString(),
+          stack: stack.toString()
+        ));
       }
       return false;
     }

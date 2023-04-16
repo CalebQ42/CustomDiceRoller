@@ -85,7 +85,7 @@ class Intro{
   Widget at(BuildContext context, void Function() setState, int i) {
     switch(i){
       case 0: return intro0(context);
-      case 1: return intro1(context);
+      case 1: return intro1(context, setState);
       default: return intro2(context, setState);
     }
   }
@@ -108,33 +108,40 @@ class Intro{
       ],
     );
   
-  Widget intro1(BuildContext context) =>
+  Widget intro1(BuildContext context, void Function() setState) =>
     Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          locale.introFirebaseTitle,
+          locale.introStupidTitle,
           style: Theme.of(context).textTheme.headlineLarge,
         ),
         Container(height: 10,),
         Text(
-          locale.introFirebaseSub,
+          locale.introStupidSub,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         Container(height: 20),
         UpdatingSwitchTile(
-          title: Text(locale.firebase),
-          subtitle: !(kIsWeb || Platform.isAndroid || Platform.isIOS) ? Text(locale.notAvailablePlatform) : null,
-          value: cdr.prefs.firebase(),
-          onChanged: kIsWeb || Platform.isAndroid || Platform.isIOS ? (p) => cdr.prefs.setFirebase(p) : null,
+          title: Text(locale.stupid),
+          value: cdr.prefs.stupid(),
+          onChanged:(p) {
+            cdr.prefs.setStupid(p);
+            setState();
+          },
         ),
         const Divider(),
         UpdatingSwitchTile(
-          title: Text(locale.crashlytics),
-          subtitle: !(Platform.isAndroid || Platform.isIOS) ? Text(locale.notAvailablePlatform) : null,
-          value: cdr.prefs.crashlytics(),
-          onChanged: Platform.isAndroid || Platform.isIOS ? (p) => cdr.prefs.setCrashlytics(p) : null,
+          title: Text(locale.stupidLog),
+          value: cdr.prefs.log(),
+          onChanged: cdr.prefs.stupid() ? (p) => cdr.prefs.setLog(p) : null,
+        ),
+        const Divider(),
+        UpdatingSwitchTile(
+          title: Text(locale.stupidCrash),
+          value: cdr.prefs.crash(),
+          onChanged: cdr.prefs.stupid() ? (p) => cdr.prefs.setCrash(p) : null,
         ),
       ],
     );

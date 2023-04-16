@@ -82,12 +82,31 @@ class _SettingsState extends State<Settings> {
             title: Text(cdr.locale.darkTheme),
           ),
           const Divider(),
-          if(kIsWeb || Platform.isAndroid || Platform.isIOS) SwitchListTile(
-            value: cdr.prefs.firebase(),
+          SwitchListTile(
+            value: cdr.prefs.stupid(),
             onChanged: (val){
-              //TODO: popup about re-starting the app.
+              cdr.prefs.setStupid(val);
+              cdr.stupid = null;
+              cdr.driver?.stupid = null;
+              setState((){});
             },
-            title: Text(cdr.locale.firebase),
+            title: Text(cdr.locale.stupid),
+          ),
+          const Divider(),
+          UpdatingSwitchTile(
+            value: cdr.prefs.crash(),
+            onChanged: cdr.stupid != null ? (val) {
+              cdr.prefs.setCrash(val);
+              FlutterError.onError = FlutterError.presentError;
+             } : null,
+            title: Text(cdr.locale.stupidCrash),
+          ),
+          const Divider(),
+          SwitchListTile(
+            value: cdr.prefs.log(),
+            onChanged: (val) =>
+              cdr.prefs.setLog(val),
+            title: Text(cdr.locale.stupidLog),
           ),
           const Divider(),
           UpdatingSwitchTile(

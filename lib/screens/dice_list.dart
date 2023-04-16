@@ -42,6 +42,7 @@ class DieListState extends State<DieList>{
             child: DieItem(
               die,
               () async {
+                //TODO: Undo and Drive deletion
                 await cdr.db.writeTxn(() async => await cdr.db.dies.delete(die.id));
                 listKey.currentState?.removeItem(
                   index,

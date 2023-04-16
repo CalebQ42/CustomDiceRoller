@@ -1,21 +1,20 @@
 import 'dart:io';
 
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/firebase_options.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/ui/frame.dart';
 import 'package:customdiceroller/utils/driver/driver.dart';
 import 'package:customdiceroller/utils/observatory.dart';
 import 'package:customdiceroller/utils/preferences.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:isar/isar.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
+import 'package:stupid/stupid.dart';
 
 
 class CDR{
@@ -29,7 +28,7 @@ class CDR{
   Duration globalDuration;
   Driver? driver;
   bool initilized = false;
-  bool firebaseAvailable = false;
+  Stupid? stupid;
 
   final GlobalKey<NavigatorState> _navKey = GlobalKey();
   final GlobalKey<FrameState> _frameKey = GlobalKey();
@@ -67,17 +66,28 @@ class CDR{
 
   Future<void> postInit(BuildContext context, LoadingScreenState loading) async{
     locale = AppLocalizations.of(context)!;
-    if(prefs.firebase()){
+    if(prefs.stupid()){
       try{
-        await Firebase.initializeApp(
-          options: DefaultFirebaseOptions.currentPlatform
-        );
-        firebaseAvailable = true;
-        if(!kDebugMode && prefs.crashlytics()){
-          FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
-          FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
-        }else{
-          FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(false);
+        String? apiKey;
+        if(!kIsWeb){
+          var dot = DotEnv();
+          await dot.load(fileName: ".stupid");
+          apiKey = dot.maybeGet("STUPID_KEY");
+        }
+        if(kIsWeb || apiKey != null){
+          stupid = Stupid(baseUrl: Uri.parse("https://api.darkstorm.tech"), deviceId: await prefs.stupidUuid(), apiKey: apiKey);
+          if(prefs.log()){
+            await stupid!.log();
+          }
+          if(prefs.crash()){
+            FlutterError.onError = (err) {
+              stupid!.crash(Crash(
+                error: err.exceptionAsString(),
+                stack: err.stack?.toString() ?? "Not given"
+              ));
+              FlutterError.presentError(err);
+            };
+          }
         }
       }finally{}
     }
@@ -98,7 +108,7 @@ class CDR{
     if(driver == null){
       driver = Driver(
         drive.DriveApi.driveAppdataScope,
-        firebaseAvailable && prefs.crashlytics()
+        stupid
       );
       if(!await driver!.setWD("dies")) return false;
     }
@@ -115,7 +125,6 @@ class CDR{
       if(f.name == null || f.id == null) continue;
       var match = await db.dies.getByUuid(f.name!);
       if(match == null){
-        print("yo");
         if(!await Die.importFromCloud(f.id!, this)) return false;
       }else{
         if(!await match.cloudLoad(f.id!, this)) return false;
