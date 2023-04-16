@@ -6,8 +6,6 @@ version: 1.0.0+1
 environment:
   sdk: '>=3.0.0-417.1.beta <4.0.0'
 
-isar_version: &isar_version ^3.1.0
-
 dependencies:
   flutter:
     sdk: flutter
@@ -18,8 +16,8 @@ dependencies:
   url_launcher: ^6.1.10
   uuid: ^3.0.7
   flutter_secure_storage: ^8.0.0
-  isar_flutter_libs: *isar_version
-  isar: *isar_version
+  isar_flutter_libs: ^3.1.0
+  isar: ^3.1.0
   intl: any
   flutter_dotenv: ^5.0.2
   google_sign_in: ^6.1.0
@@ -27,12 +25,14 @@ dependencies:
   googleapis: ^10.1.0
   universal_internet_checker: ^0.1.2
   stupid: ^0.0.5
+  path_provider: ^2.0.14
+  xdg_directories: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.1
-  isar_generator: *isar_version
+  isar_generator: ^3.1.0
   build_runner: any
 
 flutter:

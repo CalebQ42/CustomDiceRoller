@@ -123,47 +123,44 @@ class _DieEditState extends State<DieEdit> {
 
   Widget sideCard(BuildContext context, int index) =>
     Card(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 10),
-        child: InkResponse(
-          containedInkWell: true,
-          highlightShape: BoxShape.rectangle,
-          onTap: () =>
-            SimpleSideDialog(
-              s: widget.d.sides[index],
-              onClose: (s){
-                widget.d.sides[index] = s;
+      child: InkResponse(
+        containedInkWell: true,
+        highlightShape: BoxShape.rectangle,
+        onTap: () =>
+          SimpleSideDialog(
+            s: widget.d.sides[index],
+            onClose: (s){
+              widget.d.sides[index] = s;
+              widget.d.save(context: context);
+              listKey.currentState?.setState(() {});
+            },
+            updating: true,
+          ).show(context),
+        child:Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children:[
+            Container(width: 10),
+            Expanded(
+              child: Text(
+                widget.d.sides[index].toString(),
+                style: Theme.of(context).textTheme.headlineSmall
+              )
+            ),
+            if(CDR.of(context).prefs.deleteButton()) InkResponse(
+              containedInkWell: true,
+              highlightShape: BoxShape.rectangle,
+              onTap: (){
+                widget.d.sides.removeAt(index);
                 widget.d.save(context: context);
-                listKey.currentState?.setState(() {});
+                listKey.currentState?.removeItem(index, (context, animation) =>
+                  SizeTransition(sizeFactor: animation));
               },
-              updating: true,
-            ).show(context),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children:[
-              Container(width: 10),
-              Expanded(
-                child: Text(
-                  widget.d.sides[index].toString(),
-                  style: Theme.of(context).textTheme.headlineSmall
-                )
-              ),
-              if(CDR.of(context).prefs.deleteButton()) InkResponse(
-                containedInkWell: true,
-                highlightShape: BoxShape.rectangle,
-                onTap: (){
-                  widget.d.sides.removeAt(index);
-                  widget.d.save(context: context);
-                  listKey.currentState?.removeItem(index, (context, animation) =>
-                    SizeTransition(sizeFactor: animation));
-                },
-                child: const Padding(
-                  padding: EdgeInsets.all(15),
-                  child: Icon(Icons.delete_forever)
-                )
-              ),
-            ]
-          )
+              child: const Padding(
+                padding: EdgeInsets.all(15),
+                child: Icon(Icons.delete_forever)
+              )
+            ),
+          ]
         )
       )
     );

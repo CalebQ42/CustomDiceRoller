@@ -11,10 +11,12 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:isar/isar.dart';
 import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:stupid/stupid.dart';
+import 'package:xdg_directories/xdg_directories.dart';
 
 
 class CDR{
@@ -55,15 +57,24 @@ class CDR{
   static Future<CDR> initialize() async{
     WidgetsFlutterBinding.ensureInitialized();
     var prefs = Prefs(await SharedPreferences.getInstance(), const FlutterSecureStorage());
+    Directory dir;
+    if(Platform.isLinux){
+      dir = Directory("${dataHome.path}/CDR");
+    }else{
+      dir = await getApplicationDocumentsDirectory();
+    }
+    dir.createSync(recursive: true);
     return CDR(
       prefs: prefs,
       db: await Isar.open(
         [DieSchema],
-        directory: ""
+        directory: dir.path
       ),
       globalDuration: prefs.disableAnimations() ? Duration.zero : const Duration(milliseconds: 300),
     );
   }
+
+
 
   Future<void> postInit(BuildContext context, LoadingScreenState loading) async{
     locale = AppLocalizations.of(context)!;

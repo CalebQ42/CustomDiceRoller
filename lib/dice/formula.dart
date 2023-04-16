@@ -24,7 +24,7 @@ class DiceFormula{
             break;
           }
         }
-      }else if(i != last && str[i]=='+'||str[i]=='-'){
+      }else if(i != last && i != last+1 && (str[i] == '+' || str[i] == '-')){
         var prob = parse(str.substring(last,i),dr,cdr);
         if(prob){
           problem = true;

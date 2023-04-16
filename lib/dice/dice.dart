@@ -107,7 +107,7 @@ class Die {
   }
 
   Future<bool> cloudSave(CDR cdr) async{
-    if(!cdr.prefs.drive() && cdr.driver == null && !await cdr.driver!.ready()) return false;
+    if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
     driveId ??= await getDriveId(cdr);
     if(driveId != null){
       var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
