@@ -57,9 +57,10 @@ class CDR{
     var prefs = Prefs(await SharedPreferences.getInstance(), const FlutterSecureStorage());
     return CDR(
       prefs: prefs,
-      db: await Isar.open([
-        DieSchema
-      ]),
+      db: await Isar.open(
+        [DieSchema],
+        directory: ""
+      ),
       globalDuration: prefs.disableAnimations() ? Duration.zero : const Duration(milliseconds: 300),
     );
   }
