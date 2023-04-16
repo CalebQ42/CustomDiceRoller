@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:uuid/uuid.dart';
 
 class Prefs{
   SharedPreferences prefs;
@@ -22,11 +23,23 @@ class Prefs{
   bool amoledDark() => prefs.getBool("amoledDark") ?? false;
   void setAmoledDark(bool p) => prefs.setBool("amoledDark", p);
 
-  // Firebase
-  bool firebase() => prefs.getBool("firebase") ?? kIsWeb || Platform.isAndroid || Platform.isIOS;
-  void setFirebase(bool p) => prefs.setBool("firebase", p);
-  bool crashlytics() => prefs.getBool("crashlytics") ?? Platform.isAndroid || Platform.isIOS;
-  void setCrashlytics(bool p) => prefs.setBool("crashlytics", p);
+  // Stupid
+  Future<String> stupidUuid() async {
+    var id = await securePrefs.read(key: "uuid");
+    if(id == null){
+      id = const Uuid().v4();
+      await securePrefs.write(key: "uuid", value: id);
+    }
+    return id;
+  }
+  bool log() => prefs.getBool("stupidLog") ?? true;
+  void setLog(bool p) => prefs.setBool("stupidLog", p);
+  bool crash() => prefs.getBool("stupidCrash") ?? true;
+  void setCrash(bool p) => prefs.setBool("stupidCrash", p);
+  Future<String?> username() => securePrefs.read(key: "stupidUsername");
+  Future<void> setUsername(String u) => securePrefs.write(key: "stupidUsername", value: u);
+  Future<String?> password() => securePrefs.read(key: "stupidPassword");
+  Future<void> setPassword(String p) => securePrefs.write(key: "stupidPassword", value: p);
 
   //Drive
   bool drive() => prefs.getBool("drive") ?? kIsWeb || Platform.isAndroid || Platform.isIOS;
@@ -45,22 +58,4 @@ class Prefs{
   void setIndividual(bool p) => prefs.setBool("individual", p);
   bool allowKeyboard() => prefs.getBool("keyboard") ?? !(kIsWeb || Platform.isAndroid || Platform.isIOS);
   void setAllowKeyboard(bool p) => prefs.setBool("keyboard", p);
-
-  // Stupid
-  // Future<String> stupidUuid() async {
-  //   var id = await securePrefs.read(key: "uuid");
-  //   if(id == null){
-  //     id = const Uuid().v4();
-  //     await securePrefs.write(key: "uuid", value: id);
-  //   }
-  //   return id;
-  // }
-  // bool log() => prefs.getBool("stupidLog") ?? true;
-  // void setLog(bool p) => prefs.setBool("stupidLog", p);
-  // bool crash() => prefs.getBool("stupidCrash") ?? true;
-  // void setCrash(bool p) => prefs.setBool("stupidCrash", p);
-  // Future<String?> username() => securePrefs.read(key: "stupidUsername");
-  // Future<void> setUsername(String u) => securePrefs.write(key: "stupidUsername", value: u);
-  // Future<String?> password() => securePrefs.read(key: "stupidPassword");
-  // Future<void> setPassword(String p) => securePrefs.write(key: "stupidPassword", value: p);
 }

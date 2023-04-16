@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/ui/bottom.dart';
 import 'package:customdiceroller/ui/frame_content.dart';
 import 'package:customdiceroller/ui/updating_switch_tile.dart';
 import 'package:flutter/foundation.dart';
@@ -29,10 +30,32 @@ class _SettingsState extends State<Settings> {
                 cdr.prefs.setDrive(val);
                 await cdr.driver?.gsi?.signOut();
                 cdr.driver = null;
+                setState((){});
                 return;
               }
-              
-              //TODO: pop-up and enable;
+              Bottom(
+                dismissible: false,
+                child: (c) =>
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const CircularProgressIndicator(),
+                      Container(height: 10,),
+                      Text(cdr.locale.loadingDrive)
+                    ]
+                  ),
+              ).show(context);
+              cdr.prefs.setDrive(true);
+              cdr.initializeDrive().then(
+                (value) {
+                  cdr.prefs.setDrive(value);
+                  setState(() {});
+                  if(!val) cdr.prefs.setDriveFirst(true);
+                  //TODO: show error dialog if failed
+                  cdr.nav?.pop();
+                }
+              );
             },
             title: Text(cdr.locale.drive),
           ),

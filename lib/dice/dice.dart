@@ -36,6 +36,7 @@ class Die {
 
   static Future<bool> importFromCloud(String id, CDR cdr) async{
     if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
+    print("yo");
     var med = await cdr.driver!.getContents(id);
     if(med == null) return false;
     List<int> data = [];
@@ -44,7 +45,7 @@ class Die {
     }
     var json = const JsonDecoder().convert(String.fromCharCodes(data)) as Map<String, dynamic>;
     try{
-      await cdr.db.dies.importJson([json]);
+      await cdr.db.writeTxn(() async => await cdr.db.dies.importJson([json]));
     }catch(e){
       return false;
     }
@@ -62,7 +63,9 @@ class Die {
     }
     var json = const JsonDecoder().convert(String.fromCharCodes(data)) as Map<String, dynamic>;
     try{
-      if(lastSave.isBefore(json["lastSave"])) await cdr.db.dies.importJson([json]);
+      if(lastSave.isBefore(DateTime.fromMillisecondsSinceEpoch(json["lastSave"]))){
+        await cdr.db.writeTxn(() async => await cdr.db.dies.importJson([json]));
+      }
     }catch(e){
       return false;
     }
@@ -109,7 +112,8 @@ class Die {
     driveId ??= await getDriveId(cdr);
     if(driveId != null){
       var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
-      return await cdr.driver!.updateContents(driveId!, Stream.value(const JsonEncoder().convert(json).codeUnits));
+      var data = const JsonEncoder().convert(json).codeUnits;
+      return await cdr.driver!.updateContents(driveId!, Stream.value(data), dataLength: data.length);
     }
     return false;
   }
@@ -119,7 +123,7 @@ class Die {
     var list = await cdr.driver!.listFiles("");
     if(list == null) return null;
     for(var fil in list){
-      if(fil.name == uuid) return fil.driveId;
+      if(fil.name == uuid && fil.id != null) return fil.id;
     }
     return cdr.driver!.createFile(uuid);
   }

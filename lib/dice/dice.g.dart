@@ -17,19 +17,24 @@ const DieSchema = CollectionSchema(
   name: r'Die',
   id: 8759452183937794663,
   properties: {
-    r'sides': PropertySchema(
+    r'lastSave': PropertySchema(
       id: 0,
+      name: r'lastSave',
+      type: IsarType.dateTime,
+    ),
+    r'sides': PropertySchema(
+      id: 1,
       name: r'sides',
       type: IsarType.objectList,
       target: r'Side',
     ),
     r'title': PropertySchema(
-      id: 1,
+      id: 2,
       name: r'title',
       type: IsarType.string,
     ),
     r'uuid': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'uuid',
       type: IsarType.string,
     )
@@ -100,14 +105,15 @@ void _dieSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
+  writer.writeDateTime(offsets[0], object.lastSave);
   writer.writeObjectList<Side>(
-    offsets[0],
+    offsets[1],
     allOffsets,
     SideSchema.serialize,
     object.sides,
   );
-  writer.writeString(offsets[1], object.title);
-  writer.writeString(offsets[2], object.uuid);
+  writer.writeString(offsets[2], object.title);
+  writer.writeString(offsets[3], object.uuid);
 }
 
 Die _dieDeserialize(
@@ -118,16 +124,17 @@ Die _dieDeserialize(
 ) {
   final object = Die(
     sides: reader.readObjectList<Side>(
-          offsets[0],
+          offsets[1],
           SideSchema.deserialize,
           allOffsets,
           Side(),
         ) ??
         const [],
-    title: reader.readString(offsets[1]),
+    title: reader.readString(offsets[2]),
   );
   object.id = id;
-  object.uuid = reader.readString(offsets[2]);
+  object.lastSave = reader.readDateTime(offsets[0]);
+  object.uuid = reader.readString(offsets[3]);
   return object;
 }
 
@@ -139,6 +146,8 @@ P _dieDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
+      return (reader.readDateTime(offset)) as P;
+    case 1:
       return (reader.readObjectList<Side>(
             offset,
             SideSchema.deserialize,
@@ -146,9 +155,9 @@ P _dieDeserializeProp<P>(
             Side(),
           ) ??
           const []) as P;
-    case 1:
-      return (reader.readString(offset)) as P;
     case 2:
+      return (reader.readString(offset)) as P;
+    case 3:
       return (reader.readString(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -479,6 +488,59 @@ extension DieQueryFilter on QueryBuilder<Die, Die, QFilterCondition> {
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.between(
         property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterFilterCondition> lastSaveEqualTo(
+      DateTime value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastSave',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterFilterCondition> lastSaveGreaterThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastSave',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterFilterCondition> lastSaveLessThan(
+    DateTime value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastSave',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterFilterCondition> lastSaveBetween(
+    DateTime lower,
+    DateTime upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastSave',
         lower: lower,
         includeLower: includeLower,
         upper: upper,
@@ -839,6 +901,18 @@ extension DieQueryObject on QueryBuilder<Die, Die, QFilterCondition> {
 extension DieQueryLinks on QueryBuilder<Die, Die, QFilterCondition> {}
 
 extension DieQuerySortBy on QueryBuilder<Die, Die, QSortBy> {
+  QueryBuilder<Die, Die, QAfterSortBy> sortByLastSave() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSave', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterSortBy> sortByLastSaveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSave', Sort.desc);
+    });
+  }
+
   QueryBuilder<Die, Die, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -877,6 +951,18 @@ extension DieQuerySortThenBy on QueryBuilder<Die, Die, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Die, Die, QAfterSortBy> thenByLastSave() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSave', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Die, Die, QAfterSortBy> thenByLastSaveDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'lastSave', Sort.desc);
+    });
+  }
+
   QueryBuilder<Die, Die, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -903,6 +989,12 @@ extension DieQuerySortThenBy on QueryBuilder<Die, Die, QSortThenBy> {
 }
 
 extension DieQueryWhereDistinct on QueryBuilder<Die, Die, QDistinct> {
+  QueryBuilder<Die, Die, QDistinct> distinctByLastSave() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'lastSave');
+    });
+  }
+
   QueryBuilder<Die, Die, QDistinct> distinctByTitle(
       {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
@@ -922,6 +1014,12 @@ extension DieQueryProperty on QueryBuilder<Die, Die, QQueryProperty> {
   QueryBuilder<Die, int, QQueryOperations> idProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<Die, DateTime, QQueryOperations> lastSaveProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'lastSave');
     });
   }
 

@@ -95,10 +95,13 @@ class CDR{
       await driver?.gsi?.signOut();
       driver = null;
     }
-    driver ??= Driver(
-      drive.DriveApi.driveAppdataScope,
-      firebaseAvailable && prefs.crashlytics()
-    );
+    if(driver == null){
+      driver = Driver(
+        drive.DriveApi.driveAppdataScope,
+        firebaseAvailable && prefs.crashlytics()
+      );
+      if(!await driver!.setWD("dies")) return false;
+    }
     if(!await driver!.ready()) return false;
     return syncSaves();
   }
@@ -109,12 +112,13 @@ class CDR{
     if(fils == null) return false;
     var dies = await db.dies.where().findAll();
     for(var f in fils){
-      if(f.name == null || f.driveId == null) continue;
+      if(f.name == null || f.id == null) continue;
       var match = await db.dies.getByUuid(f.name!);
       if(match == null){
-        if(!await Die.importFromCloud(f.driveId!, this)) return false;
+        print("yo");
+        if(!await Die.importFromCloud(f.id!, this)) return false;
       }else{
-        if(!await match.cloudLoad(f.driveId!, this)) return false;
+        if(!await match.cloudLoad(f.id!, this)) return false;
         dies.removeWhere((element) => element.uuid == match.uuid);
       }
     }
