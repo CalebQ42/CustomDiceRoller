@@ -138,6 +138,13 @@ class Side{
   Side.simple(String name) : parts = [SidePart(name: name)];
   Side.number(int value) : parts = [SidePart(value: value)];
 
+  bool isSimple(){
+    if(parts.length != 1) return false;
+    if(parts[0].name == "") return true;
+    if(parts[0].name != "" && parts[0].value == 1) return true;
+    return false;
+  }
+
   @override
   String toString() {
     var out = "";
@@ -163,6 +170,11 @@ class SidePart{
   String name;
 
   SidePart({this.value = 1, this.name = ""});
+
+  String nameOrValue(){
+    if(name == "") return value.toString();
+    return name;
+  }
 
   @override
   String toString(){

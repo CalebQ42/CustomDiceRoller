@@ -1,4 +1,5 @@
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/dialogs/complex.dart';
 import 'package:customdiceroller/dialogs/simple.dart';
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/ui/frame_content.dart';
@@ -74,7 +75,20 @@ class _DieEditState extends State<DieEdit> {
             child: const Icon(Icons.add_box_rounded),
           ),
           SpeedDialIcons(
-            onPressed: () => print("Complex"), //TODO
+            onPressed: () =>
+              ComplexDialog(
+                s: Side(),
+                onClose: (s){
+                  widget.d.sides.add(s);
+                  listKey.currentState?.insertItem(widget.d.sides.length-1);
+                  widget.d.save(cdr: cdr);
+                  listCont.animateTo(
+                    listCont.position.maxScrollExtent + 90,
+                    duration: cdr.globalDuration,
+                    curve: Curves.easeIn
+                  );
+                },
+              ).show(context), //TODO
             label: cdr.locale.complex,
             child: const Icon(Icons.library_add_rounded),
           )
@@ -126,16 +140,29 @@ class _DieEditState extends State<DieEdit> {
       child: InkResponse(
         containedInkWell: true,
         highlightShape: BoxShape.rectangle,
-        onTap: () =>
-          SimpleSideDialog(
-            s: widget.d.sides[index],
-            onClose: (s){
-              widget.d.sides[index] = s;
-              widget.d.save(context: context);
-              listKey.currentState?.setState(() {});
-            },
-            updating: true,
-          ).show(context),
+        onTap: () {
+          if(widget.d.sides[index].isSimple()){
+            SimpleSideDialog(
+              s: widget.d.sides[index],
+              onClose: (s){
+                widget.d.sides[index] = s;
+                widget.d.save(context: context);
+                listKey.currentState?.setState(() {});
+              },
+              updating: true,
+            ).show(context);
+          }else{
+            ComplexDialog(
+              s: widget.d.sides[index],
+              onClose: (s){
+                widget.d.sides[index] = s;
+                widget.d.save(context: context);
+                listKey.currentState?.setState(() {});
+              },
+              updating: true,
+            ).show(context);
+          }
+        },
         child:Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[

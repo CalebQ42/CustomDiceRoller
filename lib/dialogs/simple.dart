@@ -1,10 +1,10 @@
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/dialogs/complex.dart';
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/ui/bottom.dart';
 import 'package:flutter/material.dart';
 
 class SimpleSideDialog extends StatelessWidget{
-  
   final TextEditingController txt;
   final Side s;
   final bool updating;
@@ -46,6 +46,18 @@ class SimpleSideDialog extends StatelessWidget{
     var bot = Bottom(
       child: (c) => this,
       buttons: (c) => [
+        TextButton(
+          onPressed: () {
+            CDR.of(context).nav?.pop();
+            ComplexDialog(
+              onClose: onClose,
+              s: s,
+              updating: updating,
+            ).show(context);
+          },
+          child: Text(CDR.of(c).locale.toComplex)
+        ),
+        const Spacer(),
         TextButton(
           onPressed: () =>
             CDR.of(c).nav?.pop(),
