@@ -385,10 +385,10 @@ packages:
     dependency: "direct main"
     description:
       name: googleapis
-      sha256: "0af31e6aba9c6a72ee9c6fd02cb10813ed16d34bbd392b500fb147d64558f95d"
+      sha256: "993a7a5440b2dbe1a3c143ec43c4c0e79b35be6ae83fabb2c38ba938594f8c3c"
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.0"
+    version: "11.0.0"
   googleapis_auth:
     dependency: transitive
     description:
@@ -790,10 +790,10 @@ packages:
     dependency: "direct main"
     description:
       name: stupid
-      sha256: cbfc2d878027deccfbf88ad2dcac0394854df9e5436fc95c30384c315a5b5067
+      sha256: "2e4cce49e91ff116430643b48b1333ce912a774f7abacc580a57a84ba4cccacf"
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.5"
+    version: "0.0.6"
   term_glyph:
     dependency: transitive
     description:

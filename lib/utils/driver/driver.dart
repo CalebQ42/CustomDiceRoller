@@ -42,34 +42,23 @@ class Driver{
       internetAvailable = await UniversalInternetChecker.checkInternet() == ConnectionStatus.online;
     }
     if(!internetAvailable) return false;
-    if(gsi != null && gsi!.currentUser != null && api != null){
-      if(!(await gsi!.isSignedIn())){
-        if(gsi!.currentUser == null || !(await gsi!.isSignedIn())){
-          await gsi!.signInSilently();
-          if(gsi!.currentUser == null) await gsi!.signIn();
-        }
-        if(gsi!.currentUser == null || !(await gsi!.isSignedIn())) return false;
+    try{
+      gsi ??= GoogleSignIn(scopes: [scope]);
+      bool authd = gsi!.currentUser != null;
+      if(kIsWeb && gsi!.currentUser != null){
+        authd = await gsi!.canAccessScopes([scope]);
       }
-    }else{
-      try{
-        gsi ??= GoogleSignIn(scopes: [scope]);
-        if(gsi!.currentUser == null || !(await gsi!.isSignedIn())){
-          await gsi!.signInSilently();
-          if(gsi!.currentUser == null) await gsi!.signIn();
+      if(!authd){
+        await gsi!.signInSilently();
+        if(!kIsWeb && gsi!.currentUser == null){
+          await gsi!.signIn();
         }
-        if(gsi!.currentUser == null) return false;
-      } catch(e, stack) {
-        if(kDebugMode){
-          print("ready:");
-          print(e);
-        }else{
-          stupid?.crash(Crash(
-            error: e.toString(),
-            stack: stack.toString()
-          ));
+        if(kIsWeb && !await gsi!.canAccessScopes([scope])){
+          await gsi!.requestScopes([scope]);
         }
-        return false;
       }
+    }catch(e){
+      return false;
     }
     api = DriveApi((await gsi!.authenticatedClient())!);
     return true;

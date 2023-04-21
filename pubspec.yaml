@@ -22,9 +22,9 @@ dependencies:
   flutter_dotenv: ^5.0.2
   google_sign_in: ^6.1.0
   extension_google_sign_in_as_googleapis_auth: ^2.0.9
-  googleapis: ^10.1.0
+  googleapis: ^11.0.0
   universal_internet_checker: ^0.1.2
-  stupid: ^0.0.5
+  stupid: ^0.0.6
   path_provider: ^2.0.14
   xdg_directories: ^1.0.0
 
