@@ -41,6 +41,8 @@
 
     "parseError": "Cannot solve formula as given",
     "addDie": "Add Die",
+    "history": "History",
+    "saved": "Saved",
 
     "settings": "Settings",
     "drive": "Sync to Google Drive",

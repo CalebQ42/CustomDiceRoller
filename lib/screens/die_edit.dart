@@ -77,7 +77,6 @@ class _DieEditState extends State<DieEdit> {
           SpeedDialIcons(
             onPressed: () =>
               ComplexDialog(
-                s: Side(),
                 onClose: (s){
                   widget.d.sides.add(s);
                   listKey.currentState?.insertItem(widget.d.sides.length-1);
@@ -88,7 +87,7 @@ class _DieEditState extends State<DieEdit> {
                     curve: Curves.easeIn
                   );
                 },
-              ).show(context), //TODO
+              ).show(context),
             label: cdr.locale.complex,
             child: const Icon(Icons.library_add_rounded),
           )
@@ -163,14 +162,16 @@ class _DieEditState extends State<DieEdit> {
             ).show(context);
           }
         },
-        child:Row(
+        child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
-            Container(width: 10),
             Expanded(
-              child: Text(
-                widget.d.sides[index].toString(),
-                style: Theme.of(context).textTheme.headlineSmall
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Text(
+                  widget.d.sides[index].editDisplayString(),
+                  style: Theme.of(context).textTheme.headlineSmall
+                )
               )
             ),
             if(CDR.of(context).prefs.deleteButton()) InkResponse(

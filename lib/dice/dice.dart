@@ -137,6 +137,7 @@ class Side{
   Side({this.parts = const []});
   Side.simple(String name) : parts = [SidePart(name: name)];
   Side.number(int value) : parts = [SidePart(value: value)];
+  Side.copy(Side s) : parts = s.parts.toList();
 
   bool isSimple(){
     if(parts.length != 1) return false;
@@ -159,6 +160,30 @@ class Side{
         }
       }
       out = out.substring(2);
+    }
+    return out;
+  }
+
+  String editDisplayString(){
+    var showAllNum = false;
+    for(var i in parts){
+      if(i.name != "" && i.value != 1){
+        showAllNum = true;
+        break;
+      }
+    }
+    var out = "";
+    if(parts.isNotEmpty){
+      for(var i = 0; i < parts.length; i++){
+        if(parts[i].name == ""){
+          out += "\n${parts[i].value}";
+        }else if (!showAllNum){
+          out += "\n${parts[i].name}";
+        }else{
+          out += "\n${parts[i].value} ${parts[i].name}";
+        }
+      }
+      out = out.substring(1);
     }
     return out;
   }

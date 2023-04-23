@@ -13,12 +13,12 @@ class ComplexDialog extends StatelessWidget{
 
   ComplexDialog({
     super.key,
-    required this.s,
+    Side? s,
     required this.onClose,
     this.updating = false
-  }) : partKeys = List.generate(s.parts.length, (index) => UniqueKey()){
-    s.parts = s.parts.toList();
-  }
+  }) :
+    s = s == null ? Side() : Side.copy(s),
+    partKeys = List.generate(s != null ? s.parts.length : 0, (index) => UniqueKey());
 
   @override
   Widget build(BuildContext context) =>
@@ -33,9 +33,7 @@ class ComplexDialog extends StatelessWidget{
         itemBuilder: (c, i, anim) =>
           ComplexPart(
             key: partKeys[i],
-            init: s.parts[i],
-            onNameChange: (n) => s.parts[i].name = n,
-            onValueChange: (v) => s.parts[i].value = v,
+            s: s.parts[i],
             onDelete: () {
               s.parts.removeAt(i);
               listKey.currentState?.removeItem(
@@ -55,7 +53,7 @@ class ComplexDialog extends StatelessWidget{
       buttons: (c) => [
         TextButton(
           onPressed: () {
-            s.parts.add(SidePart());
+            s.parts.add(SidePart(value: 0));
             partKeys.add(UniqueKey());
             listKey.currentState?.insertItem(
               s.parts.length-1,
@@ -64,14 +62,17 @@ class ComplexDialog extends StatelessWidget{
           },
           child: Text(CDR.of(c).locale.addPart),
         ),
-        const Spacer(),
         TextButton(
           onPressed: () =>
             CDR.of(c).nav?.pop(),
           child: Text(CDR.of(c).locale.cancel)
         ),
         TextButton(
-          onPressed: () => onClose(s),
+          onPressed: () {
+            s.parts.removeWhere((p) => p.name == "" && (p.value == 0));
+            CDR.of(context).nav?.pop();
+            onClose(s);
+          },
           child: Text(updating ? CDR.of(c).locale.update : CDR.of(context).locale.add)
         ),
       ],
@@ -79,16 +80,12 @@ class ComplexDialog extends StatelessWidget{
 }
 
 class ComplexPart extends StatefulWidget{
-  final void Function(String) onNameChange;
-  final void Function(int) onValueChange;
+  final SidePart s;
   final void Function() onDelete;
-  final SidePart init;
 
   const ComplexPart({
     super.key,
-    required this.init,
-    required this.onNameChange,
-    required this.onValueChange,
+    required this.s,
     required this.onDelete
   });
 
@@ -98,86 +95,90 @@ class ComplexPart extends StatefulWidget{
 
 class _PartState extends State<ComplexPart>{
   bool isNum = false;
-  int value = 0;
 
   TextEditingController? cont;
 
   @override
   void initState() {
-    isNum = widget.init.name == "";
-    value = widget.init.value;
+    isNum = widget.s.name == "" && widget.s.value != 0;
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    cont ??= TextEditingController(text: widget.init.nameOrValue())
+    cont ??= TextEditingController(text: (){
+      if(widget.s.name != "" || widget.s.value != 0) return widget.s.nameOrValue();
+      widget.s.value = 1;
+      return "";
+    }())
       ..addListener(() {
         int? prs;
         if(cont!.text != "") prs = int.tryParse(cont!.text);
         if(prs == null){
-          widget.onNameChange(cont!.text);
+          widget.s.name = cont!.text;
           if(isNum){
-            widget.onValueChange(1);
+            widget.s.value = 1;
             setState(() {
-              value = 1;
               isNum = false;
             });
           }
         }else{
-          widget.onValueChange(prs);
+          widget.s.value = prs;
           if(!isNum){
-            widget.onNameChange("");
+            widget.s.name = "";
             setState((){
               isNum = true;
             });
           }
         }
       });
-    return InputDecorator(
-      decoration: const InputDecoration(),
-      child: Row(
-        children: [
-          IconButton(
-            icon: const Icon(Icons.delete),
-            onPressed: widget.onDelete,
-          ),
-          Expanded(
-            child: TextField(
-              decoration: null,
-              controller: cont,
-              textCapitalization: TextCapitalization.words,
+    return Padding(
+      padding: const EdgeInsets.all(5),
+      child: InputDecorator(
+        decoration: const InputDecoration(),
+        child: Row(
+          children: [
+            IconButton(
+              icon: const Icon(Icons.delete),
+              onPressed: widget.onDelete,
             ),
-          ),
-          AnimatedSwitcher(
-            duration: CDR.of(context).globalDuration,
-            child: isNum ? null : SizedBox(
-              width: 50,
-              height: 45,
-              child: ListWheelScrollView.useDelegate(
-                itemExtent: 20,
-                controller: FixedExtentScrollController(initialItem: value+99),
-                physics: FixedExtentScrollPhysics(),
-                overAndUnderCenterOpacity: .5,
-                onSelectedItemChanged: (v) => widget.onValueChange(v-99),
-                childDelegate: ListWheelChildBuilderDelegate(
-                  childCount: 199,
-                  builder: (context, i) =>
-                    Center(child: Text((i-99).toString()))
+            Expanded(
+              child: TextField(
+                decoration: null,
+                controller: cont,
+                textCapitalization: TextCapitalization.words,
+              ),
+            ),
+            AnimatedSwitcher(
+              duration: CDR.of(context).globalDuration,
+              child: isNum ? null : SizedBox(
+                width: 50,
+                height: 40,
+                child: ListWheelScrollView.useDelegate(
+                  itemExtent: 20,
+                  controller: FixedExtentScrollController(initialItem: widget.s.value+99),
+                  physics: const FixedExtentScrollPhysics(),
+                  overAndUnderCenterOpacity: .5,
+                  onSelectedItemChanged: (v) => widget.s.value = v-99,
+                  childDelegate: ListWheelChildBuilderDelegate(
+                    childCount: 199,
+                    builder: (context, i) =>
+                      Center(child: Text((i-99).toString()))
+                  ),
                 ),
               ),
-            ),
-            transitionBuilder: (child, anim) =>
-              ClipRect(
-                child: SizeTransition(
-                  axis: Axis.horizontal,
-                  sizeFactor: anim,
-                  child: child
-                )
-              ),
-            )
-        ],
-      ),
+              transitionBuilder: (child, anim) =>
+                ClipRect(
+                  child: SizeTransition(
+                    axis: Axis.horizontal,
+                    sizeFactor: anim,
+                    child: child
+                  )
+                ),
+              )
+          ],
+        ),
+      )
     );
   }
 }

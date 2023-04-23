@@ -1,4 +1,5 @@
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/dialogs/history.dart';
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/dice/formula.dart';
 import 'package:customdiceroller/ui/bottom.dart';
@@ -20,6 +21,11 @@ class _DiceCalculatorState extends State<DiceCalculator> {
   TextEditingController? displayCont;
   ScrollController displayScrollCont = ScrollController();
 
+  void solve(){
+    DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context);
+    CDR.of(context).prefs.addToHistory(displayCont!.text);
+  }
+
   @override
   Widget build(BuildContext context) {
     var cdr = CDR.of(context);
@@ -39,8 +45,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
     return TextFieldTapRegion(
       child: FrameContent(
         fab: FloatingActionButton(
-          onPressed: () =>
-            DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
+          onPressed: () => solve(),
           child: const Icon(Icons.casino),
         ),
         child: Center(
@@ -69,8 +74,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                           minLines: 1,
                           maxLines: 1,
                           decoration: null,
-                          onSubmitted: (value) =>
-                            DiceFormula.solve(displayCont!.text, CDR.of(context)).showResults(context),
+                          onSubmitted: (value) => solve(),
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp("[0-9]|${CDR.of(context).locale.dieNotation}|\\+|-|{(.*?)}|({|})")),
                           ],
@@ -143,7 +147,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                         child: InkResponse(
                           containedInkWell: true,
                           highlightShape: BoxShape.rectangle,
-                          onTap: () => print("TODO"), // TODO: history
+                          onTap: () => HistoryDialog(setDisplay: (s) => displayCont!.text = s).show(context), // TODO: history
                           child: const Center(
                             child: Icon(Icons.history)
                           )

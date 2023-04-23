@@ -15,6 +15,30 @@ class Prefs{
   bool shownIntro() => prefs.getBool("shownIntro") ?? false;
   void setShownIntro(bool p) => prefs.setBool("shownIntro", p);
 
+  // History & Saved
+  List<String> history() => prefs.getStringList("history") ?? [];
+  void addToHistory(String f) {
+    var curHist = history();
+    if(curHist.length >= 20){
+      curHist.removeAt(0);
+    }
+    curHist.add(f);
+    prefs.setStringList("history", curHist);
+  }
+  List<String> savedFormulas() => prefs.getStringList("savedFormula") ?? [];
+  void addToSavedFormulas(String f) {
+    var curHist = savedFormulas();
+    curHist.add(f);
+    prefs.setStringList("savedFormula", curHist);
+  }
+  void removeSavedFormulas(int index) {
+    var curHist = savedFormulas();
+    curHist.removeAt(index);
+    prefs.setStringList("savedFormula", curHist);
+  }
+  int historyTab() => prefs.getInt("historyTab") ?? 0;
+  void setHistoryTab(int i) => prefs.setInt("historyTab", i);
+
   // Theme
   bool darkTheme() => prefs.getBool("darkTheme") ?? false;
   void setDarkTheme(bool p) => prefs.setBool("darkTheme", p);
