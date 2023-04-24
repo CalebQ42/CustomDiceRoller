@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/ui/frame_content.dart';
-import 'package:customdiceroller/ui/updating_switch_tile.dart';
+import 'package:darkstorm_common/frame_content.dart';
+import 'package:darkstorm_common/updating_switch_tile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,7 +30,7 @@ class IntroScreenState extends State<IntroScreen>{
             setState(() => screen++);
           }else{
             cdr.prefs.setShownIntro(true);
-            cdr.nav?.pushNamedAndRemoveUntil("/", (route) => false);
+            cdr.nav.pushNamedAndRemoveUntil("/", (route) => false);
           }
         },
         child: const Icon(Icons.arrow_forward),

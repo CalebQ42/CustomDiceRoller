@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/ui/bottom.dart';
-import 'package:customdiceroller/ui/frame_content.dart';
-import 'package:customdiceroller/ui/updating_switch_tile.dart';
+import 'package:darkstorm_common/bottom.dart';
+import 'package:darkstorm_common/frame_content.dart';
+import 'package:darkstorm_common/updating_switch_tile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +53,7 @@ class _SettingsState extends State<Settings> {
                   setState(() {});
                   if(!val) cdr.prefs.setDriveFirst(true);
                   //TODO: show error dialog if failed
-                  cdr.nav?.pop();
+                  cdr.nav.pop();
                 }
               );
             },
@@ -87,7 +87,6 @@ class _SettingsState extends State<Settings> {
             onChanged: (val){
               cdr.prefs.setStupid(val);
               cdr.stupid = null;
-              cdr.driver?.stupid = null;
               setState((){});
             },
             title: Text(cdr.locale.stupid),

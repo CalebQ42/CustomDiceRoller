@@ -1,6 +1,6 @@
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/ui/bottom.dart';
+import 'package:darkstorm_common/bottom.dart';
 import 'package:flutter/material.dart';
 
 class DiceResults{

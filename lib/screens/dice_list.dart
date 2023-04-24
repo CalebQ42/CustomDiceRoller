@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/ui/frame_content.dart';
+import 'package:darkstorm_common/frame_content.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
@@ -25,7 +25,7 @@ class DieListState extends State<DieList>{
         child: const Icon(Icons.add_box_outlined),
         onPressed: () async{
           var newD = Die(title: cdr.locale.newDie);
-          cdr.nav?.pushNamed("/die/${newD.uuid}", arguments: newD);
+          cdr.nav.pushNamed("/die/${newD.uuid}", arguments: newD);
           if(await cdr.db.dies.getByTitle(newD.title) == null){
             await cdr.db.writeTxn(() async => await cdr.db.dies.put(newD));
           }
@@ -80,7 +80,7 @@ class DieItem extends StatelessWidget{
       child: InkResponse(
         containedInkWell: true,
         highlightShape: BoxShape.rectangle,
-        onTap: () =>  cdr.nav?.pushNamed("/die/${d.uuid}"),
+        onTap: () =>  cdr.nav.pushNamed("/die/${d.uuid}"),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[

@@ -2,7 +2,7 @@ import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dialogs/complex.dart';
 import 'package:customdiceroller/dialogs/simple.dart';
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/ui/frame_content.dart';
+import 'package:darkstorm_common/frame_content.dart';
 import 'package:flutter/material.dart';
 
 class DieEdit extends StatefulWidget{

@@ -1,7 +1,7 @@
 import 'dart:math';
 
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/ui/bottom.dart';
+import 'package:darkstorm_common/bottom.dart';
 import 'package:flutter/material.dart';
 
 class HistoryDialog extends StatefulWidget{
@@ -69,7 +69,7 @@ class _HistoryDialogState extends State<HistoryDialog> with SingleTickerProvider
           highlightShape: BoxShape.rectangle,
           onTap: (){
             widget.setDisplay(cdr.prefs.history()[cdr.prefs.history().length - 1 - index]);
-            cdr.nav?.pop();
+            cdr.nav.pop();
           },
           child: Row(
             children: [
@@ -104,7 +104,7 @@ class _HistoryDialogState extends State<HistoryDialog> with SingleTickerProvider
           highlightShape: BoxShape.rectangle,
           onTap: (){
             widget.setDisplay(cdr.prefs.savedFormulas()[index]);
-            cdr.nav?.pop();
+            cdr.nav.pop();
           },
           child: Row(
             children: [

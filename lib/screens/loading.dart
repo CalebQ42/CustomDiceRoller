@@ -1,5 +1,5 @@
 import 'package:customdiceroller/cdr.dart';
-import 'package:customdiceroller/ui/frame_content.dart';
+import 'package:darkstorm_common/frame_content.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -34,7 +34,7 @@ class LoadingScreenState extends State<LoadingScreen> {
       widget.cdr.postInit(context, this).then(
         (_) {
           if(!_driveFail){
-            widget.cdr.nav?.pushNamedAndRemoveUntil(widget.startingRoute.name ?? "/", (_) => false, arguments: widget.startingRoute.arguments);
+            widget.cdr.nav.pushNamedAndRemoveUntil(widget.startingRoute.name ?? "/", (_) => false, arguments: widget.startingRoute.arguments);
           }
         }
       );
@@ -83,7 +83,7 @@ class LoadingScreenState extends State<LoadingScreen> {
                             if(!value){
                               driveFail = true;
                             }else{
-                              widget.cdr.nav?.pushNamedAndRemoveUntil(widget.startingRoute.name ?? "/", (_) => false, arguments: widget.startingRoute.arguments);
+                              widget.cdr.nav.pushNamedAndRemoveUntil(widget.startingRoute.name ?? "/", (_) => false, arguments: widget.startingRoute.arguments);
                             }
                           }
                         );
@@ -92,7 +92,7 @@ class LoadingScreenState extends State<LoadingScreen> {
                     TextButton(
                       child: Text(AppLocalizations.of(context)!.continueOffline),
                       onPressed: () =>
-                        widget.cdr.nav?.pushNamedAndRemoveUntil(widget.startingRoute.name ?? "/", (_) => false, arguments: widget.startingRoute.arguments)
+                        widget.cdr.nav.pushNamedAndRemoveUntil(widget.startingRoute.name ?? "/", (_) => false, arguments: widget.startingRoute.arguments)
                     )
                   ],
                 )

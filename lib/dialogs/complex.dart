@@ -1,6 +1,6 @@
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/ui/bottom.dart';
+import 'package:darkstorm_common/bottom.dart';
 import 'package:flutter/material.dart';
 
 class ComplexDialog extends StatelessWidget{
@@ -64,13 +64,13 @@ class ComplexDialog extends StatelessWidget{
         ),
         TextButton(
           onPressed: () =>
-            CDR.of(c).nav?.pop(),
+            CDR.of(c).nav.pop(),
           child: Text(CDR.of(c).locale.cancel)
         ),
         TextButton(
           onPressed: () {
             s.parts.removeWhere((p) => p.name == "" && (p.value == 0));
-            CDR.of(context).nav?.pop();
+            CDR.of(context).nav.pop();
             onClose(s);
           },
           child: Text(updating ? CDR.of(c).locale.update : CDR.of(context).locale.add)

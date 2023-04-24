@@ -177,6 +177,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.5"
+  darkstorm_common:
+    dependency: "direct main"
+    description:
+      name: darkstorm_common
+      sha256: edf8da7b415795357cdc7a26de8bdba67c1e66c12a7d959ef23c4d240a287c7f
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0-pre.3"
   dart_style:
     dependency: transitive
     description:
@@ -971,5 +979,5 @@ packages:
     source: hosted
     version: "3.1.1"
 sdks:
-  dart: ">=3.0.0-417.1.beta <4.0.0"
+  dart: ">=3.0.0-417.2.beta <4.0.0"
   flutter: ">=3.3.0"

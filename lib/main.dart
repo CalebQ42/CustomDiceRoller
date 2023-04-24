@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
@@ -8,7 +9,7 @@ import 'package:customdiceroller/screens/die_edit.dart';
 import 'package:customdiceroller/screens/intro.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
-import 'package:customdiceroller/ui/frame.dart';
+import 'package:darkstorm_common/frame.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -73,7 +74,7 @@ class MainUIState extends State<MainUI>{
     );
     return MaterialApp(
       themeAnimationDuration: cdr.globalDuration,
-      navigatorKey: cdr.navigatorKey,
+      navigatorKey: cdr.navKey,
       theme: ThemeData.light().copyWith(
         colorScheme: const ColorScheme.light(
           primary: Colors.purple,
@@ -105,7 +106,36 @@ class MainUIState extends State<MainUI>{
         cdr.observatory
       ],
       onGenerateTitle: (context) => AppLocalizations.of(context)!.cdr,
-      builder: (context, child) => Frame(key: cdr.frameKey, child: child ?? const Text("This is borken")),
+      builder: (context, child) =>
+        Frame(
+          key: cdr.frameKey,
+          beveled: false,
+          appName: AppLocalizations.of(context)!.cdr,
+          navItems: [
+            Nav(
+              icon: const Icon(Icons.calculate),
+              name: AppLocalizations.of(context)!.calculator,
+              routeName: "/calculator"
+            ),
+            Nav(
+              icon: Transform.rotate(
+                angle: pi * 1/4,
+                child: const Icon(Icons.casino)
+              ),
+              name: AppLocalizations.of(context)!.dice,
+              routeName: "/dieList"
+            ),
+          ],
+          bottomNavItems: [
+            Nav(
+              icon: const Icon(Icons.settings),
+              name: AppLocalizations.of(context)!.settings,
+              routeName: "/settings"
+            )
+          ],
+          hideBar: (routeName) => routeName == "/loading" || routeName == "/intro",
+          child: child ?? const Text("This is borken"),
+        ),
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       onGenerateRoute: (settings) {

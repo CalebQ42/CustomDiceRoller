@@ -1,7 +1,7 @@
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dialogs/complex.dart';
 import 'package:customdiceroller/dice/dice.dart';
-import 'package:customdiceroller/ui/bottom.dart';
+import 'package:darkstorm_common/bottom.dart';
 import 'package:flutter/material.dart';
 
 class SimpleSideDialog extends StatelessWidget{
@@ -39,7 +39,7 @@ class SimpleSideDialog extends StatelessWidget{
     }else{
       onClose(Side.number(prs));
     }
-    CDR.of(context).nav?.pop();
+    CDR.of(context).nav.pop();
   }
 
   void show(BuildContext context) {
@@ -48,7 +48,7 @@ class SimpleSideDialog extends StatelessWidget{
       buttons: (c) => [
         TextButton(
           onPressed: () {
-            CDR.of(context).nav?.pop();
+            CDR.of(context).nav.pop();
             ComplexDialog(
               onClose: onClose,
               s: s,
@@ -60,7 +60,7 @@ class SimpleSideDialog extends StatelessWidget{
         const Spacer(),
         TextButton(
           onPressed: () =>
-            CDR.of(c).nav?.pop(),
+            CDR.of(c).nav.pop(),
           child: Text(CDR.of(c).locale.cancel)
         ),
         TextButton(

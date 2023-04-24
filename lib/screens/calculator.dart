@@ -2,8 +2,8 @@ import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dialogs/history.dart';
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/dice/formula.dart';
-import 'package:customdiceroller/ui/bottom.dart';
-import 'package:customdiceroller/ui/frame_content.dart';
+import 'package:darkstorm_common/bottom.dart';
+import 'package:darkstorm_common/frame_content.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
@@ -182,7 +182,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                                         highlightShape: BoxShape.rectangle,
                                         onTap: () {
                                           addToDisplay("{$dieName}");
-                                          cdr.nav?.pop();
+                                          cdr.nav.pop();
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.all(15),
@@ -197,7 +197,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                                 ),
                               buttons: (c) => [
                                 TextButton(
-                                  onPressed: () => cdr.nav?.pop(),
+                                  onPressed: () => cdr.nav.pop(),
                                   child: Text(cdr.locale.cancel),
                                 )
                               ],
