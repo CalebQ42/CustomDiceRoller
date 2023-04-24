@@ -798,10 +798,10 @@ packages:
     dependency: "direct main"
     description:
       name: stupid
-      sha256: "2e4cce49e91ff116430643b48b1333ce912a774f7abacc580a57a84ba4cccacf"
+      sha256: dab07297c3675ae94594e64a82521b603a349009bd77580e03bd233b11132a76
       url: "https://pub.dev"
     source: hosted
-    version: "0.0.6"
+    version: "0.0.8"
   term_glyph:
     dependency: transitive
     description:

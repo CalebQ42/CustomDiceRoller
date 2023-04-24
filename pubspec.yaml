@@ -24,7 +24,7 @@ dependencies:
   extension_google_sign_in_as_googleapis_auth: ^2.0.9
   googleapis: ^11.0.0
   universal_internet_checker: ^0.1.2
-  stupid: ^0.0.6
+  stupid: ^0.0.8
   path_provider: ^2.0.14
   xdg_directories: ^1.0.0
   darkstorm_common: ^1.0.0-pre.8

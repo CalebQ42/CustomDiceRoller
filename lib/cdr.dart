@@ -5,7 +5,6 @@ import 'package:customdiceroller/screens/loading.dart';
 import 'package:darkstorm_common/driver.dart';
 import 'package:customdiceroller/utils/preferences.dart';
 import 'package:darkstorm_common/top_inherit.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -62,13 +61,15 @@ class CDR with TopResources{
     if(prefs.stupid()){
       try{
         String? apiKey;
-        if(!kIsWeb){
-          var dot = DotEnv();
-          await dot.load(fileName: ".stupid");
-          apiKey = dot.maybeGet("STUPID_KEY");
-        }
-        if(kIsWeb || apiKey != null){
-          stupid = Stupid(baseUrl: Uri.parse("https://api.darkstorm.tech"), deviceId: await prefs.stupidUuid(), apiKey: apiKey);
+        var dot = DotEnv();
+        await dot.load(fileName: ".stupid");
+        apiKey = dot.maybeGet("STUPID_KEY");
+        if(apiKey != null){
+          stupid = Stupid(
+            baseUrl: Uri.parse("https://api.darkstorm.tech"),
+            deviceId: await prefs.stupidUuid(),
+            apiKey: apiKey,
+          );
           if(prefs.log()){
             await stupid!.log();
           }
