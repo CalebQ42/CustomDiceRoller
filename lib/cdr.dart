@@ -57,10 +57,7 @@ class CDR with TopResources{
     );
   }
 
-
-
   Future<void> postInit(BuildContext context, LoadingScreenState loading) async{
-    globalDuration = Duration.zero;
     locale = AppLocalizations.of(context)!;
     if(prefs.stupid()){
       try{
@@ -140,14 +137,5 @@ class CDR with TopResources{
     return true;
   }
 
-  static CDR of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<CDRHolder>()!.cdr;
-}
-
-class CDRHolder extends InheritedWidget{
-  final CDR cdr;
-
-  const CDRHolder(this.cdr, {super.key, required super.child});
-
-  @override
-  bool updateShouldNotify(covariant InheritedWidget oldWidget) => false;
+  static CDR of(BuildContext context) => context.dependOnInheritedWidgetOfExactType<TopInherit>()!.resources as CDR;
 }

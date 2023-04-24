@@ -10,6 +10,7 @@ import 'package:customdiceroller/screens/intro.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:darkstorm_common/frame.dart';
+import 'package:darkstorm_common/top_inherit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -24,8 +25,8 @@ void main() =>
         (value) {
           cdr = value;
           runApp(
-            CDRHolder(
-              value,
+            TopInherit(
+              resources: value,
               child: const MainUI()
             )
           );
@@ -130,7 +131,8 @@ class MainUIState extends State<MainUI>{
             Nav(
               icon: const Icon(Icons.settings),
               name: AppLocalizations.of(context)!.settings,
-              routeName: "/settings"
+              routeName: "/settings",
+              lastItem: true,
             )
           ],
           hideBar: (routeName) => routeName == "/loading" || routeName == "/intro",
