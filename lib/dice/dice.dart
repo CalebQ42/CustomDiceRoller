@@ -134,7 +134,8 @@ class Die {
 class Side{
   List<SidePart> parts;
 
-  Side({this.parts = const []});
+  Side({List<SidePart>? parts}) :
+    parts = parts ?? <SidePart>[];
   Side.simple(String name) : parts = [SidePart(name: name)];
   Side.number(int value) : parts = [SidePart(value: value)];
   Side.copy(Side s) : parts = s.parts.toList();

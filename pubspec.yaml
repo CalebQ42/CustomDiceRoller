@@ -27,7 +27,7 @@ dependencies:
   stupid: ^0.0.8
   path_provider: ^2.0.14
   xdg_directories: ^1.0.0
-  darkstorm_common: ^1.0.0-pre.8
+  darkstorm_common: ^1.0.0-pre.9
 
 dev_dependencies:
   flutter_test:

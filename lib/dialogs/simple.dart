@@ -4,32 +4,17 @@ import 'package:customdiceroller/dice/dice.dart';
 import 'package:darkstorm_common/bottom.dart';
 import 'package:flutter/material.dart';
 
-class SimpleSideDialog extends StatelessWidget{
+class SimpleSideDialog{
   final TextEditingController txt;
   final Side s;
   final bool updating;
   final void Function(Side) onClose;
 
   SimpleSideDialog({
-    super.key,
     required this.s,
     required this.onClose,
     this.updating = false,
   }) : txt = TextEditingController(text: s.toString());
-  
-  @override
-  Widget build(BuildContext context) =>
-    Padding(
-      padding: const EdgeInsets.all(10),
-      child: TextField(
-        controller: txt,
-        autofocus: true,
-        textCapitalization: TextCapitalization.sentences,
-        autocorrect: true,
-        onSubmitted: (value) =>
-          close(value, context),
-      ),
-    );
 
   void close(String value, BuildContext context){
     if(value == "") return;
@@ -44,7 +29,17 @@ class SimpleSideDialog extends StatelessWidget{
 
   void show(BuildContext context) {
     var bot = Bottom(
-      child: (c) => this,
+      child: (c) => Padding(
+        padding: const EdgeInsets.all(10),
+        child: TextField(
+          controller: txt,
+          autofocus: true,
+          textCapitalization: TextCapitalization.sentences,
+          autocorrect: true,
+          onSubmitted: (value) =>
+            close(value, context),
+        ),
+      ),
       buttons: (c) => [
         TextButton(
           onPressed: () {

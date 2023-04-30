@@ -60,9 +60,8 @@ class DiceResults{
       }
     }
     Bottom(
-      child: (c) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
+      children: (c) =>
+        [
           if(_hasNumRes) Text(
             _num.toString(),
             style: Theme.of(context).textTheme.headlineMedium,
@@ -101,7 +100,6 @@ class DiceResults{
             }
           )
         ],
-      ),
       buttons: (c) =>[
         TextButton(
           onPressed: (){
@@ -115,17 +113,14 @@ class DiceResults{
   }
   void showIndividualResults(BuildContext context) =>
     Bottom(
-      child: (c) => Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: List.generate(
-          _indResults.length,
-          (index) =>
-            Text(
-              _indResults[index],
-              textAlign: TextAlign.center,
-              style: Theme.of(c).textTheme.headlineSmall,
-            )
-        )
+      children: (c) => List.generate(
+        _indResults.length,
+        (index) =>
+          Text(
+            _indResults[index],
+            textAlign: TextAlign.center,
+            style: Theme.of(c).textTheme.headlineSmall,
+          )
       ),
       buttons: (c) =>[
         TextButton(

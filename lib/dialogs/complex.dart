@@ -3,16 +3,14 @@ import 'package:customdiceroller/dice/dice.dart';
 import 'package:darkstorm_common/bottom.dart';
 import 'package:flutter/material.dart';
 
-class ComplexDialog extends StatelessWidget{
+class ComplexDialog{
   final Side s;
   final bool updating;
   final void Function(Side) onClose;
-  final GlobalKey<AnimatedListState> listKey = GlobalKey();
 
   final List<UniqueKey> partKeys;
 
   ComplexDialog({
-    super.key,
     Side? s,
     required this.onClose,
     this.updating = false
@@ -20,42 +18,33 @@ class ComplexDialog extends StatelessWidget{
     s = s == null ? Side() : Side.copy(s),
     partKeys = List.generate(s != null ? s.parts.length : 0, (index) => UniqueKey());
 
-  @override
-  Widget build(BuildContext context) =>
-    AnimatedSize(
-      duration: CDR.of(context).globalDuration,
-      alignment: Alignment.topCenter,
-      child: AnimatedList(
-        key: listKey,
-        shrinkWrap: true,
-        primary: false,
-        initialItemCount: s.parts.length,
-        itemBuilder: (c, i, anim) =>
-          ComplexPart(
+  void show(BuildContext context) {
+    Bottom? bot;
+    bot = Bottom(
+      itemBuilderCount: s.parts.length,
+      itemBuilder: (c, i, anim) =>
+        SizeTransition(
+          axisAlignment: -1.0,
+          sizeFactor: anim,
+          child: ComplexPart(
             key: partKeys[i],
             s: s.parts[i],
             onDelete: () {
               s.parts.removeAt(i);
-              listKey.currentState?.removeItem(
+              bot?.listKey.currentState?.removeItem(
                 i,
                 (context, animation) => SizeTransition(sizeFactor: anim),
                 duration: CDR.of(context).globalDuration
               );
             }
-          ),
-      )
-    );
-
-  void show(BuildContext context) =>
-    Bottom(
-      child: (c) => this,
-      scroll: false,
+          )
+        ),
       buttons: (c) => [
         TextButton(
           onPressed: () {
             s.parts.add(SidePart(value: 0));
             partKeys.add(UniqueKey());
-            listKey.currentState?.insertItem(
+            bot?.listKey.currentState?.insertItem(
               s.parts.length-1,
               duration: CDR.of(context).globalDuration
             );
@@ -76,7 +65,9 @@ class ComplexDialog extends StatelessWidget{
           child: Text(updating ? CDR.of(c).locale.update : CDR.of(context).locale.add)
         ),
       ],
-    ).show(context);
+    );
+    bot.show(context);
+  }
 }
 
 class ComplexPart extends StatefulWidget{

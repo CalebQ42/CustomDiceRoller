@@ -199,30 +199,27 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                   onTap: () =>
                     Bottom(
                       padding: false,
-                      child: (c) =>
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: List.generate(
-                            cdr.db.dies.countSync(),
-                            (index) {
-                              var dieName = cdr.db.dies.where().offset(index).findFirstSync()!.title;
-                              return InkResponse(
-                                containedInkWell: true,
-                                highlightShape: BoxShape.rectangle,
-                                onTap: () {
-                                  addToDisplay("{$dieName}");
-                                  cdr.nav.pop();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.all(15),
-                                  child: Text(
-                                    dieName,
-                                    style: Theme.of(context).textTheme.titleMedium,
-                                  )
+                      children: (c) =>
+                        List.generate(
+                          cdr.db.dies.countSync(),
+                          (index) {
+                            var dieName = cdr.db.dies.where().offset(index).findFirstSync()!.title;
+                            return InkResponse(
+                              containedInkWell: true,
+                              highlightShape: BoxShape.rectangle,
+                              onTap: () {
+                                addToDisplay("{$dieName}");
+                                cdr.nav.pop();
+                              },
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Text(
+                                  dieName,
+                                  style: Theme.of(context).textTheme.titleMedium,
                                 )
-                              );
-                            }
-                          )
+                              )
+                            );
+                          }
                         ),
                       buttons: (c) => [
                         TextButton(

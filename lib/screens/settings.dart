@@ -35,16 +35,12 @@ class _SettingsState extends State<Settings> {
               }
               Bottom(
                 dismissible: false,
-                child: (c) =>
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      const CircularProgressIndicator(),
-                      Container(height: 10,),
-                      Text(cdr.locale.loadingDrive)
-                    ]
-                  ),
+                children: (c) =>
+                  [
+                    const CircularProgressIndicator(),
+                    Container(height: 10,),
+                    Text(cdr.locale.loadingDrive)
+                  ]
               ).show(context);
               cdr.prefs.setDrive(true);
               cdr.initializeDrive().then(

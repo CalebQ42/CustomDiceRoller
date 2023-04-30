@@ -16,7 +16,6 @@ class HistoryDialog extends StatefulWidget{
   void show(BuildContext context) =>
     Bottom(
       child: (c) => this,
-      // scroll: false,
       padding: false,
     ).show(context);
 }
