@@ -77,7 +77,7 @@ const DieSchema = CollectionSchema(
   getId: _dieGetId,
   getLinks: _dieGetLinks,
   attach: _dieAttach,
-  version: '3.1.0',
+  version: '3.1.0+1',
 );
 
 int _dieEstimateSize(
@@ -1103,15 +1103,14 @@ Side _sideDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = Side(
-    parts: reader.readObjectList<SidePart>(
-          offsets[0],
-          SidePartSchema.deserialize,
-          allOffsets,
-          SidePart(),
-        ) ??
-        const [],
-  );
+  final object = Side();
+  object.parts = reader.readObjectList<SidePart>(
+        offsets[0],
+        SidePartSchema.deserialize,
+        allOffsets,
+        SidePart(),
+      ) ??
+      [];
   return object;
 }
 
@@ -1129,7 +1128,7 @@ P _sideDeserializeProp<P>(
             allOffsets,
             SidePart(),
           ) ??
-          const []) as P;
+          []) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }

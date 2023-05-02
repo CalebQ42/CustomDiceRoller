@@ -132,13 +132,12 @@ class Die {
 
 @embedded
 class Side{
-  List<SidePart> parts;
+  List<SidePart> parts = List.empty(growable: true);
 
-  Side({List<SidePart>? parts}) :
-    parts = parts ?? <SidePart>[];
+  Side();
   Side.simple(String name) : parts = [SidePart(name: name)];
   Side.number(int value) : parts = [SidePart(value: value)];
-  Side.copy(Side s) : parts = s.parts.toList();
+  Side.copy(Side s) : parts = List.from(List.from(s.parts));
 
   bool isSimple(){
     if(parts.length != 1) return false;
