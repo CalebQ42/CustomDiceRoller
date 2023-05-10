@@ -29,9 +29,7 @@ class SimpleSideDialog{
 
   void show(BuildContext context) {
     var bot = Bottom(
-      child: (c) => Padding(
-        padding: const EdgeInsets.all(10),
-        child: TextField(
+      child: (c) => TextField(
           controller: txt,
           autofocus: true,
           textCapitalization: TextCapitalization.sentences,
@@ -39,7 +37,6 @@ class SimpleSideDialog{
           onSubmitted: (value) =>
             close(value, context),
         ),
-      ),
       buttons: (c) => [
         TextButton(
           onPressed: () {
@@ -52,7 +49,6 @@ class SimpleSideDialog{
           },
           child: Text(CDR.of(c).locale.toComplex)
         ),
-        const Spacer(),
         TextButton(
           onPressed: () =>
             CDR.of(c).nav.pop(),
