@@ -122,7 +122,6 @@ class _DieEditState extends State<DieEdit> {
                   child: sideCard(context, index),
                   onDismissed: (_){
                     //TODO: Undo
-                    print(index);
                     widget.d.sides.removeAt(index);
                     widget.d.save(cdr: cdr);
                     listKey.currentState?.removeItem(index, (context, animation) =>

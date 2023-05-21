@@ -6,10 +6,11 @@ import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/screens/calculator.dart';
 import 'package:customdiceroller/screens/dice_list.dart';
 import 'package:customdiceroller/screens/die_edit.dart';
-import 'package:customdiceroller/screens/intro.dart';
+import 'package:customdiceroller/screens/intro_pages.dart';
 import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:darkstorm_common/frame.dart';
+import 'package:darkstorm_common/intro.dart';
 import 'package:darkstorm_common/top_inherit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -144,7 +145,13 @@ class MainUIState extends State<MainUI>{
         Widget? widy;
         RouteSettings? newSettings;
         if(!cdr.prefs.shownIntro()){
-          widy = const IntroScreen();
+          widy = IntroScreen(
+            pages: Intro().pages(),
+            onDone: (){
+              cdr.prefs.setShownIntro(true);
+              cdr.nav.pushNamedAndRemoveUntil(settings.name ?? "/", (route) => false);
+            },
+          );
           newSettings = const RouteSettings(name: "/intro");
         }else{
           if(!cdr.initilized){

@@ -28,7 +28,7 @@ dependencies:
   path_provider: ^2.0.15
 
   xdg_directories: ^1.0.0
-  darkstorm_common: ^1.0.0-pre.10
+  darkstorm_common: ^1.0.0-pre.11
 
 dev_dependencies:
   flutter_test:
