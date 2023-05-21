@@ -58,7 +58,9 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                 SizedBox(
                   height: 65,
                   child: InputDecorator(
-                    decoration: const InputDecoration(),
+                    decoration: const InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 10)
+                    ),
                     isFocused: true,
                     child: Row(
                       children: [
@@ -81,9 +83,12 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                             ],
                           )
                         ),
-                        IconButton(
-                          icon: const Icon(Icons.backspace),
-                          onPressed: (){
+                        InkResponse(
+                          child: const SizedBox.square(
+                            dimension: 65,
+                            child: Center(child: Icon(Icons.backspace))
+                          ),
+                          onTap: (){
                             var sel = displayCont!.selection;
                             var bef = sel.textBefore(displayCont!.text);
                             var end = sel.textAfter(displayCont!.text);

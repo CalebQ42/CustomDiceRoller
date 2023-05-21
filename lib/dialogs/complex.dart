@@ -7,12 +7,14 @@ class ComplexDialog{
   final Side s;
   final bool updating;
   final void Function(Side) onClose;
+  final List<String> hints;
 
   final List<UniqueKey> partKeys;
 
   ComplexDialog({
     Side? s,
     required this.onClose,
+    required this.hints,
     this.updating = false
   }) :
     s = s == null ? Side() : Side.copy(s),
@@ -28,6 +30,7 @@ class ComplexDialog{
           sizeFactor: anim,
           child: ComplexPart(
             key: partKeys[i],
+            hints: hints,
             s: s.parts[i],
             onDelete: () {
               s.parts.removeAt(i);
@@ -59,8 +62,11 @@ class ComplexDialog{
         TextButton(
           onPressed: () {
             s.parts.removeWhere((p) => p.name == "" && (p.value == 0));
-            CDR.of(context).nav.pop();
+            for(var i = 0; i < s.parts.length; i++){
+              s.parts[i].name = s.parts[i].name.trim();
+            }
             onClose(s);
+            CDR.of(context).nav.pop();
           },
           child: Text(updating ? CDR.of(c).locale.update : CDR.of(context).locale.add)
         ),
@@ -73,11 +79,13 @@ class ComplexDialog{
 class ComplexPart extends StatefulWidget{
   final SidePart s;
   final void Function() onDelete;
+  final List<String> hints;
 
   const ComplexPart({
     super.key,
     required this.s,
-    required this.onDelete
+    required this.onDelete,
+    required this.hints,
   });
 
   @override
@@ -136,6 +144,7 @@ class _PartState extends State<ComplexPart>{
             Expanded(
               child: TextField(
                 decoration: null,
+                autofillHints: widget.hints,
                 controller: cont,
                 textCapitalization: TextCapitalization.words,
               ),

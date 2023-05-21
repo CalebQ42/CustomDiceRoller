@@ -29,6 +29,17 @@ class Die {
   @Ignore()
   String? driveId;
 
+  List<String> get hints{
+    var out = <String>[];
+    for (var s in sides){
+      for(var n in s.names){
+        if(n == "") continue;
+        if(!out.contains(n)) out.add(n);
+      }
+    }
+    return out;
+  }
+
   Die({required this.title, this.sides = const []});
   Die.numberDie(int sides, AppLocalizations localizations) :
     title = localizations.dieNotation + sides.toString(),
@@ -134,12 +145,15 @@ class Die {
 class Side{
   List<SidePart> parts = List.empty(growable: true);
 
+  List<String> get names => parts.map((e) => e.name).toList();
+
   Side();
   Side.simple(String name) : parts = [SidePart(name: name)];
   Side.number(int value) : parts = [SidePart(value: value)];
   Side.copy(Side s) : parts = List.from(List.from(s.parts));
 
   bool isSimple(){
+    if(parts.isEmpty) return true;
     if(parts.length != 1) return false;
     if(parts[0].name == "") return true;
     if(parts[0].name != "" && parts[0].value == 1) return true;

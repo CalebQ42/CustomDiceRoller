@@ -1,7 +1,7 @@
 name: customdiceroller
 description: A roller of custom dice
 publish_to: 'none'
-version: 1.0.0+1
+version: 1.0.1+2
 
 environment:
   sdk: '>=3.0.0-417.1.beta <4.0.0'
@@ -22,7 +22,7 @@ dependencies:
   flutter_dotenv: ^5.0.2
   google_sign_in: ^6.1.0
   extension_google_sign_in_as_googleapis_auth: ^2.0.9
-  googleapis: ^11.0.0
+  googleapis: ^11.1.0
   universal_internet_checker: ^0.1.2
   stupid: ^0.0.8
   path_provider: ^2.0.15

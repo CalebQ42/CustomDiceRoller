@@ -59,7 +59,7 @@ class _DieEditState extends State<DieEdit> {
           SpeedDialIcons(
             onPressed: () =>
               SimpleSideDialog(
-                s: Side(),
+                hints: widget.d.hints,
                 onClose: (s){
                   widget.d.sides.add(s);
                   listKey.currentState?.insertItem(widget.d.sides.length-1);
@@ -77,6 +77,7 @@ class _DieEditState extends State<DieEdit> {
           SpeedDialIcons(
             onPressed: () =>
               ComplexDialog(
+                hints: widget.d.hints,
                 onClose: (s){
                   widget.d.sides.add(s);
                   listKey.currentState?.insertItem(widget.d.sides.length-1);
@@ -121,6 +122,7 @@ class _DieEditState extends State<DieEdit> {
                   child: sideCard(context, index),
                   onDismissed: (_){
                     //TODO: Undo
+                    print(index);
                     widget.d.sides.removeAt(index);
                     widget.d.save(cdr: cdr);
                     listKey.currentState?.removeItem(index, (context, animation) =>
@@ -143,6 +145,7 @@ class _DieEditState extends State<DieEdit> {
           if(widget.d.sides[index].isSimple()){
             SimpleSideDialog(
               s: widget.d.sides[index],
+              hints: widget.d.hints,
               onClose: (s){
                 widget.d.sides[index] = s;
                 widget.d.save(context: context);
@@ -153,6 +156,7 @@ class _DieEditState extends State<DieEdit> {
           }else{
             ComplexDialog(
               s: widget.d.sides[index],
+              hints: widget.d.hints,
               onClose: (s){
                 widget.d.sides[index] = s;
                 widget.d.save(context: context);

@@ -122,6 +122,7 @@ class DiceResults{
             style: Theme.of(c).textTheme.headlineSmall,
           )
       ),
+      padding: false,
       buttons: (c) =>[
         TextButton(
           onPressed: (){
