@@ -180,10 +180,9 @@ packages:
   darkstorm_common:
     dependency: "direct main"
     description:
-      name: darkstorm_common
-      sha256: "9e7e31292e95f6ddadaa223446e78b9a53f1783c00b57cc2a5205f452cae579d"
-      url: "https://pub.dev"
-    source: hosted
+      path: "../darkstorm-common"
+      relative: true
+    source: path
     version: "1.0.0-pre.18"
   dart_style:
     dependency: transitive

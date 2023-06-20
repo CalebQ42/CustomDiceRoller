@@ -80,7 +80,12 @@ class DieItem extends StatelessWidget{
       child: InkResponse(
         containedInkWell: true,
         highlightShape: BoxShape.rectangle,
-        onTap: () =>  cdr.nav.pushNamed("/die/${d.uuid}"),
+        onTap: () {
+          var routeName = "/die/${d.uuid}";
+          var prevRoute = cdr.observatory.containsRoute(name: routeName);
+          if(prevRoute != null) cdr.nav.removeRoute(prevRoute);
+          cdr.nav.pushNamed("/die/${d.uuid}");
+        },
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children:[
