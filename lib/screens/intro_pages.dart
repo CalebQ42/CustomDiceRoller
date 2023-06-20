@@ -29,9 +29,9 @@ class Intro{
       key: pageKey,
       title: Text(AppLocalizations.of(context)!.introStupidTitle),
       subtext: Text(AppLocalizations.of(context)!.introStupidSub),
-      items: [
+      items: (c) => [
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.stupid),
+          title: Text(AppLocalizations.of(c)!.stupid),
           value: cdr.prefs.stupid(),
           onChanged:(p) {
             cdr.prefs.setStupid(p);
@@ -40,13 +40,13 @@ class Intro{
         ),
         const Divider(),
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.stupidLog),
+          title: Text(AppLocalizations.of(c)!.stupidLog),
           value: cdr.prefs.log(),
           onChanged: cdr.prefs.stupid() ? (p) => cdr.prefs.setLog(p) : null,
         ),
         const Divider(),
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.stupidCrash),
+          title: Text(AppLocalizations.of(c)!.stupidCrash),
           value: cdr.prefs.crash(),
           onChanged: cdr.prefs.stupid() ? (p) => cdr.prefs.setCrash(p) : null,
         ),
@@ -60,10 +60,10 @@ class Intro{
     return IntroPage(
       key: pageKey,
       title: Text(AppLocalizations.of(context)!.introOtherTitle),
-      items: [
+      items: (c) => [
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.drive),
-          subtitle: !(kIsWeb || Platform.isAndroid || Platform.isIOS) ? Text(AppLocalizations.of(context)!.notAvailablePlatform) : null,
+          title: Text(AppLocalizations.of(c)!.drive),
+          subtitle: !(kIsWeb || Platform.isAndroid || Platform.isIOS) ? Text(AppLocalizations.of(c)!.notAvailablePlatform) : null,
           value: cdr.prefs.drive(),
           onChanged: (kIsWeb || Platform.isAndroid || Platform.isIOS) ? (p) =>
             cdr.prefs.setDrive(p) : null,
@@ -77,7 +77,7 @@ class Intro{
             pageKey.currentState?.update();
             cdr.topLevelUpdate!();
           },
-          title: Text(AppLocalizations.of(context)!.lightTheme),
+          title: Text(AppLocalizations.of(c)!.lightTheme),
         ),
         const Divider(),
         SwitchListTile(
@@ -88,33 +88,33 @@ class Intro{
             pageKey.currentState?.update();
             cdr.topLevelUpdate!();
           },
-          title: Text(AppLocalizations.of(context)!.darkTheme),
+          title: Text(AppLocalizations.of(c)!.darkTheme),
         ),
         const Divider(),
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.swipeDelete),
+          title: Text(AppLocalizations.of(c)!.swipeDelete),
           value: cdr.prefs.swipeDelete(),
           onChanged: (p) =>
             cdr.prefs.setSwipeDelete(p),
         ),
         const Divider(),
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.deleteButtonPref),
+          title: Text(AppLocalizations.of(c)!.deleteButtonPref),
           value: cdr.prefs.deleteButton(),
           onChanged: (p) =>
             cdr.prefs.setDeleteButton(p),
         ),
         const Divider(),
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.calculatorKeyboard),
-          subtitle: Text(AppLocalizations.of(context)!.keyboardWarning),
+          title: Text(AppLocalizations.of(c)!.calculatorKeyboard),
+          subtitle: Text(AppLocalizations.of(c)!.keyboardWarning),
           value: cdr.prefs.allowKeyboard(),
           onChanged: (p) =>
             cdr.prefs.setAllowKeyboard(p),
         ),
         const Divider(),
         UpdatingSwitchTile(
-          title: Text(AppLocalizations.of(context)!.individualPref),
+          title: Text(AppLocalizations.of(c)!.individualPref),
           value: cdr.prefs.individual(),
           onChanged: (p) =>
             cdr.prefs.setIndividual(p),

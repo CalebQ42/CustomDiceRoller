@@ -11,6 +11,7 @@ import 'package:customdiceroller/screens/loading.dart';
 import 'package:customdiceroller/screens/settings.dart';
 import 'package:darkstorm_common/frame.dart';
 import 'package:darkstorm_common/intro.dart';
+import 'package:darkstorm_common/nav.dart';
 import 'package:darkstorm_common/top_inherit.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

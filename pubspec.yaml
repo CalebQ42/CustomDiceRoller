@@ -12,23 +12,23 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.5
-  shared_preferences: ^2.1.1
+  shared_preferences: ^2.1.2
   url_launcher: ^6.1.11
   uuid: ^3.0.7
   flutter_secure_storage: ^8.0.0
   isar_flutter_libs: ^3.1.0+1
   isar: ^3.1.0+1
   intl: any
-  flutter_dotenv: ^5.0.2
-  google_sign_in: ^6.1.0
-  extension_google_sign_in_as_googleapis_auth: ^2.0.9
-  googleapis: ^11.1.0
+  flutter_dotenv: ^5.1.0
+  google_sign_in: ^6.1.4
+  extension_google_sign_in_as_googleapis_auth: ^2.0.10
+  googleapis: ^11.2.0
   universal_internet_checker: ^0.1.2
   stupid: ^0.0.8
   path_provider: ^2.0.15
 
   xdg_directories: ^1.0.0
-  darkstorm_common: ^1.0.0-pre.11
+  darkstorm_common: ^1.0.0-pre.18
 
 dev_dependencies:
   flutter_test:
