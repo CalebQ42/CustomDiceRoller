@@ -20,6 +20,7 @@
     "loadingDrive": "Loading Google Drive...",
     "driveError": "Failed Sync",
     "driveErrorExplaination": "Failed to sync with Google Drive. Either retry or continue offline.",
+    "driveSettingError": "Failed to turn on Google Drive. Retry?",
     "retry": "Retry",
     "continueOffline": "Continue Offline",
 

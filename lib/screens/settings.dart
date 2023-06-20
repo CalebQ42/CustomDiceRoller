@@ -24,35 +24,7 @@ class _SettingsState extends State<Settings> {
         children: [
           if(kIsWeb || Platform.isAndroid || Platform.isIOS) SwitchListTile(
             value: cdr.prefs.drive(),
-            onChanged: (val) async{
-              if(!val){
-                cdr.prefs.setDriveFirst(true);
-                cdr.prefs.setDrive(val);
-                await cdr.driver?.gsi?.signOut();
-                cdr.driver = null;
-                setState((){});
-                return;
-              }
-              Bottom(
-                dismissible: false,
-                children: (c) =>
-                  [
-                    const CircularProgressIndicator(),
-                    Container(height: 10,),
-                    Text(cdr.locale.loadingDrive)
-                  ]
-              ).show(context);
-              cdr.prefs.setDrive(true);
-              cdr.initializeDrive().then(
-                (value) {
-                  cdr.prefs.setDrive(value);
-                  setState(() {});
-                  if(!val) cdr.prefs.setDriveFirst(true);
-                  //TODO: show error dialog if failed
-                  cdr.nav.pop();
-                }
-              );
-            },
+            onChanged: setDrive,
             title: Text(cdr.locale.drive),
           ),
           const Divider(),
@@ -158,6 +130,49 @@ class _SettingsState extends State<Settings> {
           )
         ],
       )
+    );
+  }
+
+  Future<void> setDrive(bool val) async{
+    var cdr = CDR.of(context);
+    if(!val){
+      cdr.prefs.setDriveFirst(true);
+      cdr.prefs.setDrive(val);
+      await cdr.driver?.gsi?.signOut();
+      cdr.driver = null;
+      setState((){});
+      return;
+    }
+    Bottom(
+      dismissible: false,
+      children: (c) =>
+        [
+          const CircularProgressIndicator(),
+          Container(height: 10,),
+          Text(cdr.locale.loadingDrive)
+        ]
+    ).show(context);
+    cdr.prefs.setDrive(true);
+    cdr.initializeDrive().then(
+      (value) {
+        cdr.prefs.setDrive(value);
+        setState(() {});
+        cdr.nav.pop();
+        if(!val){
+          cdr.prefs.setDriveFirst(true);
+          Bottom(
+            children: (c) =>[
+              Text(cdr.locale.driveSettingError),
+            ],
+            buttons: (c) =>[
+              TextButton(
+                child: Text(cdr.locale.retry),
+                onPressed: () => setDrive(true),
+              )
+            ],
+          ).show(context);
+        }
+      }
     );
   }
 }
