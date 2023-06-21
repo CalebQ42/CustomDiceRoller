@@ -6,6 +6,7 @@ import 'package:darkstorm_common/frame_content.dart';
 import 'package:darkstorm_common/updating_switch_tile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:stupid/stupid.dart';
 
 class Settings extends StatefulWidget{
@@ -53,9 +54,38 @@ class _SettingsState extends State<Settings> {
           const Divider(),
           SwitchListTile(
             value: cdr.prefs.stupid(),
-            onChanged: (val){
+            onChanged: (val) async{
               cdr.prefs.setStupid(val);
-              cdr.stupid = null;
+              if(!val){
+                cdr.stupid = null;
+              }else{
+                try{
+                  String? apiKey;
+                  var dot = DotEnv();
+                  await dot.load(fileName: ".stupid");
+                  apiKey = dot.maybeGet("STUPID_KEY");
+                  if(apiKey != null){
+                    cdr.stupid = Stupid(
+                      baseUrl: Uri.parse("https://api.darkstorm.tech"),
+                      deviceId: await cdr.prefs.stupidUuid(),
+                      apiKey: apiKey,
+                    );
+                    if(cdr.prefs.log()){
+                      await cdr.stupid!.log();
+                    }
+                    if(cdr.prefs.crash()){
+                      FlutterError.onError = (err) {
+                        cdr.stupid!.crash(Crash(
+                          error: err.exceptionAsString(),
+                          stack: err.stack?.toString() ?? "Not given",
+                          version: cdr.packageInfo.version
+                        ),);
+                        FlutterError.presentError(err);
+                      };
+                    }
+                  }
+                }finally{}
+              }
               setState((){});
             },
             title: Text(cdr.locale.stupid),
@@ -81,7 +111,7 @@ class _SettingsState extends State<Settings> {
             title: Text(cdr.locale.stupidCrash),
           ),
           const Divider(),
-          SwitchListTile(
+          UpdatingSwitchTile(
             value: cdr.prefs.log(),
             onChanged: (val) =>
               cdr.prefs.setLog(val),
