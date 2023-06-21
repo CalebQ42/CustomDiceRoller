@@ -41,22 +41,9 @@ class DieListState extends State<DieList>{
             direction: cdr.prefs.swipeDelete() ? DismissDirection.horizontal : DismissDirection.none,
             child: DieItem(
               die,
-              () async {
-                //TODO: Undo and Drive deletion
-                await cdr.db.writeTxn(() async => await cdr.db.dies.delete(die.id));
-                listKey.currentState?.removeItem(
-                  index,
-                  (context, animation) => SizeTransition(sizeFactor: animation)
-                );
-              },
+              () => die.delete(context, listKey, index),
             ),
-            onDismissed: (direction) async {
-              await cdr.db.writeTxn(() async => await cdr.db.dies.delete(die.id));
-              listKey.currentState?.removeItem(
-                index,
-                (context, animation) => SizeTransition(sizeFactor: animation)
-              );
-            },
+            onDismissed: (_) => die.delete(context, listKey, index),
           );
         },
         initialItemCount: cdr.db.dies.countSync(),

@@ -9,6 +9,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:isar/isar.dart';
@@ -27,10 +28,12 @@ class CDR with TopResources{
   Driver? driver;
   bool initilized = false;
   Stupid? stupid;
+  PackageInfo packageInfo;
 
   CDR({
     required this.prefs,
     required this.db,
+    required this.packageInfo,
     Duration globalDuration = const Duration(milliseconds: 250)
   }){
     this.globalDuration = globalDuration;
@@ -52,7 +55,7 @@ class CDR with TopResources{
         [DieSchema],
         directory: dir.path
       ),
-      globalDuration: prefs.disableAnimations() ? Duration.zero : const Duration(milliseconds: 300),
+      packageInfo: await PackageInfo.fromPlatform(),
     );
   }
 
@@ -77,8 +80,9 @@ class CDR with TopResources{
             FlutterError.onError = (err) {
               stupid!.crash(Crash(
                 error: err.exceptionAsString(),
-                stack: err.stack?.toString() ?? "Not given"
-              ));
+                stack: err.stack?.toString() ?? "Not given",
+                version: packageInfo.version
+              ),);
               FlutterError.presentError(err);
             };
           }
@@ -92,8 +96,6 @@ class CDR with TopResources{
     initilized = true;
   }
 
-
-
   Future<bool> initializeDrive([bool reset = false]) async{
     if(driver != null && reset){
       await driver?.gsi?.signOut();
@@ -103,7 +105,11 @@ class CDR with TopResources{
       driver = Driver(
         drive.DriveApi.driveAppdataScope,
         (e, stack) => stupid?.crash(
-          Crash(error: e.toString(), stack: stack.toString())
+          Crash(
+            error: e.toString(),
+            stack: stack.toString(),
+            version: packageInfo.version
+          )
         )
       );
       if(!await driver!.setWD("dies")) return false;

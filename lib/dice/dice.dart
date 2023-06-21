@@ -26,6 +26,11 @@ class Die {
   bool saving = false;
   @Ignore()
   bool saveWaiting = false;
+
+  @Ignore()
+  bool cloudSaving = false;
+  @Ignore()
+  bool cloudSaveWaiting = false;
   @Ignore()
   String? driveId;
 
@@ -44,6 +49,10 @@ class Die {
   Die.numberDie(int sides, AppLocalizations localizations) :
     title = localizations.dieNotation + sides.toString(),
     sides = List<Side>.generate(sides, (index) => Side.number(index+1));
+  Die.from(Die d) :
+    title = d.title,
+    sides = List.from(d.sides),
+    lastSave = d.lastSave.copyWith();
 
   static Future<bool> importFromCloud(String id, CDR cdr) async{
     if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
@@ -104,12 +113,12 @@ class Die {
       if(context == null) throw("MUST PROVIDE EITHER cdr or context!!!");
       cdr = CDR.of(context);
     }
+    cloudSave(cdr);
     if(saving || saveWaiting) return;
     if(!saving){
       saving = true;
       lastSave = DateTime.now();
-      cdr.db.writeTxn(() async => await cdr!.db.dies.put(this));
-      await cloudSave(cdr);
+      await cdr.db.writeTxn(() async => await cdr!.db.dies.put(this));
       saving = false;
       if(saveWaiting) save(cdr: cdr);
     }else{
@@ -119,13 +128,47 @@ class Die {
 
   Future<bool> cloudSave(CDR cdr) async{
     if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
-    driveId ??= await getDriveId(cdr);
-    if(driveId != null){
-      var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
-      var data = const JsonEncoder().convert(json).codeUnits;
-      return await cdr.driver!.updateContents(driveId!, Stream.value(data), dataLength: data.length);
+    if(cloudSaving || cloudSaveWaiting) return false;
+    if(!cloudSaving){
+      driveId ??= await getDriveId(cdr);
+      if(driveId != null){
+        var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
+        var data = const JsonEncoder().convert(json).codeUnits;
+        return await cdr.driver!.updateContents(driveId!, Stream.value(data), dataLength: data.length);
+      }
+      if(cloudSaveWaiting) cloudSave(cdr);
     }
     return false;
+  }
+
+  Future<void> delete(BuildContext context, GlobalKey<AnimatedListState> listKey, int index) async{
+    var cdr = CDR.of(context);
+    var tmpD = Die.from(this);
+    ScaffoldMessenger.of(context).clearSnackBars();
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(cdr.locale.dieDeleted),
+      action: SnackBarAction(
+        label: cdr.locale.undo,
+        onPressed: () async{
+          await cdr.db.writeTxn(() async => await cdr.db.dies.put(tmpD));
+          listKey.currentState?.insertItem(index);
+        },
+      ),
+    ));
+    await cdr.db.writeTxn(() async => await cdr.db.dies.delete(id));
+    listKey.currentState?.removeItem(
+      index,
+      (context, animation) => SizeTransition(sizeFactor: animation)
+    );
+    if(cdr.prefs.drive() && cdr.driver != null && await cdr.driver!.ready()){
+      while(cloudSaving || cloudSaveWaiting){
+        await Future.delayed(const Duration(milliseconds: 100));
+      }
+      driveId ??= await getDriveId(cdr);
+      if(driveId != null){
+        await cdr.driver!.delete(driveId!);
+      }
+    }
   }
 
   Future<String?> getDriveId(CDR cdr) async{

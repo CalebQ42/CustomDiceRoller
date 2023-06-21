@@ -39,11 +39,11 @@ void main() =>
       if(kDebugMode){
         print(error);
         print(stack);
-      }
-      if(cdr!.prefs.crash()){
+      }else if(cdr!.prefs.crash()){
         cdr?.stupid?.crash(Crash(
           error: error.toString(),
           stack: stack.toString(),
+          version: cdr!.packageInfo.version
         ));
       }
     }
