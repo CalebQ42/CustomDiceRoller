@@ -6,6 +6,7 @@ import 'package:darkstorm_common/frame_content.dart';
 import 'package:darkstorm_common/updating_switch_tile.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:stupid/stupid.dart';
 
 class Settings extends StatefulWidget{
 
@@ -64,7 +65,18 @@ class _SettingsState extends State<Settings> {
             value: cdr.prefs.crash(),
             onChanged: cdr.stupid != null ? (val) {
               cdr.prefs.setCrash(val);
-              FlutterError.onError = FlutterError.presentError;
+              if(val){
+                FlutterError.onError = (err) {
+                  cdr.stupid!.crash(Crash(
+                    error: err.exceptionAsString(),
+                    stack: err.stack.toString(),
+                    version: cdr.packageInfo.version
+                  ));
+                  FlutterError.presentError(err);
+                };
+              }else{
+                FlutterError.onError = FlutterError.presentError;
+              }
              } : null,
             title: Text(cdr.locale.stupidCrash),
           ),
