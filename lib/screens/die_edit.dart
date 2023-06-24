@@ -3,6 +3,7 @@ import 'package:customdiceroller/dialogs/complex.dart';
 import 'package:customdiceroller/dialogs/simple.dart';
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:darkstorm_common/frame_content.dart';
+import 'package:darkstorm_common/speed_dial.dart';
 import 'package:flutter/material.dart';
 
 class DieEdit extends StatefulWidget{
@@ -20,7 +21,7 @@ class _DieEditState extends State<DieEdit> {
   bool nameConflict = false;
   bool noName = false;
   bool invalidCharacter = false;
-  GlobalKey<FrameSpeedDialState> fabKey = GlobalKey();
+  GlobalKey<SpeedDialState> speedDialKey = GlobalKey();
   GlobalKey<AnimatedListState> listKey = GlobalKey();
   TextEditingController stuff = TextEditingController();
   ScrollController listCont = ScrollController();
@@ -53,8 +54,8 @@ class _DieEditState extends State<DieEdit> {
           }
         });
     return FrameContent(
-      fab: FrameSpeedDial(
-        key: fabKey,
+      fab: SpeedDial(
+        key: speedDialKey,
         children: [
           SpeedDialIcons(
             onPressed: () =>
@@ -94,7 +95,7 @@ class _DieEditState extends State<DieEdit> {
           )
         ]
       ),
-      fabKey: fabKey,
+      speedDialKey: speedDialKey,
       child: Column(
         children: [
           Padding(
