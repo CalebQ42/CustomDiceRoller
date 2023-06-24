@@ -95,7 +95,7 @@ class _SettingsState extends State<Settings> {
             value: cdr.prefs.crash(),
             onChanged: cdr.stupid != null ? (val) {
               cdr.prefs.setCrash(val);
-              if(val){
+              if(val && !kDebugMode){
                 FlutterError.onError = (err) {
                   cdr.stupid!.crash(Crash(
                     error: err.exceptionAsString(),

@@ -5,6 +5,7 @@ import 'package:customdiceroller/screens/loading.dart';
 import 'package:darkstorm_common/driver.dart';
 import 'package:customdiceroller/utils/preferences.dart';
 import 'package:darkstorm_common/top_inherit.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +77,7 @@ class CDR with TopResources{
           if(prefs.log()){
             await stupid!.log();
           }
-          if(prefs.crash()){
+          if(prefs.crash() && !kDebugMode){
             FlutterError.onError = (err) {
               stupid!.crash(Crash(
                 error: err.exceptionAsString(),
