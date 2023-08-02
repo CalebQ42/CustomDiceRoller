@@ -105,7 +105,7 @@ class CDR with TopResources{
     if(driver == null){
       driver = Driver(
         drive.DriveApi.driveAppdataScope,
-        (e, stack) => stupid?.crash(
+        onError: (e, stack) => stupid?.crash(
           Crash(
             error: e.toString(),
             stack: stack.toString(),
