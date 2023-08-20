@@ -142,6 +142,7 @@ class CDR with TopResources{
     if(fils == null) return false;
     var dies = await db.dies.where().findAll();
     for(var f in fils){
+      try{
       if(f.name == null || f.id == null) continue;
       var match = await db.dies.getByUuid(f.name!);
       if(match == null){
@@ -149,6 +150,13 @@ class CDR with TopResources{
       }else{
         if(!await match.cloudLoad(f.id!, this)) return false;
         dies.removeWhere((element) => element.uuid == match.uuid);
+      }
+      }catch(e, stack){
+        if(e is FormatException){
+          driver!.delete(f.id!);
+        }else if(FlutterError.onError != null){
+          FlutterError.onError!(FlutterErrorDetails(exception: e, stack: stack));
+        }
       }
     }
     for(var u in dies){
