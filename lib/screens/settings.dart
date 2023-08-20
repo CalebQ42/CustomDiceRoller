@@ -195,7 +195,20 @@ class _SettingsState extends State<Settings> {
         ]
     ).show(context);
     cdr.prefs.setDrive(true);
-    cdr.initializeDrive().then(
+    var messager = ScaffoldMessenger.of(context);
+    cdr.initializeDrive(
+      onFull: (){
+        if(cdr.showFullError){
+          cdr.showFullError = false;
+          messager.showSnackBar(
+            SnackBar(
+              content: Text(cdr.locale.driveFull),
+            )
+          );
+          Future.delayed(const Duration(minutes: 5), () => cdr.showFullError = true);
+        }
+      }
+    ).then(
       (value) {
         cdr.prefs.setDrive(value);
         setState(() {});

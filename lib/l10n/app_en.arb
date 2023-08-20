@@ -23,6 +23,7 @@
     "driveSettingError": "Failed to turn on Google Drive. Retry?",
     "retry": "Retry",
     "continueOffline": "Continue Offline",
+    "driveFull": "Google Drive storage full",
 
     "individual": "Individual",
     "combined": "Combined",

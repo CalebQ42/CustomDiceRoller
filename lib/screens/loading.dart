@@ -77,8 +77,22 @@ class LoadingScreenState extends State<LoadingScreen> {
                     TextButton(
                       child: Text(AppLocalizations.of(context)!.retry),
                       onPressed: () {
+                        var messager = ScaffoldMessenger.of(context);
                         driveFail = false;
-                        widget.cdr.initializeDrive().then(
+                        widget.cdr.initializeDrive(
+                          reset: true,
+                          onFull: (){
+                            if(widget.cdr.showFullError){
+                              widget.cdr.showFullError = false;
+                              messager.showSnackBar(
+                                SnackBar(
+                                  content: Text(AppLocalizations.of(context)!.driveFull),
+                                )
+                              );
+                              Future.delayed(const Duration(minutes: 5), () => widget.cdr.showFullError = true);
+                            }
+                          }
+                        ).then(
                           (value) {
                             if(!value){
                               driveFail = true;

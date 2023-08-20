@@ -22,17 +22,18 @@ dependencies:
   flutter_dotenv: ^5.1.0
   google_sign_in: ^6.1.4
   extension_google_sign_in_as_googleapis_auth: ^2.0.10
-  googleapis: ^11.3.0
+  googleapis: ^11.4.0
   stupid: ^0.2.4
-  path_provider: ^2.0.15
+  path_provider: ^2.1.0
   package_info_plus: ^4.1.0
-  xdg_directories: ^1.0.1
-  darkstorm_common: ^1.0.6
+  xdg_directories: ^1.0.2
+  darkstorm_common:
+    path: ../darkstorm-common
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^2.0.1
+  flutter_lints: ^2.0.2
   isar_generator: ^3.1.0+1
   build_runner: any
 

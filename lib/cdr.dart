@@ -31,6 +31,8 @@ class CDR with TopResources{
   Stupid? stupid;
   PackageInfo packageInfo;
 
+  bool showFullError = true;
+
   CDR({
     required this.prefs,
     required this.db,
@@ -62,6 +64,7 @@ class CDR with TopResources{
 
   Future<void> postInit(BuildContext context, LoadingScreenState loading) async{
     locale = AppLocalizations.of(context)!;
+    var messager = ScaffoldMessenger.of(context);
     if(prefs.stupid()){
       try{
         String? apiKey;
@@ -92,17 +95,30 @@ class CDR with TopResources{
     }
     if(prefs.drive()){
       loading.loadingText = locale.loadingDrive;
-      if(!await initializeDrive()) loading.driveFail = true;
+      loading.driveFail = !await initializeDrive(
+        onFull: (){
+          if(showFullError){
+            showFullError = false;
+            messager.showSnackBar(
+              SnackBar(
+                content: Text(locale.driveFull),
+              )
+            );
+            Future.delayed(const Duration(minutes: 5), () => showFullError = true);
+          }
+        }
+      );
     }
     initilized = true;
   }
 
-  Future<bool> initializeDrive([bool reset = false]) async{
+  Future<bool> initializeDrive({bool reset = false, VoidCallback? onFull}) async{
     if(driver != null && reset){
       await driver?.gsi?.signOut();
       driver = null;
     }
     if(driver == null){
+      if(onFull == null) throw("When initializing drive, onFull must be provided!");
       driver = Driver(
         drive.DriveApi.driveAppdataScope,
         onError: (e, stack) => stupid?.crash(
@@ -111,7 +127,8 @@ class CDR with TopResources{
             stack: stack.toString(),
             version: packageInfo.version
           )
-        )
+        ),
+        onFull: onFull
       );
       if(!await driver!.setWD("dies")) return false;
     }
