@@ -196,9 +196,10 @@ packages:
   darkstorm_common:
     dependency: "direct main"
     description:
-      path: "../darkstorm-common"
-      relative: true
-    source: path
+      name: darkstorm_common
+      sha256: "348c58136d6322216a2d52eb2f2bdb2a1eed6d3214f276841dbc592a2de9d31d"
+      url: "https://pub.dev"
+    source: hosted
     version: "1.0.7"
   dart_style:
     dependency: transitive
@@ -225,7 +226,7 @@ packages:
     source: hosted
     version: "0.7.8"
   extension_google_sign_in_as_googleapis_auth:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: extension_google_sign_in_as_googleapis_auth
       sha256: "3c384d57abe00707dfee58a7b3459536772c0147ebf2b7d740d2817209c751b6"
@@ -373,7 +374,7 @@ packages:
     source: hosted
     version: "0.2.1"
   google_sign_in:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: google_sign_in
       sha256: aab6fdc41374014494f9e9026b9859e7309639d50a0bf4a2a412467a5ae4abc6
@@ -413,7 +414,7 @@ packages:
     source: hosted
     version: "0.12.0+3"
   googleapis:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: googleapis
       sha256: c2f311bcd1b3e4052234162edc6b626a9013a7e1385d6aad37e9e6a6c5f89908

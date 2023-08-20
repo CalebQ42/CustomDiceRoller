@@ -1,7 +1,7 @@
 name: customdiceroller
 description: A roller of custom dice
 publish_to: 'none'
-version: 1.0.2+3
+version: 1.0.3+4
 
 environment:
   sdk: '>=3.0.0-417.1.beta <4.0.0'
@@ -20,15 +20,11 @@ dependencies:
   isar: ^3.1.0+1
   intl: any
   flutter_dotenv: ^5.1.0
-  google_sign_in: ^6.1.4
-  extension_google_sign_in_as_googleapis_auth: ^2.0.10
-  googleapis: ^11.4.0
   stupid: ^0.2.4
   path_provider: ^2.1.0
   package_info_plus: ^4.1.0
   xdg_directories: ^1.0.2
-  darkstorm_common:
-    path: ../darkstorm-common
+  darkstorm_common: ^1.0.7
 
 dev_dependencies:
   flutter_test:
