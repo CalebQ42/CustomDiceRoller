@@ -14,13 +14,13 @@ dependencies:
   cupertino_icons: ^1.0.5
   shared_preferences: ^2.2.0
   url_launcher: ^6.1.12
-  uuid: ^3.0.7
-  flutter_secure_storage: ^8.0.0
+  uuid: ^4.0.0
+  flutter_secure_storage: ^9.0.0
   isar_flutter_libs: ^3.1.0+1
   isar: ^3.1.0+1
   intl: any
   flutter_dotenv: ^5.1.0
-  stupid: ^0.2.4
+  stupid: ^0.2.5
   googleapis: ^11.4.0
   path_provider: ^2.1.0
   package_info_plus: ^4.1.0
