@@ -216,11 +216,14 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                                 addToDisplay("{$dieName}");
                                 cdr.nav.pop();
                               },
-                              child: Padding(
-                                padding: const EdgeInsets.all(15),
-                                child: Text(
-                                  dieName,
-                                  style: Theme.of(context).textTheme.titleMedium,
+                              child: ConstrainedBox(
+                                constraints: const BoxConstraints.expand(height: 50),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(15),
+                                  child: Text(
+                                    dieName,
+                                    style: Theme.of(context).textTheme.titleMedium,
+                                  )
                                 )
                               )
                             );

@@ -25,7 +25,7 @@ dependencies:
   path_provider: ^2.1.1
   package_info_plus: ^4.1.0
   xdg_directories: ^1.0.3
-  darkstorm_common: ^1.0.8
+  darkstorm_common: ^1.0.9
 
 dev_dependencies:
   flutter_test:

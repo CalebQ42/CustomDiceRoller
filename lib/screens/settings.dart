@@ -189,7 +189,10 @@ class _SettingsState extends State<Settings> {
       dismissible: false,
       children: (c) =>
         [
-          const CircularProgressIndicator(),
+          const Padding(
+            padding: EdgeInsets.all(5),
+            child: CircularProgressIndicator()
+          ),
           Container(height: 10,),
           Text(cdr.locale.loadingDrive)
         ]
