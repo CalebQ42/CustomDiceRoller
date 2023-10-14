@@ -167,9 +167,6 @@ class Die {
         },
       ),
     ));
-    print(cdr.prefs.drive());
-    print(cdr.driver == null);
-    print(await cdr.driver?.ready());
     if(cdr.prefs.drive() && cdr.driver != null && await cdr.driver!.ready()){
       while(cloudSaving || cloudSaveWaiting){
         await Future.delayed(const Duration(milliseconds: 100));
