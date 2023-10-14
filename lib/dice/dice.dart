@@ -130,13 +130,18 @@ class Die {
     if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
     if(cloudSaving || cloudSaveWaiting) return false;
     if(!cloudSaving){
+      cloudSaving = true;
       driveId ??= await getDriveId(cdr);
       if(driveId != null){
         var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
         var data = const JsonEncoder().convert(json).codeUnits;
         return await cdr.driver!.updateContents(driveId!, Stream.value(data), dataLength: data.length);
       }
+      //Rate limit cloud saving to once every 5 seconds (Well technically 5 seconds + saving time).
+      await Future.delayed(const Duration(seconds: 5), () => cloudSaving = false);
       if(cloudSaveWaiting) cloudSave(cdr);
+    }else{
+      cloudSaveWaiting = true;
     }
     return false;
   }
@@ -144,8 +149,14 @@ class Die {
   Future<void> delete(BuildContext context, GlobalKey<AnimatedListState> listKey, int index) async{
     var cdr = CDR.of(context);
     var tmpD = Die.from(this);
-    ScaffoldMessenger.of(context).clearSnackBars();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+    var mes = ScaffoldMessenger.of(context);
+    await cdr.db.writeTxn(() async => await cdr.db.dies.delete(id));
+    listKey.currentState?.removeItem(
+      index,
+      (context, animation) => SizeTransition(sizeFactor: animation)
+    );
+    mes.clearSnackBars();
+    mes.showSnackBar(SnackBar(
       content: Text(cdr.locale.dieDeleted),
       action: SnackBarAction(
         label: cdr.locale.undo,
@@ -155,11 +166,9 @@ class Die {
         },
       ),
     ));
-    await cdr.db.writeTxn(() async => await cdr.db.dies.delete(id));
-    listKey.currentState?.removeItem(
-      index,
-      (context, animation) => SizeTransition(sizeFactor: animation)
-    );
+    print(cdr.prefs.drive());
+    print(cdr.driver == null);
+    print(await cdr.driver?.ready());
     if(cdr.prefs.drive() && cdr.driver != null && await cdr.driver!.ready()){
       while(cloudSaving || cloudSaveWaiting){
         await Future.delayed(const Duration(milliseconds: 100));
