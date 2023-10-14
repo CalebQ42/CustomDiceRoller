@@ -127,8 +127,8 @@ class Die {
   }
 
   Future<bool> cloudSave(CDR cdr) async{
+    if(cloudSaving && cloudSaveWaiting) return false;
     if(!cdr.prefs.drive() || cdr.driver == null || !await cdr.driver!.ready()) return false;
-    if(cloudSaving || cloudSaveWaiting) return false;
     if(!cloudSaving){
       cloudSaving = true;
       driveId ??= await getDriveId(cdr);
@@ -137,8 +137,9 @@ class Die {
         var data = const JsonEncoder().convert(json).codeUnits;
         return await cdr.driver!.updateContents(driveId!, Stream.value(data), dataLength: data.length);
       }
-      //Rate limit cloud saving to once every 5 seconds (Well technically 5 seconds + saving time).
-      await Future.delayed(const Duration(seconds: 5), () => cloudSaving = false);
+      //Rate limit cloud saving to once every 3 seconds (Well technically 3 seconds + saving time).
+      await Future.delayed(const Duration(seconds: 3));
+      cloudSaving = false;
       if(cloudSaveWaiting) cloudSave(cdr);
     }else{
       cloudSaveWaiting = true;
