@@ -1,16 +1,12 @@
 # customdiceroller
 
-A new Flutter project.
+A dice roller with support for complex dice.
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+* Create custom dice
+* On those dice, have simple sides, like '1' or 'Heads`
+* Or more complex sides like `2 Advantage and 2 Success` or `2 Disadvantage and 2 Failure`
+* Calculate multiple dice in a dice calculator
+* With support for "regular" dice like `1d6`
+* Alongside your custom dice, like `3{EotE Challenge Dice} + 2d6`
