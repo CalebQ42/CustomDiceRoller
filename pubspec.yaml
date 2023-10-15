@@ -1,7 +1,7 @@
 name: customdiceroller
 description: A roller of custom dice
 publish_to: 'none'
-version: 1.0.8+9
+version: 1.0.9+10
 
 environment:
   sdk: '>=3.0.0-417.1.beta <4.0.0'
@@ -23,7 +23,7 @@ dependencies:
   stupid: ^0.2.6
   googleapis: ^11.4.0
   path_provider: ^2.1.1
-  package_info_plus: ^4.1.0
+  package_info_plus: ^4.2.0
   xdg_directories: ^1.0.3
   darkstorm_common: ^1.0.9
 
