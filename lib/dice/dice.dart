@@ -84,6 +84,7 @@ class Die {
     try{
       if(lastSave.isBefore(DateTime.fromMillisecondsSinceEpoch(json["lastSave"]))){
         await cdr.db.writeTxn(() async => await cdr.db.dies.importJson([json]));
+      }else if(!lastSave.isAtSameMomentAs(DateTime.fromMillisecondsSinceEpoch(json["lastSave"]))){
       }
     }catch(e){
       return false;
@@ -113,11 +114,11 @@ class Die {
       if(context == null) throw("MUST PROVIDE EITHER cdr or context!!!");
       cdr = CDR.of(context);
     }
-    cloudSave(cdr);
     if(saving || saveWaiting) return;
     if(!saving){
       saving = true;
       lastSave = DateTime.now();
+      cloudSave(cdr);
       await cdr.db.writeTxn(() async => await cdr!.db.dies.put(this));
       saving = false;
       if(saveWaiting) save(cdr: cdr);
@@ -132,15 +133,31 @@ class Die {
     if(!cloudSaving){
       cloudSaving = true;
       driveId ??= await getDriveId(cdr);
-      if(driveId != null){
-        var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
-        var data = const JsonEncoder().convert(json).codeUnits;
-        return await cdr.driver!.updateContents(driveId!, Stream.value(data), dataLength: data.length);
+      if(driveId == null){
+        cloudSaving = false;
+        if(cloudSaveWaiting) cloudSave(cdr);
+        return false;
       }
-      //Rate limit cloud saving to once every 3 seconds (Well technically 3 seconds + saving time).
-      await Future.delayed(const Duration(seconds: 3));
+      var json = (await cdr.db.dies.where().idEqualTo(id).exportJson())[0];
+      var data = const JsonEncoder().convert(json).codeUnits;
+      var res = await cdr.driver!.updateContents(
+        driveId!,
+        Stream.value(data),
+        appProperties: <String, String>{
+          "lastSave": lastSave.toIso8601String(),
+        },
+        dataLength: data.length
+      );
+      if(res){
+        //Rate limit cloud saving to once every 3 seconds (Well technically 3 seconds + saving time).
+        await Future.delayed(const Duration(seconds: 3));
+      }
       cloudSaving = false;
-      if(cloudSaveWaiting) cloudSave(cdr);
+      if(cloudSaveWaiting){
+        cloudSave(cdr);
+        cloudSaveWaiting = false;
+      }
+      return res;
     }else{
       cloudSaveWaiting = true;
     }

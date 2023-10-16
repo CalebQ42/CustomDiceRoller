@@ -143,14 +143,24 @@ class CDR with TopResources{
     var dies = await db.dies.where().findAll();
     for(var f in fils){
       try{
-      if(f.name == null || f.id == null) continue;
-      var match = await db.dies.getByUuid(f.name!);
-      if(match == null){
-        if(!await Die.importFromCloud(f.id!, this)) return false;
-      }else{
-        if(!await match.cloudLoad(f.id!, this)) return false;
-        dies.removeWhere((element) => element.uuid == match.uuid);
-      }
+        if(f.name == null || f.id == null) continue;
+        var match = await db.dies.getByUuid(f.name!);
+        if(match == null){
+          if(!await Die.importFromCloud(f.id!, this)) return false;
+        }else{
+          if(f.appProperties != null && f.appProperties!["lastSave"] != null){
+            var driveLast = DateTime.tryParse(f.appProperties!["lastSave"]!);
+            if(driveLast == null) return false;
+            if(match.lastSave.isAfter(driveLast)){
+              match.cloudSave(this);
+              continue;
+            }else if(match.lastSave.isAtSameMomentAs(driveLast)){
+              continue;
+            }
+          }
+          if(!await match.cloudLoad(f.id!, this)) return false;
+          dies.removeWhere((element) => element.uuid == match.uuid);
+        }
       }catch(e, stack){
         if(e is FormatException){
           driver!.delete(f.id!);
