@@ -72,7 +72,6 @@ class CDR with TopResources{
         var dot = DotEnv();
         await dot.load(fileName: ".stupid");
         apiKey = dot.maybeGet("STUPID_KEY");
-        print(apiKey);
         if(apiKey != null){
           stupid = CDRStupid(this, apiKey, await prefs.stupidUuid());
           if(prefs.log()){
