@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:customdiceroller/cdr.dart';
+import 'package:customdiceroller/utils/stupid.dart';
 import 'package:darkstorm_common/bottom.dart';
 import 'package:darkstorm_common/frame_content.dart';
 import 'package:darkstorm_common/updating_switch_tile.dart';
@@ -65,11 +66,7 @@ class _SettingsState extends State<Settings> {
                   await dot.load(fileName: ".stupid");
                   apiKey = dot.maybeGet("STUPID_KEY");
                   if(apiKey != null){
-                    cdr.stupid = Stupid(
-                      baseUrl: Uri.parse("https://api.darkstorm.tech"),
-                      deviceId: await cdr.prefs.stupidUuid(),
-                      apiKey: apiKey,
-                    );
+                    cdr.stupid = CDRStupid(cdr, await cdr.prefs.stupidUuid(), apiKey);
                     if(cdr.prefs.log()){
                       await cdr.stupid!.log();
                     }
@@ -203,8 +200,10 @@ class _SettingsState extends State<Settings> {
       onFull: (){
         if(cdr.showFullError){
           cdr.showFullError = false;
+          messager.clearSnackBars();
           messager.showSnackBar(
             SnackBar(
+              duration: const Duration(seconds: 10),
               content: Text(cdr.locale.driveFull),
             )
           );

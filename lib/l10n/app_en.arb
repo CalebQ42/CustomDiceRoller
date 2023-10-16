@@ -16,6 +16,12 @@
     "dice": "Dice",
     "diceGroups": "Dice Groups",
 
+    "download": "Download",
+    "shareCode": "Share Code:",
+    "downloadFailed": "Failed to Download Die",
+    "uploadFailed": "Failed to Upload Die",
+    "uploadDisclaimer": "The share code will be valid for 12 hours",
+
     "loading": "Loading...",
     "loadingDrive": "Loading Google Drive...",
     "driveError": "Failed Sync",

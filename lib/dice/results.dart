@@ -46,8 +46,12 @@ class DiceResults{
         showCombinedResults(context);
       }
     }else{
+      ScaffoldMessenger.of(context).clearSnackBars();
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(CDR.of(context).locale.parseError))
+        SnackBar(
+          duration: const Duration(seconds: 10),
+          content: Text(CDR.of(context).locale.parseError)
+        )
       );
     }
   }

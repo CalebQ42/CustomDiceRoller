@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:customdiceroller/dice/dice.dart';
 import 'package:customdiceroller/screens/loading.dart';
+import 'package:customdiceroller/utils/stupid.dart';
 import 'package:darkstorm_common/driver.dart';
 import 'package:customdiceroller/utils/preferences.dart';
 import 'package:darkstorm_common/top_resources.dart';
@@ -28,7 +29,7 @@ class CDR with TopResources{
   void Function()? topLevelUpdate;
   Driver? driver;
   bool initilized = false;
-  Stupid? stupid;
+  CDRStupid? stupid;
   PackageInfo packageInfo;
 
   bool showFullError = true;
@@ -71,12 +72,9 @@ class CDR with TopResources{
         var dot = DotEnv();
         await dot.load(fileName: ".stupid");
         apiKey = dot.maybeGet("STUPID_KEY");
+        print(apiKey);
         if(apiKey != null){
-          stupid = Stupid(
-            baseUrl: Uri.parse("https://api.darkstorm.tech"),
-            deviceId: await prefs.stupidUuid(),
-            apiKey: apiKey,
-          );
+          stupid = CDRStupid(this, apiKey, await prefs.stupidUuid());
           if(prefs.log()){
             await stupid!.log();
           }
@@ -99,9 +97,11 @@ class CDR with TopResources{
         onFull: (){
           if(showFullError){
             showFullError = false;
+            messager.clearSnackBars();
             messager.showSnackBar(
               SnackBar(
                 content: Text(locale.driveFull),
+                duration: const Duration(seconds: 10),
               )
             );
             Future.delayed(const Duration(minutes: 5), () => showFullError = true);

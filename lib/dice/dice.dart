@@ -175,6 +175,7 @@ class Die {
     );
     mes.clearSnackBars();
     mes.showSnackBar(SnackBar(
+      duration: const Duration(seconds: 10),
       content: Text(cdr.locale.dieDeleted),
       action: SnackBarAction(
         label: cdr.locale.undo,

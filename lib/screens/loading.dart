@@ -84,8 +84,10 @@ class LoadingScreenState extends State<LoadingScreen> {
                           onFull: (){
                             if(widget.cdr.showFullError){
                               widget.cdr.showFullError = false;
+                              messager.clearSnackBars();
                               messager.showSnackBar(
                                 SnackBar(
+                                  duration: const Duration(seconds: 10),
                                   content: Text(AppLocalizations.of(context)!.driveFull),
                                 )
                               );

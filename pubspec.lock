@@ -197,10 +197,10 @@ packages:
     dependency: "direct main"
     description:
       name: darkstorm_common
-      sha256: "05bca9f50f0dcda3a8d28cddfe33e81c80bb2603533cf1f08aa684684f0407e3"
+      sha256: "7a62f8803cd761dcf121095c7cab8471b2e89fed23665b41c88d575947a3b191"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.10"
   dart_style:
     dependency: transitive
     description:
@@ -438,7 +438,7 @@ packages:
     source: hosted
     version: "2.3.1"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"

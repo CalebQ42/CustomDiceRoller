@@ -2,7 +2,9 @@ import 'dart:math';
 
 import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dice/dice.dart';
+import 'package:darkstorm_common/bottom.dart';
 import 'package:darkstorm_common/frame_content.dart';
+import 'package:darkstorm_common/speed_dial.dart';
 import 'package:flutter/material.dart';
 import 'package:isar/isar.dart';
 
@@ -16,12 +18,68 @@ class DieList extends StatefulWidget{
 
 class DieListState extends State<DieList>{
   GlobalKey<AnimatedListState> listKey = GlobalKey();
+  GlobalKey<SpeedDialState> speedDialKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     var cdr = CDR.of(context);
     return FrameContent(
-      fab: FloatingActionButton(
+      speedDialKey: speedDialKey,
+      fab: cdr.prefs.stupid() && cdr.stupid != null ? SpeedDial(
+        key: speedDialKey,
+        children: [
+          SpeedDialIcons(
+            label: cdr.locale.newDie,
+            child: const Icon(Icons.add_box_outlined),
+            onPressed: () async{
+              var newD = Die(title: cdr.locale.newDie);
+              cdr.nav.pushNamed("/die/${newD.uuid}", arguments: newD);
+              if(await cdr.db.dies.getByTitle(newD.title) == null){
+                await cdr.db.writeTxn(() async => await cdr.db.dies.put(newD));
+              }
+            }
+          ),
+          SpeedDialIcons(
+            label: cdr.locale.download,
+            child: const Icon(Icons.download),
+            onPressed: () {
+              var mes = ScaffoldMessenger.of(context);
+              var cont = TextEditingController();
+              Bottom(
+                children: (c) => [
+                  Text(cdr.locale.shareCode, style: Theme.of(context).textTheme.titleMedium),
+                  Container(height: 10),
+                  TextField(controller: cont)
+                ],
+                buttons: (c) => [
+                  TextButton(
+                    child: Text(cdr.locale.cancel),
+                    onPressed: () => cdr.nav.pop()
+                  ),
+                  TextButton(
+                    child: Text(cdr.locale.download),
+                    onPressed: () async{
+                      var res = await cdr.stupid!.downloadProfile(cont.text);
+                      if(res){
+                        listKey.currentState?.insertItem(cdr.db.dies.countSync()-1);
+                      }else{
+                        mes.clearSnackBars();
+                        mes.showSnackBar(
+                          SnackBar(
+                            duration: const Duration(seconds: 10),
+                            content: Text(cdr.locale.downloadFailed),
+                          )
+                        );
+                      }
+                      cdr.nav.pop();
+                    },
+                  ),
+                ]
+              ).show(context);
+            },
+          )
+        ]
+      ) : FloatingActionButton(
         child: const Icon(Icons.add_box_outlined),
         onPressed: () async{
           var newD = Die(title: cdr.locale.newDie);
@@ -83,8 +141,10 @@ class DieItem extends StatelessWidget{
                 if(d.sides.isNotEmpty){
                   d.rollRes().showResults(context);
                 }else{
+                  ScaffoldMessenger.of(context).clearSnackBars();
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
+                      duration: const Duration(seconds: 10),
                       content: Text(cdr.locale.pleaseAddSide)
                     )
                   );

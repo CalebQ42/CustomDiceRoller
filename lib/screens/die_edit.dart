@@ -2,9 +2,12 @@ import 'package:customdiceroller/cdr.dart';
 import 'package:customdiceroller/dialogs/complex.dart';
 import 'package:customdiceroller/dialogs/simple.dart';
 import 'package:customdiceroller/dice/dice.dart';
+import 'package:customdiceroller/utils/stupid.dart';
+import 'package:darkstorm_common/bottom.dart';
 import 'package:darkstorm_common/frame_content.dart';
 import 'package:darkstorm_common/speed_dial.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class DieEdit extends StatefulWidget{
 
@@ -104,7 +107,44 @@ class _DieEditState extends State<DieEdit> {
               autofocus: widget.d.title == cdr.locale.newDie,
               decoration: InputDecoration(
                 labelText: cdr.locale.dieName,
-                errorText: noName ? cdr.locale.mustName : invalidCharacter ? cdr.locale.dieInvalidCharacter : nameConflict ? cdr.locale.dieUniqueName : null
+                errorText: noName ? cdr.locale.mustName : invalidCharacter ? cdr.locale.dieInvalidCharacter : nameConflict ? cdr.locale.dieUniqueName : null,
+                suffixIcon: cdr.prefs.stupid() && cdr.stupid != null ? IconButton(
+                  icon: const Icon(Icons.share),
+                  onPressed: () async{
+                    var mes = ScaffoldMessenger.of(context);
+                    cdr.stupid!.uploadProfile(widget.d.id).timeout(
+                      const Duration(seconds: 10),
+                      onTimeout: () => UploadResponse.timeout()
+                    ).then((res){
+                      if(!res.isSuccess()){
+                        mes.clearSnackBars();
+                        mes.showSnackBar(SnackBar(
+                          duration: const Duration(seconds: 10),
+                          content: Text(cdr.locale.uploadFailed),
+                        ));
+                      }else{
+                        Bottom(
+                          children: (c) => [
+                            Text(cdr.locale.shareCode, style: Theme.of(context).textTheme.titleLarge),
+                            Text(cdr.locale.uploadDisclaimer, style: Theme.of(context).textTheme.titleSmall),
+                            Container(height: 5),
+                            TextField(
+                              controller: TextEditingController(text: res.id),
+                              decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  icon: const Icon(Icons.copy),
+                                  onPressed: (){
+                                    Clipboard.setData(ClipboardData(text: res.id!));
+                                  },
+                                )
+                              ),
+                            ),
+                          ]
+                        ).show(context);
+                      }
+                    });
+                  },
+                ) : null
               ),
               style: Theme.of(context).textTheme.titleLarge,
               textCapitalization: TextCapitalization.words,
