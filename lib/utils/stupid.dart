@@ -70,7 +70,7 @@ class CDRStupid extends Stupid{
       );
       if(resp.statusCode != 200 || resp.body.isEmpty) return false;
       Map<String, dynamic> values = const JsonDecoder().convert(resp.body);
-      if(values["uid"] == null) values["uid"] = const Uuid().v4();
+      if(values["uuid"] == null) values["uuid"] = const Uuid().v4();
       if(await cdr.db.dies.getByTitle(values["title"]) != null){
         for(var i = 2;; i++){
           if(await cdr.db.dies.getByTitle(values["title"]+" "+i.toString()) == null){
@@ -80,6 +80,7 @@ class CDRStupid extends Stupid{
         }
       }
       await cdr.db.writeTxn(() async => await cdr.db.dies.importJson([values]));
+      (await cdr.db.dies.getByUuid(values["uuid"]))!.cloudSave(cdr);
       return true;
     }catch(e, stack){
       if(FlutterError.onError != null){

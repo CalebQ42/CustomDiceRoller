@@ -47,7 +47,7 @@ class DieListState extends State<DieList>{
               var cont = TextEditingController();
               Bottom(
                 children: (c) => [
-                  Text(cdr.locale.shareCode, style: Theme.of(context).textTheme.titleMedium),
+                  Text(cdr.locale.shareCode, style: Theme.of(context).textTheme.titleLarge),
                   Container(height: 10),
                   TextField(controller: cont)
                 ],

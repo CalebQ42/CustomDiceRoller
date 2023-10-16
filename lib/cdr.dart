@@ -170,12 +170,12 @@ class CDR with TopResources{
     }
     for(var u in dies){
       if(prefs.driveFirst()){
-        if(!await u.cloudSave(this)) return false;
-        prefs.setDriveFirst(false);
+        await u.cloudSave(this);
       }else{
-        await db.dies.delete(u.id);
+        await db.writeTxn(() async => await db.dies.delete(u.id));
       }
     }
+    prefs.setDriveFirst(false);
     return true;
   }
 
